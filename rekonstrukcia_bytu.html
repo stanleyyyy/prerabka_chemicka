@@ -149,6 +149,7 @@ a.ul:hover{text-decoration:underline}
 .mc.Odhad{border-left-color:#ea580c}
 .mc-name{font-size:19px;font-weight:500;color:#0f172a;margin-bottom:8px;line-height:1.35;white-space:normal;word-break:break-word}
 .mc-detail{font-size:15px;color:#64748b;margin-bottom:12px}
+.mc-ded{font-size:15px;color:#dc2626;font-weight:600;margin:-6px 0 12px}
 .mc-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .mc-tot{font-size:28px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums;flex:1;min-width:140px}
 .mc-ss{border:1px solid #cbd5e1;border-radius:9px;font-size:16px;font-weight:600;padding:12px 12px;cursor:pointer;font-family:inherit;min-height:52px;width:170px;flex-shrink:0}
@@ -216,24 +217,30 @@ const SO=["Zaplatené","Objednané","Určené","Odhad"];
 const SI={Zaplatené:"🟢",Objednané:"🔵",Určené:"🟡",Odhad:"🟠"};
 const CC=["#4472C4","#843C0C","#7F6000","#595959","#17375E","#3E5E1E","#1E4620","#99260F","#215868","#3E2160","#7B5E00","#404040","#2E2E2E","#1F6F5C"];
 
-/* Izby, ktoré sa dajú "vypnúť" (neprerábať). Ceny prác = jednotkové ceny Modul (bez DPH). */
+/* Izby, ktoré sa dajú "vypnúť" (neprerábať). Odpočet sa počíta z 'rooms' na jednotlivých položkách. */
 const ROOMS={
-  detska:{label:"Detská izba",area:14.5,wall:35,perim:15.6},
-  spalna:{label:"Spálňa (rodičia)",area:18,wall:39,perim:17.4}
+  detska:{label:"Detská izba",area:14.5},
+  spalna:{label:"Spálňa (rodičia)",area:18}
 };
-// Práca Modul (bez DPH) na izbu: podhľad + samonivelačka + montáž vinyl + lišty + stierkovanie + penetrácia + maľby
-function roomWork(r){return r.area*39.60 + r.area*40 + r.area*12 + r.perim*7.80 + r.wall*12 + (r.wall+r.area)*2.40 + (r.wall+r.area)*7.20;}
-// Materiál (s DPH) na izbu: podlahová krytina (laminát ZENN)
-function roomMat(r){return r.area*28.93;}
 let roomOn={detska:true,spalna:true};
+// koľko MJ danej položky pripadá na vypnuté izby
+function offQty(it){if(!it.rooms)return 0;let q=0;for(const k in it.rooms){if(!roomOn[k])q+=it.rooms[k]||0;}return q;}
+// efektívny počet po odpočte vypnutých izieb
+function effQty(it){return Math.max(0,(it.qty||0)-offQty(it));}
+// suma položky, ktorú reálne zaplatíš (po odpočte)
+function itemNet(it){return effQty(it)*(it.up||0);}
+// koľko € sa odráta z položky kvôli vypnutým izbám
+function itemDed(it){return offQty(it)*(it.up||0);}
+// úspora jednej izby (materiál s DPH + práca Modul + 23% DPH)
+function roomSaving(k){let mat=0,work=0;D.forEach(c=>c.items.forEach(it=>{if(it.rooms&&it.rooms[k]){const v=it.rooms[k]*(it.up||0);if(it.sup==='Modul Company')work+=v;else mat+=v;}}));return mat+work*1.23;}
 
 const INIT=[
   {name:"PRÍPRAVA",items:[{n:"Projekt / statické posúdenie",t:"statik – obhliadka + písomné posúdenie",mj:"kpl",qty:1,up:400,sup:"",url:"",st:"Zaplatené",note:"reálna cena júl 2026"},{n:"Stavebné povolenie / ohlásenie",t:"",mj:"kpl",qty:1,up:0,sup:"",url:"",st:"Odhad",note:"over na stavebnom úrade"}]},
   {name:"BÚRACIE A DEMONTÁŽNE PRÁCE",items:[
     {n:"Búranie dlažieb",t:"Modul Company",mj:"m²",qty:68,up:6.60,sup:"Modul Company",url:"",st:"Určené",note:""},
     {n:"Búranie priečok tehla >4 m² (115–200 mm)",t:"Modul Company",mj:"m²",qty:26,up:20,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Odstránenie malieb oškrabaním",t:"Modul Company",mj:"m²",qty:240,up:2.40,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Demontáž drevených/laminát. podláh + lišty",t:"Modul Company",mj:"m²",qty:35,up:4.80,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Odstránenie malieb oškrabaním",t:"Modul Company",mj:"m²",qty:240,up:2.40,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:35,spalna:39}},
+    {n:"Demontáž drevených/laminát. podláh + lišty",t:"Modul Company",mj:"m²",qty:35,up:4.80,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},
     {n:"Odstránenie linolea lepeného",t:"Modul Company",mj:"m²",qty:72,up:8.40,sup:"Modul Company",url:"",st:"Určené",note:""},
     {n:"Demontáž a odvoz starého nábytku",t:"Modul Company",mj:"ks",qty:1.5,up:300,sup:"Modul Company",url:"",st:"Určené",note:""},
     {n:"Demontáž záchoda",t:"Modul Company",mj:"ks",qty:1,up:30,sup:"Modul Company",url:"",st:"Určené",note:""},
@@ -243,10 +250,10 @@ const INIT=[
     {n:"Prenájom kontajneru 8 m³",t:"Modul Company",mj:"ks",qty:1,up:700,sup:"Modul Company",url:"",st:"Určené",note:""},
     {n:"Skládka odpadu + doprava",t:"Modul Company",mj:"ks",qty:50,up:6,sup:"Modul Company",url:"",st:"Určené",note:""}
   ]},
-  {name:"ELEKTROINŠTALÁCIA",items:[{n:"Kompletná nová elektroinštalácia",t:"rozvody, ističe, zásuvky, vypínače, montáž",mj:"kpl",qty:1,up:2000,sup:"",url:"",st:"Odhad",note:"dať naceniť elektrikárovi"}]},
+  {name:"ELEKTROINŠTALÁCIA",items:[{n:"Kompletná nová elektroinštalácia",t:"rozvody, ističe, zásuvky, vypínače, montáž",mj:"m²",qty:70.8,up:28.25,sup:"",url:"",st:"Odhad",note:"odhad ~28 €/m², proporčne na izbu",rooms:{detska:14.5,spalna:18}}]},
   {name:"MURÁRSKE + SADROKARTÓN",items:[
     {n:"Priečka SDK Rigips 125 mm dvojito, CW75 + izolácia",t:"Modul Company",mj:"m²",qty:20,up:66,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Podhľad SDK biely 12,5 mm závesný Q2",t:"Modul Company – celý byt",mj:"m²",qty:76,up:39.60,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Podhľad SDK biely 12,5 mm závesný Q2",t:"Modul Company – celý byt",mj:"m²",qty:76,up:39.60,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},
     {n:"Priečka YTONG 80 mm",t:"Modul Company",mj:"m²",qty:2.5,up:36,sup:"Modul Company",url:"",st:"Určené",note:""}
   ]},
   {name:"ZDRAVOTECHNIKA",items:[
@@ -284,8 +291,8 @@ const INIT=[
     {n:"Držadlo SIKOMADLO2",t:"",mj:"ks",qty:1,up:13.16,sup:"SIKO.sk",url:"https://www.siko.sk/p/SIKOMADLO2",st:"Určené",note:""},
     {n:"Kúpeľňa obloženie + geberit + sprcha (na kľúč)",t:"Modul Company – práca + stavebný materiál, jolly hrana, napojenie sanity",mj:"kpl",qty:1,up:3000,sup:"Modul Company",url:"",st:"Určené",note:"obklady, dlažba, geberit, sprcha – práca"}
   ]},
-  {name:"PODLAHY (laminát)",items:[{n:"ZENN CLCF 55 PORTO laminát 74,39 m²",t:"Siko ponuka – materiál, celý byt",mj:"m²",qty:74.39,up:28.93,sup:"SIKO.sk",url:"https://www.siko.sk/p/60002235",st:"Určené",note:"⚠ Modul montuje vinyl/klik – over krytinu"},{n:"Cementová samonivelizačná stierka 20 mm",t:"Modul Company",mj:"m²",qty:76,up:40,sup:"Modul Company",url:"",st:"Určené",note:""},{n:"Montáž vinyl/kompozit klik podlahy",t:"Modul Company",mj:"m²",qty:70,up:12,sup:"Modul Company",url:"",st:"Určené",note:""},{n:"MDF lišty pod 45° + akryl",t:"Modul Company",mj:"bm",qty:70,up:7.80,sup:"Modul Company",url:"",st:"Určené",note:""}]},
-  {name:"DVERE",items:[{n:"Vnútorné dvere obyčajné – 3 ks",t:"SIKO",mj:"ks",qty:3,up:290,sup:"SIKO.sk",url:"https://www.siko.sk/dvere",st:"Určené",note:"3 ks × 290 €"},{n:"Kovanie na dvere – 3 ks",t:"kľučky",mj:"ks",qty:3,up:90,sup:"SIKO.sk",url:"",st:"Určené",note:"3 ks × 90 €"},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Odhad",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company",mj:"ks",qty:4,up:78,sup:"Modul Company",url:"",st:"Určené",note:""}]},
+  {name:"PODLAHY (laminát)",items:[{n:"ZENN CLCF 55 PORTO laminát 74,39 m²",t:"Siko ponuka – materiál, celý byt",mj:"m²",qty:74.39,up:28.93,sup:"SIKO.sk",url:"https://www.siko.sk/p/60002235",st:"Určené",note:"⚠ Modul montuje vinyl/klik – over krytinu",rooms:{detska:14.5,spalna:18}},{n:"Cementová samonivelizačná stierka 20 mm",t:"Modul Company",mj:"m²",qty:76,up:40,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},{n:"Montáž vinyl/kompozit klik podlahy",t:"Modul Company",mj:"m²",qty:70,up:12,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},{n:"MDF lišty pod 45° + akryl",t:"Modul Company",mj:"bm",qty:70,up:7.80,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:15.6,spalna:17.4}}]},
+  {name:"DVERE",items:[{n:"Vnútorné dvere obyčajné – 3 ks",t:"SIKO",mj:"ks",qty:3,up:290,sup:"SIKO.sk",url:"https://www.siko.sk/dvere",st:"Určené",note:"3 ks × 290 €"},{n:"Kovanie na dvere – 3 ks",t:"kľučky",mj:"ks",qty:3,up:30,sup:"SIKO.sk",url:"",st:"Určené",note:"3 ks × 30 € = 90 €"},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Odhad",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company",mj:"ks",qty:4,up:78,sup:"Modul Company",url:"",st:"Určené",note:""}]},
   {name:"KUCHYŇA",items:[{n:"Kuchynská linka + spotrebiče – celok",t:"skrinky, doska, rúra, varná doska, digestor, chladnička, montáž",mj:"kpl",qty:1,up:6600,sup:"",url:"",st:"Určené",note:""},{n:"Drez SATSINK GE3 horný jazmín",t:"Siko ponuka",mj:"ks",qty:1,up:107.07,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATSINKGE3J",st:"Určené",note:""},{n:"Kuchynská batéria",t:"",mj:"ks",qty:1,up:80,sup:"",url:"",st:"Odhad",note:""},{n:"Montáž kuchyne",t:"montáž linky + spotrebičov",mj:"kpl",qty:1,up:1000,sup:"",url:"",st:"Odhad",note:"do 1 000 €"}]},
   {name:"PRÁČKA + SUŠIČKA",items:[{n:"Set Gorenje WG494A11 + DG48C NatureDry",t:"Práčka 9 kg + Sušička 8 kg",mj:"kpl",qty:1,up:881,sup:"Alza.sk",url:"https://www.alza.sk/gorenje-wg494a11-gorenje-dg48c-naturedry-d13374233.htm",st:"Určené",note:""},{n:"Skriňa na práčku GLAW biela",t:"99×44×40 cm",mj:"ks",qty:1,up:279,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/skrina-na-pracku-a-susicku-glaw-biela-415016104",st:"Určené",note:""}]},
   {name:"NÁBYTOK – JEDÁLEŇ / SPÁLŇA",items:[
@@ -301,9 +308,9 @@ const INIT=[
     {n:"Stropné LED svietidlo JOKO biela",t:"",mj:"ks",qty:1,up:34.90,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/stropne-led-svietidlo-joko-biela-28751800",st:"Určené",note:""}
   ]},
   {name:"MAĽBY A POVRCHOVÉ ÚPRAVY",items:[
-    {n:"Stierkovanie stien (2 vrstvy)",t:"Modul Company",mj:"m²",qty:240,up:12,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Príprava vnútor. podkladu WEBER (penetrácia)",t:"Modul Company",mj:"m²",qty:315,up:2.40,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Maľby akrylátové 2× ručne, do 3,8 m",t:"Modul Company",mj:"m²",qty:315,up:7.20,sup:"Modul Company",url:"",st:"Určené",note:""}
+    {n:"Stierkovanie stien (2 vrstvy)",t:"Modul Company",mj:"m²",qty:240,up:12,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:35,spalna:39}},
+    {n:"Príprava vnútor. podkladu WEBER (penetrácia)",t:"Modul Company",mj:"m²",qty:315,up:2.40,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:49.5,spalna:57}},
+    {n:"Maľby akrylátové 2× ručne, do 3,8 m",t:"Modul Company",mj:"m²",qty:315,up:7.20,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:49.5,spalna:57}}
   ]},
   {name:"OSTATNÉ",items:[{n:"Drobný materiál",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Odhad",note:""},{n:"Upratovanie po prerábke",t:"",mj:"kpl",qty:1,up:100,sup:"",url:"",st:"Odhad",note:""}]}
 ];
@@ -338,18 +345,19 @@ function msg(t,ok=true){const el=document.getElementById('fmsg');el.textContent=
 
 /* ── HELPERS ────────────────────────────────────────────── */
 const f2=n=>n==null||isNaN(n)?'—':Number(n).toLocaleString('sk-SK',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
-const tot=c=>c.items.reduce((s,it)=>s+(it.qty||0)*(it.up||0),0);
+const tot=c=>c.items.reduce((s,it)=>s+itemNet(it),0);
 const grand=()=>D.reduce((s,c)=>s+tot(c),0);
-const stTot=st=>D.reduce((s,c)=>s+c.items.filter(i=>i.st===st).reduce((a,i)=>a+(i.qty||0)*(i.up||0),0),0);
+const stTot=st=>D.reduce((s,c)=>s+c.items.filter(i=>i.st===st).reduce((a,i)=>a+itemNet(i),0),0);
 function ev(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function sUrl(url){if(!url)return null;try{const u=new URL(url),h=u.hostname.replace('www.',''),p=u.pathname.split('/').filter(Boolean);return p.length?h+'/'+p[p.length-1].slice(0,18):h;}catch(x){return url.slice(0,24);}}
 
 /* ── LIVE UPDATE ────────────────────────────────────────── */
 function liveUp(ci,ii,field,el){
   const it=D[ci].items[ii],v=parseFloat(el.value)||0;
-  const qty=field==='qty'?v:(it.qty||0),up=field==='up'?v:(it.up||0),rt=qty*up;
+  const qty=field==='qty'?v:(it.qty||0),up=field==='up'?v:(it.up||0);
+  const off=offQty(it),rt=Math.max(0,qty-off)*up;
   const rtEl=document.getElementById('rt-'+ci+'-'+ii);if(rtEl)rtEl.textContent=f2(rt);
-  const catTot=D[ci].items.reduce((s,item,idx)=>s+(idx===ii?rt:(item.qty||0)*(item.up||0)),0);
+  const catTot=D[ci].items.reduce((s,item,idx)=>s+(idx===ii?rt:itemNet(item)),0);
   ['cst-','cht-'].forEach(pfx=>{const e=document.getElementById(pfx+ci);if(e)e.textContent=f2(catTot);});
   const csEl=document.getElementById('cs-'+ci);if(csEl)csEl.textContent=f2(catTot);
   const g=D.reduce((s,c,ci2)=>s+(ci2===ci?catTot:tot(c)),0);
@@ -364,25 +372,23 @@ function ic(ci,ii,f,v){
 
 /* ── STATS ──────────────────────────────────────────────── */
 function calc(){
-  let goods=0,work=0,paid=0;
+  let goods=0,work=0,paid=0,ded=0;
   D.forEach(c=>c.items.forEach(it=>{
-    const v=(it.qty||0)*(it.up||0);
+    const v=itemNet(it);
     if(it.sup==='Modul Company')work+=v; else goods+=v;
     if(it.st==='Zaplatené')paid+=v;
+    ded+=itemDed(it)*(it.sup==='Modul Company'?1.23:1);
   }));
-  let dW=0,dM=0;
-  for(const k in ROOMS){if(!roomOn[k]){dW+=roomWork(ROOMS[k]);dM+=roomMat(ROOMS[k]);}}
-  const aWork=Math.max(0,work-dW), aGoods=Math.max(0,goods-dM);
-  const vat=aWork*0.23;
-  return {goods:aGoods,work:aWork,vat,paid,total:aGoods+aWork+vat,dW,dM,anyOff:(dW||dM)>0};
+  const vat=work*0.23;
+  return {goods,work,vat,paid,total:goods+work+vat,ded,anyOff:Object.values(roomOn).some(v=>!v)};
 }
 function renderStats(){
   const c=calc();
   document.getElementById('stats').innerHTML=[
     ['SPOLU s DPH',f2(c.total),'background:rgba(30,58,95,.08);border-color:#1e3a5f'],
-    ['Tovar (s DPH v cene)',f2(c.goods),''],
-    ['Práca + DPH 23%',f2(c.work*1.23),''],
-    ['🟢 Zaplatené',f2(c.paid),'background:rgba(22,163,74,.08);border-color:#86efac'],
+    ['DPH 23% z prác',f2(c.vat),'background:rgba(220,38,38,.06);border-color:#fca5a5'],
+    ['Bez DPH prác (dohoda)',f2(c.total-c.vat),'background:rgba(22,163,74,.08);border-color:#86efac'],
+    ['🟢 Zaplatené',f2(c.paid),''],
   ].map(([l,v,s])=>`<div class="stat" style="${s}"><div class="sl">${l}</div><div class="sv">${v}</div></div>`).join('');
   renderRooms();
 }
@@ -390,13 +396,13 @@ function renderStats(){
 function renderRooms(){
   const bar=document.getElementById('rooms-bar');if(!bar)return;
   bar.innerHTML='<span class="rooms-lbl">Prerábka izieb:</span>'+Object.keys(ROOMS).map(k=>{
-    const r=ROOMS[k],on=roomOn[k],ded=roomWork(r)*1.23+roomMat(r);
-    return `<label class="rtog${on?'':' off'}"><input type="checkbox" ${on?'checked':''} onchange="toggleRoom('${k}',this.checked)"><span class="rtog-t">${r.label} (${r.area} m²)</span><span class="rtog-a">${on?'':'−'+f2(ded)}</span></label>`;
+    const r=ROOMS[k],on=roomOn[k],sav=roomSaving(k);
+    return `<label class="rtog${on?'':' off'}"><input type="checkbox" ${on?'checked':''} onchange="toggleRoom('${k}',this.checked)"><span class="rtog-t">${r.label} (${r.area} m²)</span><span class="rtog-a">${on?'':'−'+f2(sav)}</span></label>`;
   }).join('');
   const c=calc();
-  if(c.anyOff){bar.innerHTML+=`<span class="rooms-save">Ušetríš ${f2(c.dW*1.23+c.dM)}</span>`;}
+  if(c.anyOff)bar.innerHTML+=`<span class="rooms-save">Ušetríš ${f2(c.ded)}</span>`;
 }
-function toggleRoom(k,on){roomOn[k]=on;try{localStorage.setItem('rkRooms',JSON.stringify(roomOn));}catch(e){}renderStats();}
+function toggleRoom(k,on){roomOn[k]=on;try{localStorage.setItem('rkRooms',JSON.stringify(roomOn));}catch(e){}render();}
 
 /* ── CATEGORY SUMMARY ───────────────────────────────────── */
 function togCS(){csOpen=!csOpen;document.getElementById('cs-body').style.display=csOpen?'block':'none';document.getElementById('cs-tog').textContent=csOpen?'▴':'▾';if(csOpen)renderCS();}
@@ -474,12 +480,15 @@ function renderCats(){
       /* ── MOBILE CARDS ── */
       let cards='';
       cat.items.forEach((it,ii)=>{
-        const itot=(it.qty||0)*(it.up||0),isEd=ek===ci+'-'+ii;
-        const det=[it.qty!=null?it.qty+'×':'',it.mj||'',it.up?f2(it.up):''].filter(Boolean).join(' ');
+        const isEd=ek===ci+'-'+ii;
+        const off=offQty(it),eff=effQty(it),itot=itemNet(it),ded=itemDed(it);
+        const qtyTxt=off>0?`<b style="color:#dc2626">${eff}</b> z ${it.qty}`:(it.qty!=null?it.qty:'');
+        const det=[it.qty!=null?qtyTxt+'×':'',it.mj||'',it.up?f2(it.up):''].filter(Boolean).join(' ');
         const mcSu=sUrl(it.url);
         cards+=`<div class="mc ${it.st}">
           <div class="mc-name">${ev(it.n)}</div>
-          ${det?`<div class="mc-detail">${ev(det)}</div>`:''}
+          ${det?`<div class="mc-detail">${det}</div>`:''}
+          ${ded>0?`<div class="mc-ded">− izby: −${f2(ded)}</div>`:''}
           ${it.url?`<a href="${ev(it.url)}" target="_blank" class="mc-link">↗ ${ev(mcSu||it.sup||it.url)}</a>`:''}
           <div class="mc-row">
             <span class="mc-tot" id="rt-${ci}-${ii}">${f2(itot)}</span>
@@ -499,25 +508,29 @@ function renderCats(){
       </div></div>`;
     } else {
       /* ── DESKTOP TABLE ── */
-      let tbody='';
+      const anyOff=Object.values(roomOn).some(v=>!v);
+      let tbody='',catDed=0;
       cat.items.forEach((it,ii)=>{
-        const itot=(it.qty||0)*(it.up||0),isEd=ek===ci+'-'+ii,ie=iec&&iec.ci===ci&&iec.ii===ii;
+        const isEd=ek===ci+'-'+ii,ie=iec&&iec.ci===ci&&iec.ii===ii;
+        const off=offQty(it),eff=effQty(it),itot=itemNet(it),ded=itemDed(it);catDed+=ded;
         const su=sUrl(it.url);
         const urlCell=it.url?`<a class="ul" href="${ev(it.url)}" target="_blank">${ev(su||it.sup||'link')} ↗</a>`:`<span style="color:#94a3b8;font-size:13px">—</span>`;
         const nameCell=ie&&iec.f==='n'?`<input class="inp w" value="${ev(it.n)}" onblur="ic(${ci},${ii},'n',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'n',this.value)" autofocus>`:ev(it.n);
-        const qtyCell=ie&&iec.f==='qty'?`<input class="inp r" type="number" step="any" value="${it.qty??''}" style="width:60px" oninput="liveUp(${ci},${ii},'qty',this)" onblur="ic(${ci},${ii},'qty',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'qty',this.value)" autofocus>`:(it.qty!=null?it.qty:'—');
+        const qtyDisp=off>0?`<b style="color:#dc2626">${eff}</b><span style="color:#94a3b8"> / ${it.qty}</span>`:(it.qty!=null?it.qty:'—');
+        const qtyCell=ie&&iec.f==='qty'?`<input class="inp r" type="number" step="any" value="${it.qty??''}" style="width:60px" oninput="liveUp(${ci},${ii},'qty',this)" onblur="ic(${ci},${ii},'qty',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'qty',this.value)" autofocus>`:qtyDisp;
         const upCell=ie&&iec.f==='up'?`<input class="inp r" type="number" step="any" value="${it.up??''}" style="width:90px" oninput="liveUp(${ci},${ii},'up',this)" onblur="ic(${ci},${ii},'up',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'up',this.value)" autofocus>`:(it.up?f2(it.up):'—');
         tbody+=`<tr class="R ${it.st}${isEd?' edi':''}" draggable="true"
           ondragstart="dSt(event,${ci},${ii})" ondragover="dOv(event,${ci},${ii})"
           ondragleave="dLv(event)" ondrop="dDp(event,${ci},${ii})">
           <td style="width:26px;padding:0 5px"><button class="dh">⠿</button></td>
-          <td class="ec" style="width:30%" onclick="stIc(${ci},${ii},'n')" title="${ev(it.t)}">${nameCell}</td>
-          <td class="ec" style="width:7%;text-align:right" onclick="stIc(${ci},${ii},'qty')">${qtyCell}</td>
-          <td style="width:6%;text-align:center;color:#64748b;font-size:13px">${ev(it.mj||'')}</td>
-          <td class="ec" style="width:11%;text-align:right" onclick="stIc(${ci},${ii},'up')">${upCell}</td>
+          <td class="ec" style="width:${anyOff?'26%':'30%'}" onclick="stIc(${ci},${ii},'n')" title="${ev(it.t)}">${nameCell}</td>
+          <td class="ec" style="width:8%;text-align:right" onclick="stIc(${ci},${ii},'qty')">${qtyCell}</td>
+          <td style="width:5%;text-align:center;color:#64748b;font-size:13px">${ev(it.mj||'')}</td>
+          <td class="ec" style="width:10%;text-align:right" onclick="stIc(${ci},${ii},'up')">${upCell}</td>
           <td class="tot" style="width:11%" id="rt-${ci}-${ii}">${f2(itot)}</td>
-          <td style="width:13%"><select class="ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select></td>
-          <td style="width:13%">${urlCell}</td>
+          ${anyOff?`<td style="width:9%;text-align:right;color:#dc2626;font-weight:600;font-variant-numeric:tabular-nums">${ded>0?'−'+f2(ded):'—'}</td>`:''}
+          <td style="width:12%"><select class="ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select></td>
+          <td style="width:12%">${urlCell}</td>
           <td style="width:9%;white-space:nowrap;text-align:right">
             <button class="be${isEd?' ac':''}" onclick="togEp(${ci},${ii})">${isEd?'▲':'✏'}</button>
             <button class="bd" onclick="delRow(${ci},${ii})">✕</button>
@@ -525,19 +538,23 @@ function renderCats(){
         </tr>`;
         if(isEd)tbody+=deskEp(ci,ii);
       });
+      const nc=anyOff?10:9;
       return `<div class="cat dt-view">${hdr}<div style="border-top:1px solid rgba(255,255,255,.15)"><table>
         <thead><tr>
-          <th style="width:26px"></th><th style="width:30%">Položka</th>
-          <th style="width:7%;text-align:right">Počet</th><th style="width:6%;text-align:center">MJ</th>
-          <th style="width:11%;text-align:right">Cena/ks</th><th style="width:11%;text-align:right">Spolu</th>
-          <th style="width:13%">Stav</th><th style="width:13%">Odkaz</th><th style="width:9%"></th>
+          <th style="width:26px"></th><th style="width:${anyOff?'26%':'30%'}">Položka</th>
+          <th style="width:8%;text-align:right">Počet</th><th style="width:5%;text-align:center">MJ</th>
+          <th style="width:10%;text-align:right">Cena/ks</th><th style="width:11%;text-align:right">Spolu</th>
+          ${anyOff?'<th style="width:9%;text-align:right;color:#dc2626">− izby</th>':''}
+          <th style="width:12%">Stav</th><th style="width:12%">Odkaz</th><th style="width:9%"></th>
         </tr></thead>
         <tbody>${tbody}
           <tr class="sr">
-            <td colspan="4" style="padding:7px 12px"><span class="srl">∑ medzisúčet – ${cat.items.length} položiek</span></td>
-            <td></td><td class="srv" style="padding:7px 10px" id="cst-${ci}">${f2(t)}</td><td colspan="3"></td>
+            <td colspan="5" style="padding:7px 12px"><span class="srl">∑ medzisúčet – ${cat.items.length} položiek</span></td>
+            <td class="srv" style="padding:7px 10px" id="cst-${ci}">${f2(t)}</td>
+            ${anyOff?`<td class="srv" style="padding:7px 10px;color:#dc2626">${catDed>0?'−'+f2(catDed):''}</td>`:''}
+            <td colspan="3"></td>
           </tr>
-          <tr><td colspan="9"><button class="addbtn" onclick="addRow(${ci})">＋ Pridať položku</button></td></tr>
+          <tr><td colspan="${nc}"><button class="addbtn" onclick="addRow(${ci})">＋ Pridať položku</button></td></tr>
         </tbody></table></div></div>`;
     }
   }).join('');
