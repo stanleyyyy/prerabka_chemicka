@@ -21,6 +21,8 @@ button.b:disabled{opacity:.32;cursor:default}
 button.b.ubtn{padding:8px 12px;font-size:18px}
 button.b.bl{background:#2563eb;color:#fff;border-color:#2563eb}
 button.b.or{background:#ea580c;color:#fff;border-color:#ea580c}
+button.b.rst{background:#fff;color:#dc2626;border-color:#fca5a5}
+button.b.rst:hover{background:#fef2f2}
 .improw{background:#fefce8;border-bottom:1px solid #fcd34d;padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .improw.h{display:none}
 .improw p{font-size:13px;color:#92400e;font-weight:500}
@@ -197,6 +199,8 @@ a.ul:hover{text-decoration:underline}
   <span class="lbl">Záloha:</span>
   <button class="b bl" onclick="expJSON()">⬇ JSON</button>
   <button class="b or" onclick="togImp()">⬆ Načítať</button>
+  <div class="sep"></div>
+  <button class="b rst" onclick="resetAll()" title="Zmazať uložené a načítať čerstvú verziu">🔄 Reset</button>
 </div>
 <div class="improw h" id="improw">
   <p>📂 Vyber JSON súbor:</p>
@@ -352,6 +356,15 @@ function applyRooms(){
 function uid(){return Math.random().toString(36).slice(2);}
 function _sv(){try{localStorage.setItem('rkBytu3',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
 function save(){pushHist();_sv();}
+function resetAll(){
+  if(!confirm('Zmazať uložené dáta v prehliadači a načítať čerstvú verziu?\n\n(Stav položiek ako Zaplatené/Objednané sa stratí. Ak si chceš zmeny zachovať, najprv daj ⬇ JSON.)'))return;
+  try{localStorage.removeItem('rkBytu3');localStorage.removeItem('rkRooms');}catch(e){}
+  D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
+  roomOn={detska:true,spalna:true};
+  ek=null;iec=null;newItem=null;coll={};hist=[];histIdx=-1;
+  pushHist();_sv();renderCS();render();
+  msg('✓ Resetované na čerstvú verziu');
+}
 function msg(t,ok=true){const el=document.getElementById('fmsg');el.textContent=t;el.style.background=ok?'#1e3a5f':'#dc2626';el.classList.add('on');clearTimeout(msgT);msgT=setTimeout(()=>el.classList.remove('on'),2200);}
 
 /* ── HELPERS ────────────────────────────────────────────── */
