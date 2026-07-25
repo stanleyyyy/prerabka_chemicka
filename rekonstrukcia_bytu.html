@@ -150,6 +150,8 @@ a.ul:hover{text-decoration:underline}
 .mc-name{font-size:19px;font-weight:500;color:#0f172a;margin-bottom:8px;line-height:1.35;white-space:normal;word-break:break-word}
 .mc-detail{font-size:15px;color:#64748b;margin-bottom:12px}
 .mc-ded{font-size:15px;color:#dc2626;font-weight:600;margin:-6px 0 12px}
+.mc-dph{font-size:14px;color:#dc2626;font-weight:600;margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0}
+.mc-dph-g{color:#94a3b8;font-weight:500}
 .mc-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .mc-tot{font-size:28px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums;flex:1;min-width:140px}
 .mc-ss{border:1px solid #cbd5e1;border-radius:9px;font-size:16px;font-weight:600;padding:12px 12px;cursor:pointer;font-family:inherit;min-height:52px;width:170px;flex-shrink:0}
@@ -482,6 +484,7 @@ function renderCats(){
       cat.items.forEach((it,ii)=>{
         const isEd=ek===ci+'-'+ii;
         const off=offQty(it),eff=effQty(it),itot=itemNet(it),ded=itemDed(it);
+        const isWork=it.sup==='Modul Company',dph=isWork?itot*0.23:0;
         const qtyTxt=off>0?`<b style="color:#dc2626">${eff}</b> z ${it.qty}`:(it.qty!=null?it.qty:'');
         const det=[it.qty!=null?qtyTxt+'×':'',it.mj||'',it.up?f2(it.up):''].filter(Boolean).join(' ');
         const mcSu=sUrl(it.url);
@@ -494,6 +497,7 @@ function renderCats(){
             <span class="mc-tot" id="rt-${ci}-${ii}">${f2(itot)}</span>
             <select class="mc-ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select>
           </div>
+          ${isWork?`<div class="mc-dph">+ DPH 23%: ${f2(dph)} &nbsp;→&nbsp; s DPH ${f2(itot*1.23)}</div>`:`<div class="mc-dph mc-dph-g">DPH v cene (tovar)</div>`}
           <div class="mc-actions">
             <button class="mc-be${isEd?' ac':''}" onclick="togEp(${ci},${ii})">${isEd?'▲ Zavrieť':'✏ Upraviť'}</button>
             <button class="mc-bd" onclick="delRow(${ci},${ii})">✕</button>
@@ -509,49 +513,54 @@ function renderCats(){
     } else {
       /* ── DESKTOP TABLE ── */
       const anyOff=Object.values(roomOn).some(v=>!v);
-      let tbody='',catDed=0;
+      let tbody='',catDed=0,catDph=0;
       cat.items.forEach((it,ii)=>{
         const isEd=ek===ci+'-'+ii,ie=iec&&iec.ci===ci&&iec.ii===ii;
         const off=offQty(it),eff=effQty(it),itot=itemNet(it),ded=itemDed(it);catDed+=ded;
+        const isWork=it.sup==='Modul Company',dph=isWork?itot*0.23:0;catDph+=dph;
         const su=sUrl(it.url);
         const urlCell=it.url?`<a class="ul" href="${ev(it.url)}" target="_blank">${ev(su||it.sup||'link')} ↗</a>`:`<span style="color:#94a3b8;font-size:13px">—</span>`;
         const nameCell=ie&&iec.f==='n'?`<input class="inp w" value="${ev(it.n)}" onblur="ic(${ci},${ii},'n',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'n',this.value)" autofocus>`:ev(it.n);
         const qtyDisp=off>0?`<b style="color:#dc2626">${eff}</b><span style="color:#94a3b8"> / ${it.qty}</span>`:(it.qty!=null?it.qty:'—');
-        const qtyCell=ie&&iec.f==='qty'?`<input class="inp r" type="number" step="any" value="${it.qty??''}" style="width:60px" oninput="liveUp(${ci},${ii},'qty',this)" onblur="ic(${ci},${ii},'qty',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'qty',this.value)" autofocus>`:qtyDisp;
-        const upCell=ie&&iec.f==='up'?`<input class="inp r" type="number" step="any" value="${it.up??''}" style="width:90px" oninput="liveUp(${ci},${ii},'up',this)" onblur="ic(${ci},${ii},'up',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'up',this.value)" autofocus>`:(it.up?f2(it.up):'—');
+        const qtyCell=ie&&iec.f==='qty'?`<input class="inp r" type="number" step="any" value="${it.qty??''}" style="width:56px" oninput="liveUp(${ci},${ii},'qty',this)" onblur="ic(${ci},${ii},'qty',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'qty',this.value)" autofocus>`:qtyDisp;
+        const upCell=ie&&iec.f==='up'?`<input class="inp r" type="number" step="any" value="${it.up??''}" style="width:84px" oninput="liveUp(${ci},${ii},'up',this)" onblur="ic(${ci},${ii},'up',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'up',this.value)" autofocus>`:(it.up?f2(it.up):'—');
+        const dphCell=isWork?`<span style="color:#dc2626;font-variant-numeric:tabular-nums">${f2(dph)}</span>`:`<span style="color:#94a3b8;font-size:12px">v cene</span>`;
         tbody+=`<tr class="R ${it.st}${isEd?' edi':''}" draggable="true"
           ondragstart="dSt(event,${ci},${ii})" ondragover="dOv(event,${ci},${ii})"
           ondragleave="dLv(event)" ondrop="dDp(event,${ci},${ii})">
-          <td style="width:26px;padding:0 5px"><button class="dh">⠿</button></td>
-          <td class="ec" style="width:${anyOff?'26%':'30%'}" onclick="stIc(${ci},${ii},'n')" title="${ev(it.t)}">${nameCell}</td>
-          <td class="ec" style="width:8%;text-align:right" onclick="stIc(${ci},${ii},'qty')">${qtyCell}</td>
-          <td style="width:5%;text-align:center;color:#64748b;font-size:13px">${ev(it.mj||'')}</td>
-          <td class="ec" style="width:10%;text-align:right" onclick="stIc(${ci},${ii},'up')">${upCell}</td>
-          <td class="tot" style="width:11%" id="rt-${ci}-${ii}">${f2(itot)}</td>
-          ${anyOff?`<td style="width:9%;text-align:right;color:#dc2626;font-weight:600;font-variant-numeric:tabular-nums">${ded>0?'−'+f2(ded):'—'}</td>`:''}
-          <td style="width:12%"><select class="ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select></td>
-          <td style="width:12%">${urlCell}</td>
-          <td style="width:9%;white-space:nowrap;text-align:right">
+          <td style="width:24px;padding:0 4px"><button class="dh">⠿</button></td>
+          <td class="ec" style="width:${anyOff?'21%':'25%'}" onclick="stIc(${ci},${ii},'n')" title="${ev(it.t)}">${nameCell}</td>
+          <td class="ec" style="width:7%;text-align:right" onclick="stIc(${ci},${ii},'qty')">${qtyCell}</td>
+          <td style="width:4%;text-align:center;color:#64748b;font-size:13px">${ev(it.mj||'')}</td>
+          <td class="ec" style="width:9%;text-align:right" onclick="stIc(${ci},${ii},'up')">${upCell}</td>
+          <td class="tot" style="width:10%" id="rt-${ci}-${ii}">${f2(itot)}</td>
+          <td style="width:9%;text-align:right">${dphCell}</td>
+          ${anyOff?`<td style="width:8%;text-align:right;color:#dc2626;font-weight:600;font-variant-numeric:tabular-nums">${ded>0?'−'+f2(ded):'—'}</td>`:''}
+          <td style="width:11%"><select class="ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select></td>
+          <td style="width:11%">${urlCell}</td>
+          <td style="width:8%;white-space:nowrap;text-align:right">
             <button class="be${isEd?' ac':''}" onclick="togEp(${ci},${ii})">${isEd?'▲':'✏'}</button>
             <button class="bd" onclick="delRow(${ci},${ii})">✕</button>
           </td>
         </tr>`;
         if(isEd)tbody+=deskEp(ci,ii);
       });
-      const nc=anyOff?10:9;
+      const nc=anyOff?11:10;
       return `<div class="cat dt-view">${hdr}<div style="border-top:1px solid rgba(255,255,255,.15)"><table>
         <thead><tr>
-          <th style="width:26px"></th><th style="width:${anyOff?'26%':'30%'}">Položka</th>
-          <th style="width:8%;text-align:right">Počet</th><th style="width:5%;text-align:center">MJ</th>
-          <th style="width:10%;text-align:right">Cena/ks</th><th style="width:11%;text-align:right">Spolu</th>
-          ${anyOff?'<th style="width:9%;text-align:right;color:#dc2626">− izby</th>':''}
-          <th style="width:12%">Stav</th><th style="width:12%">Odkaz</th><th style="width:9%"></th>
+          <th style="width:24px"></th><th style="width:${anyOff?'21%':'25%'}">Položka</th>
+          <th style="width:7%;text-align:right">Počet</th><th style="width:4%;text-align:center">MJ</th>
+          <th style="width:9%;text-align:right">Cena/ks</th><th style="width:10%;text-align:right">Bez DPH</th>
+          <th style="width:9%;text-align:right;color:#dc2626">DPH 23%</th>
+          ${anyOff?'<th style="width:8%;text-align:right;color:#dc2626">− izby</th>':''}
+          <th style="width:11%">Stav</th><th style="width:11%">Odkaz</th><th style="width:8%"></th>
         </tr></thead>
         <tbody>${tbody}
           <tr class="sr">
             <td colspan="5" style="padding:7px 12px"><span class="srl">∑ medzisúčet – ${cat.items.length} položiek</span></td>
             <td class="srv" style="padding:7px 10px" id="cst-${ci}">${f2(t)}</td>
-            ${anyOff?`<td class="srv" style="padding:7px 10px;color:#dc2626">${catDed>0?'−'+f2(catDed):''}</td>`:''}
+            <td class="srv" style="padding:7px 10px;color:#dc2626;font-size:14px">${catDph>0?f2(catDph):''}</td>
+            ${anyOff?`<td class="srv" style="padding:7px 10px;color:#dc2626;font-size:14px">${catDed>0?'−'+f2(catDed):''}</td>`:''}
             <td colspan="3"></td>
           </tr>
           <tr><td colspan="${nc}"><button class="addbtn" onclick="addRow(${ci})">＋ Pridať položku</button></td></tr>
