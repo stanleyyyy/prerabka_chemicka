@@ -29,6 +29,14 @@ button.b.or{background:#ea580c;color:#fff;border-color:#ea580c}
 .stat{padding:11px 14px;border-radius:8px;border:1px solid #e2e8f0;background:#fff}
 .sl{font-size:12px;color:#64748b;font-weight:500;margin-bottom:3px}
 .sv{font-size:18px;font-weight:600;color:#0f172a}
+.rooms-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 20px;background:#fffbeb;border-bottom:1px solid #fcd34d}
+.rooms-lbl{font-size:13px;font-weight:600;color:#92400e;text-transform:uppercase;letter-spacing:.03em}
+.rtog{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;border:1.5px solid #fcd34d;border-radius:9px;cursor:pointer;font-size:14px;font-weight:500;color:#1e293b;user-select:none}
+.rtog input{width:20px;height:20px;cursor:pointer;accent-color:#16a34a;flex-shrink:0}
+.rtog.off{background:#f1f5f9;border-color:#cbd5e1;color:#94a3b8;text-decoration:line-through}
+.rtog.off .rtog-a{text-decoration:none;color:#dc2626;font-weight:700;margin-left:2px}
+.rtog-a{font-variant-numeric:tabular-nums}
+.rooms-save{margin-left:auto;font-size:15px;font-weight:700;color:#15803d;background:#dcfce7;padding:8px 14px;border-radius:9px}
 /* Category summary */
 .csrow{background:#fff;border-bottom:1px solid #e2e8f0}
 .cshr{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;cursor:pointer;user-select:none;background:#f8fafc}
@@ -108,6 +116,11 @@ a.ul:hover{text-decoration:underline}
   button.b.ubtn{padding:12px 14px;font-size:22px}
   .lbl{font-size:13px}.sep{height:30px}
   .stats{grid-template-columns:1fr 1fr;gap:9px;padding:13px 14px}
+  .rooms-bar{padding:13px 14px;gap:10px}
+  .rtog{font-size:15px;padding:12px 14px;width:100%}
+  .rtog input{width:24px;height:24px}
+  .rooms-lbl{width:100%;font-size:13px}
+  .rooms-save{margin-left:0;width:100%;text-align:center;font-size:16px}
   .stat{padding:14px 14px;border-radius:10px}
   .sl{font-size:14px;margin-bottom:5px}.sv{font-size:24px}
   .cshr{padding:14px 16px}.cshr span{font-size:17px}
@@ -188,6 +201,7 @@ a.ul:hover{text-decoration:underline}
   <button class="bcn" onclick="togImp()" style="font-size:14px;padding:9px 14px;min-height:42px">Zrušiť</button>
 </div>
 <div class="stats" id="stats"></div>
+<div class="rooms-bar" id="rooms-bar"></div>
 <div class="csrow">
   <div class="cshr" onclick="togCS()"><span>📊 Súhrn podľa kategórií</span><span id="cs-tog" style="font-size:22px;color:#94a3b8">▴</span></div>
   <div id="cs-body" class="csbd"></div>
@@ -201,6 +215,17 @@ a.ul:hover{text-decoration:underline}
 const SO=["Zaplatené","Objednané","Určené","Odhad"];
 const SI={Zaplatené:"🟢",Objednané:"🔵",Určené:"🟡",Odhad:"🟠"};
 const CC=["#4472C4","#843C0C","#7F6000","#595959","#17375E","#3E5E1E","#1E4620","#99260F","#215868","#3E2160","#7B5E00","#404040","#2E2E2E","#1F6F5C"];
+
+/* Izby, ktoré sa dajú "vypnúť" (neprerábať). Ceny prác = jednotkové ceny Modul (bez DPH). */
+const ROOMS={
+  detska:{label:"Detská izba",area:14.5,wall:35,perim:15.6},
+  spalna:{label:"Spálňa (rodičia)",area:18,wall:39,perim:17.4}
+};
+// Práca Modul (bez DPH) na izbu: podhľad + samonivelačka + montáž vinyl + lišty + stierkovanie + penetrácia + maľby
+function roomWork(r){return r.area*39.60 + r.area*40 + r.area*12 + r.perim*7.80 + r.wall*12 + (r.wall+r.area)*2.40 + (r.wall+r.area)*7.20;}
+// Materiál (s DPH) na izbu: podlahová krytina (laminát ZENN)
+function roomMat(r){return r.area*28.93;}
+let roomOn={detska:true,spalna:true};
 
 const INIT=[
   {name:"PRÍPRAVA",items:[{n:"Projekt / statické posúdenie",t:"statik – obhliadka + písomné posúdenie",mj:"kpl",qty:1,up:400,sup:"",url:"",st:"Zaplatené",note:"reálna cena júl 2026"},{n:"Stavebné povolenie / ohlásenie",t:"",mj:"kpl",qty:1,up:0,sup:"",url:"",st:"Odhad",note:"over na stavebnom úrade"}]},
@@ -261,7 +286,7 @@ const INIT=[
   ]},
   {name:"PODLAHY (laminát)",items:[{n:"ZENN CLCF 55 PORTO laminát 74,39 m²",t:"Siko ponuka – materiál, celý byt",mj:"m²",qty:74.39,up:28.93,sup:"SIKO.sk",url:"https://www.siko.sk/p/60002235",st:"Určené",note:"⚠ Modul montuje vinyl/klik – over krytinu"},{n:"Cementová samonivelizačná stierka 20 mm",t:"Modul Company",mj:"m²",qty:76,up:40,sup:"Modul Company",url:"",st:"Určené",note:""},{n:"Montáž vinyl/kompozit klik podlahy",t:"Modul Company",mj:"m²",qty:70,up:12,sup:"Modul Company",url:"",st:"Určené",note:""},{n:"MDF lišty pod 45° + akryl",t:"Modul Company",mj:"bm",qty:70,up:7.80,sup:"Modul Company",url:"",st:"Určené",note:""}]},
   {name:"DVERE",items:[{n:"Vnútorné dvere obyčajné – 3 ks",t:"SIKO",mj:"ks",qty:3,up:290,sup:"SIKO.sk",url:"https://www.siko.sk/dvere",st:"Určené",note:"3 ks × 290 €"},{n:"Kovanie na dvere – 3 ks",t:"kľučky",mj:"ks",qty:3,up:90,sup:"SIKO.sk",url:"",st:"Určené",note:"3 ks × 90 €"},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Odhad",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company",mj:"ks",qty:4,up:78,sup:"Modul Company",url:"",st:"Určené",note:""}]},
-  {name:"KUCHYŇA",items:[{n:"Kuchynská linka + spotrebiče – celok",t:"skrinky, doska, rúra, varná doska, digestor, chladnička, montáž",mj:"kpl",qty:1,up:6600,sup:"",url:"",st:"Určené",note:""},{n:"Drez SATSINK GE3 horný jazmín",t:"Siko ponuka",mj:"ks",qty:1,up:107.07,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATSINKGE3J",st:"Určené",note:""},{n:"Kuchynská batéria",t:"",mj:"ks",qty:1,up:80,sup:"",url:"",st:"Odhad",note:""}]},
+  {name:"KUCHYŇA",items:[{n:"Kuchynská linka + spotrebiče – celok",t:"skrinky, doska, rúra, varná doska, digestor, chladnička, montáž",mj:"kpl",qty:1,up:6600,sup:"",url:"",st:"Určené",note:""},{n:"Drez SATSINK GE3 horný jazmín",t:"Siko ponuka",mj:"ks",qty:1,up:107.07,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATSINKGE3J",st:"Určené",note:""},{n:"Kuchynská batéria",t:"",mj:"ks",qty:1,up:80,sup:"",url:"",st:"Odhad",note:""},{n:"Montáž kuchyne",t:"montáž linky + spotrebičov",mj:"kpl",qty:1,up:1000,sup:"",url:"",st:"Odhad",note:"do 1 000 €"}]},
   {name:"PRÁČKA + SUŠIČKA",items:[{n:"Set Gorenje WG494A11 + DG48C NatureDry",t:"Práčka 9 kg + Sušička 8 kg",mj:"kpl",qty:1,up:881,sup:"Alza.sk",url:"https://www.alza.sk/gorenje-wg494a11-gorenje-dg48c-naturedry-d13374233.htm",st:"Určené",note:""},{n:"Skriňa na práčku GLAW biela",t:"99×44×40 cm",mj:"ks",qty:1,up:279,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/skrina-na-pracku-a-susicku-glaw-biela-415016104",st:"Určené",note:""}]},
   {name:"NÁBYTOK – JEDÁLEŇ / SPÁLŇA",items:[
     {n:"Jedálenský stôl GOSTUN dub artisan/čierna",t:"Okrúhly, rozkladací 100→135 cm",mj:"ks",qty:1,up:219,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/jedalensky-stol-gostun-dub-artisan-cierna-414660500",st:"Zaplatené",note:"⚠ AKCIA do 14.7.2026"},
@@ -280,7 +305,7 @@ const INIT=[
     {n:"Príprava vnútor. podkladu WEBER (penetrácia)",t:"Modul Company",mj:"m²",qty:315,up:2.40,sup:"Modul Company",url:"",st:"Určené",note:""},
     {n:"Maľby akrylátové 2× ručne, do 3,8 m",t:"Modul Company",mj:"m²",qty:315,up:7.20,sup:"Modul Company",url:"",st:"Určené",note:""}
   ]},
-  {name:"OSTATNÉ",items:[{n:"Drobný materiál",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Odhad",note:""},{n:"Upratovanie po prerábke",t:"",mj:"kpl",qty:1,up:100,sup:"",url:"",st:"Odhad",note:""},{n:"DPH 23% zo stavebných prác (Modul Company)",t:"23 089,20 € × 0,23",mj:"kpl",qty:1,up:5310.52,sup:"Modul Company",url:"",st:"Určené",note:"tovar zo SIKO/Sconto/Alza už má DPH v cene"}]}
+  {name:"OSTATNÉ",items:[{n:"Drobný materiál",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Odhad",note:""},{n:"Upratovanie po prerábke",t:"",mj:"kpl",qty:1,up:100,sup:"",url:"",st:"Odhad",note:""}]}
 ];
 
 let D,coll={},ek=null,iec=null,drag=null,svT=null,msgT=null,csOpen=true,newItem=null;
@@ -302,6 +327,7 @@ document.addEventListener('keydown',e=>{
 /* ── INIT / SAVE ────────────────────────────────────────── */
 function init(){
   try{const s=localStorage.getItem('rkBytu3');if(s)D=JSON.parse(s);}catch(e){}
+  try{const rs=localStorage.getItem('rkRooms');if(rs)roomOn={...roomOn,...JSON.parse(rs)};}catch(e){}
   if(!D)D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
   pushHist();renderCS();render();
 }
@@ -328,7 +354,7 @@ function liveUp(ci,ii,field,el){
   const csEl=document.getElementById('cs-'+ci);if(csEl)csEl.textContent=f2(catTot);
   const g=D.reduce((s,c,ci2)=>s+(ci2===ci?catTot:tot(c)),0);
   const gs=document.getElementById('cs-grand');if(gs)gs.textContent=f2(g);
-  [1,2,3].forEach(i=>{const e=document.querySelector('#stats .stat:nth-child('+i+') .sv');if(e)e.textContent=[f2(g),f2(g*.12),f2(g*1.12)][i-1];});
+  renderStats();
 }
 function ic(ci,ii,f,v){
   if(!iec||iec.ci!==ci||iec.ii!==ii||iec.f!==f)return;
@@ -337,14 +363,40 @@ function ic(ci,ii,f,v){
 }
 
 /* ── STATS ──────────────────────────────────────────────── */
-function renderStats(){
-  const g=grand(),r=g*.12;
-  document.getElementById('stats').innerHTML=[
-    ['Spolu bez rezervy',f2(g),''],['Rezerva 12%',f2(r),''],
-    ['Celkom s rezervou',f2(g+r),'background:rgba(217,119,6,.08);border-color:#fcd34d'],
-    ['🟢 Zaplatené',f2(stTot('Zaplatené')),'background:rgba(22,163,74,.08);border-color:#86efac'],
-  ].map(([l,v,s])=>`<div class="stat" style="${s}"><div class="sl">${l}</div><div class="sv">${v}</div></div>`).join('');
+function calc(){
+  let goods=0,work=0,paid=0;
+  D.forEach(c=>c.items.forEach(it=>{
+    const v=(it.qty||0)*(it.up||0);
+    if(it.sup==='Modul Company')work+=v; else goods+=v;
+    if(it.st==='Zaplatené')paid+=v;
+  }));
+  let dW=0,dM=0;
+  for(const k in ROOMS){if(!roomOn[k]){dW+=roomWork(ROOMS[k]);dM+=roomMat(ROOMS[k]);}}
+  const aWork=Math.max(0,work-dW), aGoods=Math.max(0,goods-dM);
+  const vat=aWork*0.23;
+  return {goods:aGoods,work:aWork,vat,paid,total:aGoods+aWork+vat,dW,dM,anyOff:(dW||dM)>0};
 }
+function renderStats(){
+  const c=calc();
+  document.getElementById('stats').innerHTML=[
+    ['SPOLU s DPH',f2(c.total),'background:rgba(30,58,95,.08);border-color:#1e3a5f'],
+    ['Tovar (s DPH v cene)',f2(c.goods),''],
+    ['Práca + DPH 23%',f2(c.work*1.23),''],
+    ['🟢 Zaplatené',f2(c.paid),'background:rgba(22,163,74,.08);border-color:#86efac'],
+  ].map(([l,v,s])=>`<div class="stat" style="${s}"><div class="sl">${l}</div><div class="sv">${v}</div></div>`).join('');
+  renderRooms();
+}
+/* ── PREPÍNAČE IZIEB ────────────────────────────────────── */
+function renderRooms(){
+  const bar=document.getElementById('rooms-bar');if(!bar)return;
+  bar.innerHTML='<span class="rooms-lbl">Prerábka izieb:</span>'+Object.keys(ROOMS).map(k=>{
+    const r=ROOMS[k],on=roomOn[k],ded=roomWork(r)*1.23+roomMat(r);
+    return `<label class="rtog${on?'':' off'}"><input type="checkbox" ${on?'checked':''} onchange="toggleRoom('${k}',this.checked)"><span class="rtog-t">${r.label} (${r.area} m²)</span><span class="rtog-a">${on?'':'−'+f2(ded)}</span></label>`;
+  }).join('');
+  const c=calc();
+  if(c.anyOff){bar.innerHTML+=`<span class="rooms-save">Ušetríš ${f2(c.dW*1.23+c.dM)}</span>`;}
+}
+function toggleRoom(k,on){roomOn[k]=on;try{localStorage.setItem('rkRooms',JSON.stringify(roomOn));}catch(e){}renderStats();}
 
 /* ── CATEGORY SUMMARY ───────────────────────────────────── */
 function togCS(){csOpen=!csOpen;document.getElementById('cs-body').style.display=csOpen?'block':'none';document.getElementById('cs-tog').textContent=csOpen?'▴':'▾';if(csOpen)renderCS();}
