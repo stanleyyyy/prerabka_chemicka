@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Rekonštrukcia bytu – rozpočet</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:15px;color:#1e293b;background:#f8fafc}
+.wrap{max-width:1200px;margin:0 auto}
+.topbar{background:#1e3a5f;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.topbar h1{font-size:16px;font-weight:600;color:#fff}
+.sv-ind{font-size:12px;color:#86efac;margin-left:10px;opacity:0;transition:opacity .4s}
+.sv-ind.on{opacity:1}
+.btnbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sep{width:1px;height:24px;background:#cbd5e1;margin:0 2px}
+.lbl{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-right:2px}
+button.b{border:1px solid #cbd5e1;border-radius:8px;padding:8px 14px;font-size:14px;font-weight:500;cursor:pointer;background:#fff;color:#1e293b;font-family:inherit;white-space:nowrap;min-height:38px;transition:opacity .15s}
+button.b:hover:not(:disabled){background:#f1f5f9}
+button.b:disabled{opacity:.32;cursor:default}
+button.b.ubtn{padding:8px 12px;font-size:18px}
+button.b.bl{background:#2563eb;color:#fff;border-color:#2563eb}
+button.b.or{background:#ea580c;color:#fff;border-color:#ea580c}
+.improw{background:#fefce8;border-bottom:1px solid #fcd34d;padding:10px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.improw.h{display:none}
+.improw p{font-size:13px;color:#92400e;font-weight:500}
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 20px;background:#f1f5f9;border-bottom:1px solid #e2e8f0}
+.stat{padding:11px 14px;border-radius:8px;border:1px solid #e2e8f0;background:#fff}
+.sl{font-size:12px;color:#64748b;font-weight:500;margin-bottom:3px}
+.sv{font-size:18px;font-weight:600;color:#0f172a}
+/* Category summary */
+.csrow{background:#fff;border-bottom:1px solid #e2e8f0}
+.cshr{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;cursor:pointer;user-select:none;background:#f8fafc}
+.cshr span{font-size:14px;font-weight:500;color:#1e293b}
+.csbd{padding:0 20px 12px;background:#fff}
+.cstbl{width:100%;border-collapse:collapse;font-size:14px}
+.cstbl th{padding:7px 10px;text-align:left;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;background:#f8fafc}
+.cstbl td{padding:6px 10px;border-bottom:1px solid #f1f5f9;color:#1e293b}
+.cstbl tr:last-child td{font-weight:600;background:rgba(217,119,6,.06);border-bottom:none}
+.cdot{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:7px;vertical-align:middle}
+/* Categories */
+.cats{padding:12px 20px;display:flex;flex-direction:column;gap:10px}
+.cat{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#fff}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;user-select:none}
+.cn{font-size:14px;font-weight:600;color:#fff}
+.ct{font-size:15px;font-weight:600;color:rgba(255,255,255,.9)}
+.cbg{font-size:11px;color:rgba(255,255,255,.6);background:rgba(0,0,0,.2);padding:2px 7px;border-radius:8px;margin-left:5px}
+/* Desktop table */
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th{background:#f8fafc;padding:7px 10px;text-align:left;font-size:11px;font-weight:600;color:#64748b;border-bottom:1px solid #e2e8f0;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;color:#1e293b}
+.dh{cursor:grab;color:#94a3b8;font-size:15px;background:none;border:none;padding:0 4px;line-height:1;display:block}
+tr.R{border-left:3px solid transparent}
+tr.R.Zaplatené{border-left-color:#16a34a;background:rgba(22,163,74,.06)}
+tr.R.Objednané{border-left-color:#2563eb;background:rgba(37,99,235,.06)}
+tr.R.Určené{border-left-color:#d97706;background:rgba(217,119,6,.06)}
+tr.R.Odhad{border-left-color:#ea580c}
+tr.R.edi{background:rgba(59,130,246,.08)!important}
+.ec{cursor:text}.ec:hover{background:rgba(59,130,246,.07)}
+.inp{border:2px solid #3b82f6;border-radius:5px;padding:4px 8px;font-size:14px;font-family:inherit;background:#fff;color:#1e293b}
+.inp.w{width:100%}.inp.r{text-align:right}
+.ss{width:100%;border:1px solid #cbd5e1;border-radius:5px;font-size:13px;font-weight:600;padding:5px 6px;cursor:pointer;font-family:inherit;background:#fff;color:#1e293b}
+.ss.Zaplatené{background:#dcfce7;color:#15803d;border-color:#86efac}
+.ss.Objednané{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd}
+.ss.Určené{background:#fef3c7;color:#b45309;border-color:#fcd34d}
+.ss.Odhad{background:#ffedd5;color:#c2410c;border-color:#fdba74}
+.tot{text-align:right;font-weight:600;color:#0f172a;font-variant-numeric:tabular-nums}
+a.ul{color:#2563eb;font-size:13px;text-decoration:none;display:block;overflow:hidden;text-overflow:ellipsis}
+a.ul:hover{text-decoration:underline}
+.be{background:#0284c7;color:#fff;border:none;border-radius:5px;padding:5px 12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;min-height:32px}
+.be:hover{background:#0369a1}.be.ac{background:#1e3a5f}
+.bd{background:#dc2626;color:#fff;border:none;border-radius:5px;padding:5px 10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:4px;min-height:32px}
+.bd:hover{background:#b91c1c}
+.sr td{background:#f1f5f9;border-top:2px solid #cbd5e1}
+.srl{font-size:13px;color:#64748b;font-weight:500}
+.srv{font-size:17px;font-weight:600;text-align:right;color:#0f172a}
+.addbtn{display:flex;align-items:center;gap:7px;padding:11px 16px;font-size:14px;color:#2563eb;background:rgba(37,99,235,.05);border:none;cursor:pointer;width:100%;border-top:1px solid #e2e8f0;font-family:inherit;font-weight:600;min-height:44px}
+.addbtn:hover{background:rgba(37,99,235,.1)}
+/* Desktop edit panel */
+.ep td{padding:0}
+.epin{padding:16px;background:rgba(59,130,246,.05);border-top:2px solid #3b82f6;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.epin .ff{grid-column:1/-1}.epin .f2{grid-column:span 2}
+.fl{font-size:11px;font-weight:600;color:#64748b;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.fi{padding:9px 10px;border:1px solid #cbd5e1;border-radius:6px;font-size:14px;font-family:inherit;background:#fff;color:#1e293b;width:100%}
+.fi:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 2px rgba(59,130,246,.2)}
+.epbtns{grid-column:1/-1;display:flex;justify-content:flex-end;gap:9px;padding-top:8px;border-top:1px solid #bfdbfe}
+.bsv{background:#2563eb;color:#fff;border:none;border-radius:6px;padding:9px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;min-height:40px}
+.bsv:hover{background:#1d4ed8}
+.bcn{background:#fff;color:#374151;border:1px solid #d1d5db;border-radius:6px;padding:9px 16px;font-size:14px;cursor:pointer;font-family:inherit;min-height:40px}
+.bcn:hover{background:#f9fafb}
+.upv{font-size:12px;color:#2563eb;word-break:break-all;margin-top:4px;display:block}
+.helprow{text-align:center;font-size:12px;color:#94a3b8;padding:9px;background:#f8fafc;border-top:1px solid #e2e8f0}
+.fmsg{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:11px 24px;border-radius:10px;font-size:14px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;color:#fff;z-index:99}
+.fmsg.on{opacity:1}
+
+/* ═══════════════════════════════════════════════════
+   MOBILE CARD VIEW  (max-width: 768px)
+═══════════════════════════════════════════════════ */
+.mc-list{display:none}
+
+@media(max-width:768px){
+  .wrap{max-width:100%}
+  body{font-size:17px}
+  .topbar{padding:13px 16px}.topbar h1{font-size:19px}
+  .btnbar{gap:8px;padding:12px 14px}
+  button.b{padding:12px 16px;font-size:15px;min-height:52px;border-radius:9px}
+  button.b.ubtn{padding:12px 14px;font-size:22px}
+  .lbl{font-size:13px}.sep{height:30px}
+  .stats{grid-template-columns:1fr 1fr;gap:9px;padding:13px 14px}
+  .stat{padding:14px 14px;border-radius:10px}
+  .sl{font-size:14px;margin-bottom:5px}.sv{font-size:24px}
+  .cshr{padding:14px 16px}.cshr span{font-size:17px}
+  .cstbl{font-size:16px}.cstbl td{padding:9px 12px}.cstbl th{font-size:13px;padding:8px 12px}
+  .ch{padding:15px 16px}.cn{font-size:17px}.ct{font-size:18px}.cbg{font-size:13px;padding:3px 9px}
+  /* Hide desktop table, show mobile cards */
+  .dt-view{display:none!important}
+  .mc-list{display:block}
+  /* Desktop edit panel mobile override */
+  .epin{grid-template-columns:1fr;gap:12px;padding:18px}
+  .epin .ff,.epin .f2{grid-column:1}.epbtns{grid-column:1}
+  .fi{font-size:18px;padding:14px 14px}
+  .fl{font-size:14px;margin-bottom:6px}
+  .bsv{font-size:18px;min-height:56px;padding:14px 28px}
+  .bcn{font-size:18px;min-height:56px;padding:14px 20px}
+  .cats{padding:12px 14px}
+  .helprow{font-size:14px;padding:13px}
+  .srl{font-size:14px}.srv{font-size:20px}
+}
+
+/* Mobile card styles (always defined, only shown on mobile) */
+.mc{border-left:5px solid #e2e8f0;padding:18px 16px;border-bottom:1px solid #f1f5f9;background:#fff;position:relative}
+.mc.Zaplatené{border-left-color:#16a34a;background:rgba(22,163,74,.05)}
+.mc.Objednané{border-left-color:#2563eb;background:rgba(37,99,235,.05)}
+.mc.Určené{border-left-color:#d97706;background:rgba(217,119,6,.05)}
+.mc.Odhad{border-left-color:#ea580c}
+.mc-name{font-size:19px;font-weight:500;color:#0f172a;margin-bottom:8px;line-height:1.35;white-space:normal;word-break:break-word}
+.mc-detail{font-size:15px;color:#64748b;margin-bottom:12px}
+.mc-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.mc-tot{font-size:28px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums;flex:1;min-width:140px}
+.mc-ss{border:1px solid #cbd5e1;border-radius:9px;font-size:16px;font-weight:600;padding:12px 12px;cursor:pointer;font-family:inherit;min-height:52px;width:170px;flex-shrink:0}
+.mc-ss.Zaplatené{background:#dcfce7;color:#15803d;border-color:#86efac}
+.mc-ss.Objednané{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd}
+.mc-ss.Určené{background:#fef3c7;color:#b45309;border-color:#fcd34d}
+.mc-ss.Odhad{background:#ffedd5;color:#c2410c;border-color:#fdba74}
+.mc-actions{display:flex;gap:9px;margin-top:13px}
+.mc-be{background:#0284c7;color:#fff;border:none;border-radius:9px;padding:14px 20px;font-size:17px;font-weight:600;cursor:pointer;font-family:inherit;min-height:54px;flex:1}
+.mc-be.ac{background:#1e3a5f}
+.mc-bd{background:#dc2626;color:#fff;border:none;border-radius:9px;padding:14px 20px;font-size:17px;font-weight:600;cursor:pointer;font-family:inherit;min-height:54px;width:75px;flex-shrink:0}
+/* Mobile edit panel */
+.mc-ep{padding:18px 16px;background:rgba(59,130,246,.06);border-top:2px solid #3b82f6}
+.mc-ep .efl{font-size:14px;font-weight:700;color:#475569;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;margin-top:16px;display:block}
+.mc-ep .efl:first-child{margin-top:0}
+.mc-fi{padding:14px 14px;border:1.5px solid #cbd5e1;border-radius:9px;font-size:18px;font-family:inherit;background:#fff;color:#1e293b;width:100%;display:block;margin-bottom:2px}
+.mc-fi:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.18)}
+.mc-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.mc-btns{display:flex;gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid #bfdbfe}
+.mc-bsv{background:#2563eb;color:#fff;border:none;border-radius:10px;padding:16px 0;font-size:19px;font-weight:700;cursor:pointer;font-family:inherit;min-height:58px;flex:1}
+.mc-bcn{background:#fff;color:#374151;border:1.5px solid #d1d5db;border-radius:10px;padding:16px 0;font-size:19px;cursor:pointer;font-family:inherit;min-height:58px;flex:1}
+.mc-url{display:block;color:#2563eb;font-size:15px;margin-top:8px;word-break:break-all;text-decoration:none}
+.mc-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:9px 14px;background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);border-radius:8px;color:#2563eb;font-size:15px;font-weight:500;text-decoration:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mc-link:hover{background:rgba(37,99,235,.14)}
+.mc-sub{display:flex;justify-content:space-between;align-items:center;padding:15px 16px;background:#f1f5f9;border-top:2px solid #cbd5e1}
+.mc-sub-l{font-size:15px;color:#64748b;font-weight:500}
+.mc-sub-v{font-size:24px;font-weight:700;color:#0f172a;font-variant-numeric:tabular-nums}
+.mc-add{display:flex;align-items:center;justify-content:center;gap:9px;padding:20px;font-size:18px;color:#2563eb;background:rgba(37,99,235,.06);border:none;cursor:pointer;width:100%;border-top:1px solid #e2e8f0;font-family:inherit;font-weight:700;min-height:62px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div style="display:flex;align-items:center">
+    <h1>🏠 Rekonštrukcia bytu</h1>
+    <span class="sv-ind" id="si">✓ Uložené</span>
+  </div>
+</div>
+<div class="wrap">
+<div class="btnbar">
+  <button class="b ubtn" id="btn-u" onclick="undo()" title="Späť (Ctrl+Z)" disabled>↩</button>
+  <button class="b ubtn" id="btn-r" onclick="redo()" title="Vpred (Ctrl+Y)" disabled>↪</button>
+  <div class="sep"></div>
+  <span class="lbl">Záloha:</span>
+  <button class="b bl" onclick="expJSON()">⬇ JSON</button>
+  <button class="b or" onclick="togImp()">⬆ Načítať</button>
+</div>
+<div class="improw h" id="improw">
+  <p>📂 Vyber JSON súbor:</p>
+  <input type="file" accept=".json" id="finp" onchange="impJSON(this)" style="font-size:15px">
+  <button class="bcn" onclick="togImp()" style="font-size:14px;padding:9px 14px;min-height:42px">Zrušiť</button>
+</div>
+<div class="stats" id="stats"></div>
+<div class="csrow">
+  <div class="cshr" onclick="togCS()"><span>📊 Súhrn podľa kategórií</span><span id="cs-tog" style="font-size:22px;color:#94a3b8">▴</span></div>
+  <div id="cs-body" class="csbd"></div>
+</div>
+<div class="cats" id="cats"></div>
+<div class="helprow">Desktop: klikni na <b>názov/cenu</b> → editácia, Ctrl+Z/Y = undo/redo &nbsp;|&nbsp; Mobile: ✏ Upraviť → všetky polia</div>
+</div>
+<div class="fmsg" id="fmsg"></div>
+
+<script>
+const SO=["Zaplatené","Objednané","Určené","Odhad"];
+const SI={Zaplatené:"🟢",Objednané:"🔵",Určené:"🟡",Odhad:"🟠"};
+const CC=["#4472C4","#843C0C","#7F6000","#595959","#17375E","#3E5E1E","#1E4620","#99260F","#215868","#3E2160","#7B5E00","#404040","#2E2E2E","#1F6F5C"];
+
+const INIT=[
+  {name:"PRÍPRAVA",items:[{n:"Projekt / statické posúdenie",t:"statik – obhliadka + písomné posúdenie",mj:"kpl",qty:1,up:400,sup:"",url:"",st:"Zaplatené",note:"reálna cena júl 2026"},{n:"Stavebné povolenie / ohlásenie",t:"",mj:"kpl",qty:1,up:0,sup:"",url:"",st:"Odhad",note:"over na stavebnom úrade"}]},
+  {name:"BÚRACIE A DEMONTÁŽNE PRÁCE",items:[
+    {n:"Búranie dlažieb",t:"Modul Company",mj:"m²",qty:68,up:6.60,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Búranie priečok tehla >4 m² (115–200 mm)",t:"Modul Company",mj:"m²",qty:26,up:20,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Odstránenie malieb oškrabaním",t:"Modul Company",mj:"m²",qty:240,up:2.40,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Demontáž drevených/laminát. podláh + lišty",t:"Modul Company",mj:"m²",qty:35,up:4.80,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Odstránenie linolea lepeného",t:"Modul Company",mj:"m²",qty:72,up:8.40,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Demontáž a odvoz starého nábytku",t:"Modul Company",mj:"ks",qty:1.5,up:300,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Demontáž záchoda",t:"Modul Company",mj:"ks",qty:1,up:30,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Demontáž vane do sute",t:"Modul Company",mj:"ks",qty:1,up:50,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Demontáž umývadla",t:"Modul Company",mj:"ks",qty:1,up:30,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Vybúranie kovových zárubní + krídla",t:"Modul Company",mj:"ks",qty:4,up:50,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Prenájom kontajneru 8 m³",t:"Modul Company",mj:"ks",qty:1,up:700,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Skládka odpadu + doprava",t:"Modul Company",mj:"ks",qty:50,up:6,sup:"Modul Company",url:"",st:"Určené",note:""}
+  ]},
+  {name:"ELEKTROINŠTALÁCIA",items:[{n:"Kompletná nová elektroinštalácia",t:"rozvody, ističe, zásuvky, vypínače, montáž",mj:"kpl",qty:1,up:2000,sup:"",url:"",st:"Odhad",note:"dať naceniť elektrikárovi"}]},
+  {name:"MURÁRSKE + SADROKARTÓN",items:[
+    {n:"Priečka SDK Rigips 125 mm dvojito, CW75 + izolácia",t:"Modul Company",mj:"m²",qty:20,up:66,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Podhľad SDK biely 12,5 mm závesný Q2",t:"Modul Company – celý byt",mj:"m²",qty:76,up:39.60,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Priečka YTONG 80 mm",t:"Modul Company",mj:"m²",qty:2.5,up:36,sup:"Modul Company",url:"",st:"Určené",note:""}
+  ]},
+  {name:"ZDRAVOTECHNIKA",items:[
+    {n:"Prípojné body vody a kanalizácie + materiál",t:"Modul Company",mj:"ks",qty:10,up:95,sup:"Modul Company",url:"",st:"Určené",note:""}
+  ]},
+  {name:"KÚPEĽŇA – SIKO ponuka č.1174607",items:[
+    {n:"Obklad RDCN 33×100 cm pomice mat",t:"18,48 m² – ⚠ odhad plochy",mj:"m²",qty:18.48,up:29.87,sup:"SIKO.sk",url:"https://www.siko.sk/p/RDCN",st:"Určené",note:"cenník 35,99 €/m²"},
+    {n:"Dlažba 20×120 cm INTENSO mat",t:"13,44 m²",mj:"m²",qty:13.44,up:39.83,sup:"SIKO.sk",url:"https://www.siko.sk/p/1077591",st:"Určené",note:""},
+    {n:"Sprchový kút SATFUDP100S90",t:"Fusion dvere + SIKOSK",mj:"kpl",qty:1,up:394.19,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATFUDP100S90",st:"Určené",note:""},
+    {n:"Sprchový žľab APZ101-750",t:"75 cm",mj:"ks",qty:1,up:126.90,sup:"SIKO.sk",url:"https://www.siko.sk/p/APZ101-750",st:"Určené",note:""},
+    {n:"Rošt nerez PURE-750M",t:"",mj:"ks",qty:1,up:31.64,sup:"SIKO.sk",url:"https://www.siko.sk/p/PURE-750M",st:"Určené",note:""},
+    {n:"Sprchová batéria 71667000",t:"podomietková",mj:"ks",qty:1,up:70.38,sup:"SIKO.sk",url:"https://www.siko.sk/p/71667000",st:"Určené",note:""},
+    {n:"Hansgrohe Ibox 01800180",t:"podomietkové teleso",mj:"ks",qty:1,up:103.95,sup:"SIKO.sk",url:"https://www.siko.sk/p/01800180",st:"Určené",note:""},
+    {n:"QF Vitalio wall union G26962001",t:"",mj:"ks",qty:1,up:22.99,sup:"SIKO.sk",url:"https://www.siko.sk/p/G26962001",st:"Určené",note:""},
+    {n:"Ručná sprcha SATBSRS22",t:"",mj:"ks",qty:1,up:8.84,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATBSRS22",st:"Určené",note:""},
+    {n:"Sprchová hadica 150 cm SIKOBSHK150",t:"",mj:"ks",qty:1,up:10.96,sup:"SIKO.sk",url:"https://www.siko.sk/p/SIKOBSHK150",st:"Určené",note:""},
+    {n:"Závesný WC set SIKOGES5W0",t:"Geberit Duofix + Brevis WC + Delta",mj:"kpl",qty:1,up:240.61,sup:"SIKO.sk",url:"https://www.siko.sk/p/SIKOGES5W0",st:"Určené",note:""},
+    {n:"Bidetová batéria ZDUP110",t:"",mj:"ks",qty:1,up:88.17,sup:"SIKO.sk",url:"https://www.siko.sk/p/ZDUP110",st:"Určené",note:""},
+    {n:"Skrinka 80 cm STILLAD08057U3 + umývadlo",t:"STILLA + VERSO80",mj:"kpl",qty:1,up:333.66,sup:"SIKO.sk",url:"https://www.siko.sk/p/STILLAD08057U3",st:"Určené",note:""},
+    {n:"Sifón SAT E660",t:"",mj:"ks",qty:1,up:7.47,sup:"SIKO.sk",url:"https://www.siko.sk/p/E660",st:"Určené",note:""},
+    {n:"Výpust Optima VF785CR",t:"",mj:"ks",qty:1,up:19.91,sup:"SIKO.sk",url:"https://www.siko.sk/p/VF785CR",st:"Určené",note:""},
+    {n:"Umývadlová batéria 71580000",t:"",mj:"ks",qty:1,up:64.81,sup:"SIKO.sk",url:"https://www.siko.sk/p/71580000",st:"Určené",note:""},
+    {n:"Zrkadlo 80×80 cm LED SATZCO80BI",t:"",mj:"ks",qty:1,up:132.79,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATZCO80BI",st:"Určené",note:""},
+    {n:"Radiátor 30×114 cm DDIN11400300",t:"",mj:"ks",qty:1,up:108.73,sup:"SIKO.sk",url:"https://www.siko.sk/p/DDIN11400300",st:"Určené",note:""},
+    {n:"Termostatický ventil VENTILSADAKPRPW",t:"",mj:"ks",qty:1,up:72.62,sup:"SIKO.sk",url:"https://www.siko.sk/p/VENTILSADAKPRPW",st:"Určené",note:""},
+    {n:"Skrinka vysoká SATEVOV36WMK",t:"36×165×32 cm",mj:"ks",qty:1,up:364.37,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATEVOV36WMK",st:"Určené",note:""},
+    {n:"Stolček 33 cm SATSTOLPLASTT",t:"",mj:"ks",qty:1,up:86.32,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATSTOLPLASTT",st:"Určené",note:""},
+    {n:"WC kefa UN13094KU26",t:"",mj:"ks",qty:1,up:27.22,sup:"SIKO.sk",url:"https://www.siko.sk/p/UN13094KU26",st:"Určené",note:""},
+    {n:"Polička Jika H3852F10040001",t:"",mj:"ks",qty:2,up:15.75,sup:"SIKO.sk",url:"https://www.siko.sk/p/H3852F10040001",st:"Určené",note:""},
+    {n:"Háčik NIMCO UN13054S26",t:"",mj:"ks",qty:4,up:3.58,sup:"SIKO.sk",url:"https://www.siko.sk/p/UN13054S26",st:"Určené",note:""},
+    {n:"Držiak WC papiera UN13055M26",t:"",mj:"ks",qty:1,up:19.91,sup:"SIKO.sk",url:"https://www.siko.sk/p/UN13055M26",st:"Určené",note:""},
+    {n:"Odpadkový kôš 5l KOSPLASTBI",t:"",mj:"ks",qty:1,up:17.26,sup:"SIKO.sk",url:"https://www.siko.sk/p/KOSPLASTBI",st:"Určené",note:""},
+    {n:"Dávkovač mydla SATDEVO99BI",t:"",mj:"ks",qty:1,up:5.30,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATDEVO99BI",st:"Určené",note:""},
+    {n:"Dóza SAT SATDEVO27BI",t:"",mj:"ks",qty:3,up:3.64,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATDEVO27BI",st:"Určené",note:""},
+    {n:"Držadlo SIKOMADLO2",t:"",mj:"ks",qty:1,up:13.16,sup:"SIKO.sk",url:"https://www.siko.sk/p/SIKOMADLO2",st:"Určené",note:""},
+    {n:"Kúpeľňa obloženie + geberit + sprcha (na kľúč)",t:"Modul Company – práca + stavebný materiál, jolly hrana, napojenie sanity",mj:"kpl",qty:1,up:3000,sup:"Modul Company",url:"",st:"Určené",note:"obklady, dlažba, geberit, sprcha – práca"}
+  ]},
+  {name:"PODLAHY (laminát)",items:[{n:"ZENN CLCF 55 PORTO laminát 74,39 m²",t:"Siko ponuka – materiál, celý byt",mj:"m²",qty:74.39,up:28.93,sup:"SIKO.sk",url:"https://www.siko.sk/p/60002235",st:"Určené",note:"⚠ Modul montuje vinyl/klik – over krytinu"},{n:"Cementová samonivelizačná stierka 20 mm",t:"Modul Company",mj:"m²",qty:76,up:40,sup:"Modul Company",url:"",st:"Určené",note:""},{n:"Montáž vinyl/kompozit klik podlahy",t:"Modul Company",mj:"m²",qty:70,up:12,sup:"Modul Company",url:"",st:"Určené",note:""},{n:"MDF lišty pod 45° + akryl",t:"Modul Company",mj:"bm",qty:70,up:7.80,sup:"Modul Company",url:"",st:"Určené",note:""}]},
+  {name:"DVERE",items:[{n:"Bezfalcové dvere + zárubňa – 3 ks",t:"napr. Solodoor Vertigo",mj:"ks",qty:3,up:466.67,sup:"Solodoor",url:"https://www.solodoor.sk/interierove-dvere/bezfalcove-dvere/",st:"Určené",note:"3 ks = 1 400 €"},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Odhad",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company",mj:"ks",qty:4,up:78,sup:"Modul Company",url:"",st:"Určené",note:""}]},
+  {name:"KUCHYŇA",items:[{n:"Kuchynská linka + spotrebiče – celok",t:"skrinky, doska, rúra, varná doska, digestor, chladnička, montáž",mj:"kpl",qty:1,up:6600,sup:"",url:"",st:"Určené",note:""},{n:"Drez SATSINK GE3 horný jazmín",t:"Siko ponuka",mj:"ks",qty:1,up:107.07,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATSINKGE3J",st:"Určené",note:""},{n:"Kuchynská batéria",t:"",mj:"ks",qty:1,up:80,sup:"",url:"",st:"Odhad",note:""}]},
+  {name:"PRÁČKA + SUŠIČKA",items:[{n:"Set Gorenje WG494A11 + DG48C NatureDry",t:"Práčka 9 kg + Sušička 8 kg",mj:"kpl",qty:1,up:881,sup:"Alza.sk",url:"https://www.alza.sk/gorenje-wg494a11-gorenje-dg48c-naturedry-d13374233.htm",st:"Určené",note:""},{n:"Skriňa na práčku GLAW biela",t:"99×44×40 cm",mj:"ks",qty:1,up:279,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/skrina-na-pracku-a-susicku-glaw-biela-415016104",st:"Určené",note:""}]},
+  {name:"NÁBYTOK – JEDÁLEŇ / SPÁLŇA",items:[
+    {n:"Jedálenský stôl GOSTUN dub artisan/čierna",t:"Okrúhly, rozkladací 100→135 cm",mj:"ks",qty:1,up:219,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/jedalensky-stol-gostun-dub-artisan-cierna-414660500",st:"Zaplatené",note:"⚠ AKCIA do 14.7.2026"},
+    {n:"Stolička HANELE cappuccino",t:"Otočná ±90°",mj:"ks",qty:4,up:71.90,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/jedalenska-stolicka-hanele-cappuccino-414932001",st:"Zaplatené",note:"4 ks = 287,60 €"},
+    {n:"Posteľ KOYLIUN béžová 160×200 cm",t:"Čalúnená, 2 zásuvky, lamelový rošt, orech",mj:"ks",qty:1,up:459,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/postel-koyliun-bezova-414507800",st:"Určené",note:"akciová club cena, pôv. 859 €"}
+  ]},
+  {name:"SVIETIDLÁ",items:[
+    {n:"Brilagi ZENNA LED 18W IP44 biela",t:"Kúpeľňové stropné, PIR",mj:"ks",qty:1,up:30,sup:"svet-svietidiel.sk",url:"https://www.svet-svietidiel.sk/brilagi-led-zenna-kupelnove-stropne-svietidlo-so-senzorom-led-18-w-230-v-priemer-29-5-cm-ip44-biela/",st:"Určené",note:""},
+    {n:"Brilagi SELE 6×GU10/30W biela",t:"Bodové, 6 spotov",mj:"ks",qty:1,up:104.90,sup:"svet-svietidiel.sk",url:"https://www.svet-svietidiel.sk/brilagi-bodove-svietidlo-sele-modern-6xgu10-30w-230v-biela-1/",st:"Určené",note:""},
+    {n:"Brilagi SLIMFRAME 58W 60×60 biela",t:"Stropný LED panel",mj:"ks",qty:1,up:66.90,sup:"svet-svietidiel.sk",url:"https://www.svet-svietidiel.sk/brilagi-led-stropne-svietidlo-slimframe-led-58w-230v-60x60-cm-biela-pp265434/",st:"Určené",note:""},
+    {n:"Stropné LED SPICA biela 18W IP44",t:"⌀27 cm",mj:"ks",qty:2,up:8.99,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/stropne-led-svietidlo-spica-biela-28559600",st:"Určené",note:""},
+    {n:"Stropné LED svietidlo JOKO biela",t:"",mj:"ks",qty:1,up:34.90,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/stropne-led-svietidlo-joko-biela-28751800",st:"Určené",note:""}
+  ]},
+  {name:"MAĽBY A POVRCHOVÉ ÚPRAVY",items:[
+    {n:"Stierkovanie stien (2 vrstvy)",t:"Modul Company",mj:"m²",qty:240,up:12,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Príprava vnútor. podkladu WEBER (penetrácia)",t:"Modul Company",mj:"m²",qty:315,up:2.40,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Maľby akrylátové 2× ručne, do 3,8 m",t:"Modul Company",mj:"m²",qty:315,up:7.20,sup:"Modul Company",url:"",st:"Určené",note:""}
+  ]},
+  {name:"OSTATNÉ",items:[{n:"Drobný materiál",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Odhad",note:""},{n:"Upratovanie po prerábke",t:"",mj:"kpl",qty:1,up:100,sup:"",url:"",st:"Odhad",note:""},{n:"DPH 23% zo stavebných prác (Modul Company)",t:"23 089,20 € × 0,23",mj:"kpl",qty:1,up:5310.52,sup:"Modul Company",url:"",st:"Určené",note:"tovar zo SIKO/Sconto/Alza už má DPH v cene"}]}
+];
+
+let D,coll={},ek=null,iec=null,drag=null,svT=null,msgT=null,csOpen=true,newItem=null;
+let hist=[],histIdx=-1;
+const MAX_HIST=50;
+const MOB=()=>window.innerWidth<=768;
+
+/* ── UNDO/REDO ─────────────────────────────────────────── */
+function pushHist(){hist=hist.slice(0,histIdx+1);hist.push(JSON.stringify(D));if(hist.length>MAX_HIST)hist.shift();else histIdx++;updUR();}
+function updUR(){const u=document.getElementById('btn-u'),r=document.getElementById('btn-r');if(u)u.disabled=histIdx<=0;if(r)r.disabled=histIdx>=hist.length-1;}
+function undo(){if(histIdx<=0)return;histIdx--;D=JSON.parse(hist[histIdx]);_sv();ek=null;iec=null;newItem=null;render();updUR();msg('↩ Späť');}
+function redo(){if(histIdx>=hist.length-1)return;histIdx++;D=JSON.parse(hist[histIdx]);_sv();ek=null;iec=null;newItem=null;render();updUR();msg('↪ Vpred');}
+document.addEventListener('keydown',e=>{
+  const t=e.target.tagName;if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA')return;
+  if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!e.shiftKey){e.preventDefault();undo();}
+  if((e.ctrlKey||e.metaKey)&&(e.key==='y'||(e.key==='z'&&e.shiftKey))){e.preventDefault();redo();}
+});
+
+/* ── INIT / SAVE ────────────────────────────────────────── */
+function init(){
+  try{const s=localStorage.getItem('rkBytu3');if(s)D=JSON.parse(s);}catch(e){}
+  if(!D)D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
+  pushHist();renderCS();render();
+}
+function uid(){return Math.random().toString(36).slice(2);}
+function _sv(){try{localStorage.setItem('rkBytu3',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
+function save(){pushHist();_sv();}
+function msg(t,ok=true){const el=document.getElementById('fmsg');el.textContent=t;el.style.background=ok?'#1e3a5f':'#dc2626';el.classList.add('on');clearTimeout(msgT);msgT=setTimeout(()=>el.classList.remove('on'),2200);}
+
+/* ── HELPERS ────────────────────────────────────────────── */
+const f2=n=>n==null||isNaN(n)?'—':Number(n).toLocaleString('sk-SK',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+const tot=c=>c.items.reduce((s,it)=>s+(it.qty||0)*(it.up||0),0);
+const grand=()=>D.reduce((s,c)=>s+tot(c),0);
+const stTot=st=>D.reduce((s,c)=>s+c.items.filter(i=>i.st===st).reduce((a,i)=>a+(i.qty||0)*(i.up||0),0),0);
+function ev(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function sUrl(url){if(!url)return null;try{const u=new URL(url),h=u.hostname.replace('www.',''),p=u.pathname.split('/').filter(Boolean);return p.length?h+'/'+p[p.length-1].slice(0,18):h;}catch(x){return url.slice(0,24);}}
+
+/* ── LIVE UPDATE ────────────────────────────────────────── */
+function liveUp(ci,ii,field,el){
+  const it=D[ci].items[ii],v=parseFloat(el.value)||0;
+  const qty=field==='qty'?v:(it.qty||0),up=field==='up'?v:(it.up||0),rt=qty*up;
+  const rtEl=document.getElementById('rt-'+ci+'-'+ii);if(rtEl)rtEl.textContent=f2(rt);
+  const catTot=D[ci].items.reduce((s,item,idx)=>s+(idx===ii?rt:(item.qty||0)*(item.up||0)),0);
+  ['cst-','cht-'].forEach(pfx=>{const e=document.getElementById(pfx+ci);if(e)e.textContent=f2(catTot);});
+  const csEl=document.getElementById('cs-'+ci);if(csEl)csEl.textContent=f2(catTot);
+  const g=D.reduce((s,c,ci2)=>s+(ci2===ci?catTot:tot(c)),0);
+  const gs=document.getElementById('cs-grand');if(gs)gs.textContent=f2(g);
+  [1,2,3].forEach(i=>{const e=document.querySelector('#stats .stat:nth-child('+i+') .sv');if(e)e.textContent=[f2(g),f2(g*.12),f2(g*1.12)][i-1];});
+}
+function ic(ci,ii,f,v){
+  if(!iec||iec.ci!==ci||iec.ii!==ii||iec.f!==f)return;
+  const it=D[ci].items[ii];if(f==='qty'||f==='up')it[f]=v===''?null:parseFloat(v);else it[f]=v;
+  iec=null;save();render();
+}
+
+/* ── STATS ──────────────────────────────────────────────── */
+function renderStats(){
+  const g=grand(),r=g*.12;
+  document.getElementById('stats').innerHTML=[
+    ['Spolu bez rezervy',f2(g),''],['Rezerva 12%',f2(r),''],
+    ['Celkom s rezervou',f2(g+r),'background:rgba(217,119,6,.08);border-color:#fcd34d'],
+    ['🟢 Zaplatené',f2(stTot('Zaplatené')),'background:rgba(22,163,74,.08);border-color:#86efac'],
+  ].map(([l,v,s])=>`<div class="stat" style="${s}"><div class="sl">${l}</div><div class="sv">${v}</div></div>`).join('');
+}
+
+/* ── CATEGORY SUMMARY ───────────────────────────────────── */
+function togCS(){csOpen=!csOpen;document.getElementById('cs-body').style.display=csOpen?'block':'none';document.getElementById('cs-tog').textContent=csOpen?'▴':'▾';if(csOpen)renderCS();}
+function renderCS(){
+  const g=grand();
+  document.getElementById('cs-body').innerHTML=`<table class="cstbl">
+    <thead><tr><th style="width:50%">Kategória</th><th style="text-align:right;width:27%">Suma</th><th style="text-align:right;width:12%">%</th><th style="text-align:right;width:11%">pol.</th></tr></thead>
+    <tbody>${D.map((c,ci)=>`<tr><td><span class="cdot" style="background:${c.color}"></span>${ev(c.name)}</td><td style="text-align:right;font-variant-numeric:tabular-nums" id="cs-${ci}">${f2(tot(c))}</td><td style="text-align:right;color:#94a3b8">${g>0?Math.round(tot(c)/g*100):0}%</td><td style="text-align:right;color:#94a3b8">${c.items.length}</td></tr>`).join('')}
+    <tr><td><b>SPOLU (bez rezervy)</b></td><td style="text-align:right;font-variant-numeric:tabular-nums" id="cs-grand">${f2(g)}</td><td></td><td></td></tr></tbody>
+  </table>`;
+}
+
+/* ── MOBILE EDIT PANEL ──────────────────────────────────── */
+function mEp(ci,ii){
+  const it=D[ci].items[ii];
+  return `<div class="mc-ep">
+    <span class="efl">Názov</span><input class="mc-fi" id="ep-n" value="${ev(it.n)}">
+    <span class="efl">Typ / popis</span><input class="mc-fi" id="ep-t" value="${ev(it.t)}">
+    <div class="mc-2col">
+      <div><span class="efl">Počet / výmera</span><input class="mc-fi" id="ep-qty" type="number" step="any" inputmode="decimal" value="${it.qty??''}"></div>
+      <div><span class="efl">Jedn. cena (€)</span><input class="mc-fi" id="ep-up" type="number" step="any" inputmode="decimal" value="${it.up??''}"></div>
+    </div>
+    <div class="mc-2col">
+      <div><span class="efl">MJ</span><input class="mc-fi" id="ep-mj" value="${ev(it.mj)}"></div>
+      <div><span class="efl">Stav</span><select class="mc-fi" id="ep-st" style="min-height:54px">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select></div>
+    </div>
+    <span class="efl">Dodávateľ</span><input class="mc-fi" id="ep-sup" value="${ev(it.sup)}">
+    <span class="efl">Poznámka</span><input class="mc-fi" id="ep-note" value="${ev(it.note)}">
+    <span class="efl">URL odkaz</span>
+    <input class="mc-fi" id="ep-url" value="${ev(it.url)}" inputmode="url" placeholder="https://...">
+    ${it.url?`<a href="${ev(it.url)}" target="_blank" class="mc-url">↗ ${ev(it.url)}</a>`:''}
+    <div class="mc-btns">
+      <button class="mc-bcn" onclick="cancelEp()">Zrušiť</button>
+      <button class="mc-bsv" onclick="saveEp(${ci},${ii})">💾 Uložiť</button>
+    </div>
+  </div>`;
+}
+
+/* ── DESKTOP EDIT PANEL ─────────────────────────────────── */
+function deskEp(ci,ii){
+  const it=D[ci].items[ii];
+  return `<tr class="ep"><td colspan="9"><div class="epin">
+    <div class="ff"><div class="fl">Názov</div><input class="fi" id="ep-n" value="${ev(it.n)}"></div>
+    <div class="f2"><div class="fl">Typ / popis</div><input class="fi" id="ep-t" value="${ev(it.t)}"></div>
+    <div><div class="fl">MJ</div><input class="fi" id="ep-mj" value="${ev(it.mj)}"></div>
+    <div><div class="fl">Počet</div><input class="fi" id="ep-qty" type="number" step="any" inputmode="decimal" value="${it.qty??''}"></div>
+    <div><div class="fl">Jedn. cena (€)</div><input class="fi" id="ep-up" type="number" step="any" inputmode="decimal" value="${it.up??''}"></div>
+    <div><div class="fl">Stav</div><select class="fi" id="ep-st">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select></div>
+    <div><div class="fl">Dodávateľ</div><input class="fi" id="ep-sup" value="${ev(it.sup)}"></div>
+    <div class="f2"><div class="fl">Poznámka</div><input class="fi" id="ep-note" value="${ev(it.note)}"></div>
+    <div class="ff"><div class="fl">URL odkaz</div>
+      <input class="fi" id="ep-url" value="${ev(it.url)}" placeholder="https://..." inputmode="url">
+      ${it.url?`<a href="${ev(it.url)}" target="_blank" class="upv">↗ ${ev(it.url)}</a>`:''}
+    </div>
+    <div class="epbtns">
+      <button class="bcn" onclick="cancelEp()">Zrušiť</button>
+      <button class="bsv" onclick="saveEp(${ci},${ii})">💾 Uložiť zmeny</button>
+    </div>
+  </div></td></tr>`;
+}
+
+/* ── RENDER CATEGORIES ──────────────────────────────────── */
+function renderCats(){
+  const mob=MOB();
+  document.getElementById('cats').innerHTML=D.map((cat,ci)=>{
+    const isC=coll[ci],t=tot(cat);
+    const badges=SO.filter(s=>cat.items.some(i=>i.st===s)).map(s=>`<span class="cbg">${SI[s]}${cat.items.filter(i=>i.st===s).length}</span>`).join('');
+    const hdr=`<div class="ch" style="background:${cat.color}" onclick="togC(${ci})">
+      <div style="display:flex;align-items:center;gap:5px"><span class="cn">${ev(cat.name)}</span>${badges}</div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="ct" id="cht-${ci}">${f2(t)}</span><span style="color:rgba(255,255,255,.5);font-size:22px">${isC?'▸':'▾'}</span></div>
+    </div>`;
+    if(isC)return `<div class="cat">${hdr}</div>`;
+
+    if(mob){
+      /* ── MOBILE CARDS ── */
+      let cards='';
+      cat.items.forEach((it,ii)=>{
+        const itot=(it.qty||0)*(it.up||0),isEd=ek===ci+'-'+ii;
+        const det=[it.qty!=null?it.qty+'×':'',it.mj||'',it.up?f2(it.up):''].filter(Boolean).join(' ');
+        const mcSu=sUrl(it.url);
+        cards+=`<div class="mc ${it.st}">
+          <div class="mc-name">${ev(it.n)}</div>
+          ${det?`<div class="mc-detail">${ev(det)}</div>`:''}
+          ${it.url?`<a href="${ev(it.url)}" target="_blank" class="mc-link">↗ ${ev(mcSu||it.sup||it.url)}</a>`:''}
+          <div class="mc-row">
+            <span class="mc-tot" id="rt-${ci}-${ii}">${f2(itot)}</span>
+            <select class="mc-ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select>
+          </div>
+          <div class="mc-actions">
+            <button class="mc-be${isEd?' ac':''}" onclick="togEp(${ci},${ii})">${isEd?'▲ Zavrieť':'✏ Upraviť'}</button>
+            <button class="mc-bd" onclick="delRow(${ci},${ii})">✕</button>
+          </div>
+          ${isEd?mEp(ci,ii):''}
+        </div>`;
+      });
+      return `<div class="cat">${hdr}<div class="mc-list">
+        ${cards}
+        <div class="mc-sub"><span class="mc-sub-l">∑ medzisúčet – ${cat.items.length} pol.</span><span class="mc-sub-v" id="cst-${ci}">${f2(t)}</span></div>
+        <button class="mc-add" onclick="addRow(${ci})">＋ Pridať položku</button>
+      </div></div>`;
+    } else {
+      /* ── DESKTOP TABLE ── */
+      let tbody='';
+      cat.items.forEach((it,ii)=>{
+        const itot=(it.qty||0)*(it.up||0),isEd=ek===ci+'-'+ii,ie=iec&&iec.ci===ci&&iec.ii===ii;
+        const su=sUrl(it.url);
+        const urlCell=it.url?`<a class="ul" href="${ev(it.url)}" target="_blank">${ev(su||it.sup||'link')} ↗</a>`:`<span style="color:#94a3b8;font-size:13px">—</span>`;
+        const nameCell=ie&&iec.f==='n'?`<input class="inp w" value="${ev(it.n)}" onblur="ic(${ci},${ii},'n',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'n',this.value)" autofocus>`:ev(it.n);
+        const qtyCell=ie&&iec.f==='qty'?`<input class="inp r" type="number" step="any" value="${it.qty??''}" style="width:60px" oninput="liveUp(${ci},${ii},'qty',this)" onblur="ic(${ci},${ii},'qty',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'qty',this.value)" autofocus>`:(it.qty!=null?it.qty:'—');
+        const upCell=ie&&iec.f==='up'?`<input class="inp r" type="number" step="any" value="${it.up??''}" style="width:90px" oninput="liveUp(${ci},${ii},'up',this)" onblur="ic(${ci},${ii},'up',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'up',this.value)" autofocus>`:(it.up?f2(it.up):'—');
+        tbody+=`<tr class="R ${it.st}${isEd?' edi':''}" draggable="true"
+          ondragstart="dSt(event,${ci},${ii})" ondragover="dOv(event,${ci},${ii})"
+          ondragleave="dLv(event)" ondrop="dDp(event,${ci},${ii})">
+          <td style="width:26px;padding:0 5px"><button class="dh">⠿</button></td>
+          <td class="ec" style="width:30%" onclick="stIc(${ci},${ii},'n')" title="${ev(it.t)}">${nameCell}</td>
+          <td class="ec" style="width:7%;text-align:right" onclick="stIc(${ci},${ii},'qty')">${qtyCell}</td>
+          <td style="width:6%;text-align:center;color:#64748b;font-size:13px">${ev(it.mj||'')}</td>
+          <td class="ec" style="width:11%;text-align:right" onclick="stIc(${ci},${ii},'up')">${upCell}</td>
+          <td class="tot" style="width:11%" id="rt-${ci}-${ii}">${f2(itot)}</td>
+          <td style="width:13%"><select class="ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select></td>
+          <td style="width:13%">${urlCell}</td>
+          <td style="width:9%;white-space:nowrap;text-align:right">
+            <button class="be${isEd?' ac':''}" onclick="togEp(${ci},${ii})">${isEd?'▲':'✏'}</button>
+            <button class="bd" onclick="delRow(${ci},${ii})">✕</button>
+          </td>
+        </tr>`;
+        if(isEd)tbody+=deskEp(ci,ii);
+      });
+      return `<div class="cat dt-view">${hdr}<div style="border-top:1px solid rgba(255,255,255,.15)"><table>
+        <thead><tr>
+          <th style="width:26px"></th><th style="width:30%">Položka</th>
+          <th style="width:7%;text-align:right">Počet</th><th style="width:6%;text-align:center">MJ</th>
+          <th style="width:11%;text-align:right">Cena/ks</th><th style="width:11%;text-align:right">Spolu</th>
+          <th style="width:13%">Stav</th><th style="width:13%">Odkaz</th><th style="width:9%"></th>
+        </tr></thead>
+        <tbody>${tbody}
+          <tr class="sr">
+            <td colspan="4" style="padding:7px 12px"><span class="srl">∑ medzisúčet – ${cat.items.length} položiek</span></td>
+            <td></td><td class="srv" style="padding:7px 10px" id="cst-${ci}">${f2(t)}</td><td colspan="3"></td>
+          </tr>
+          <tr><td colspan="9"><button class="addbtn" onclick="addRow(${ci})">＋ Pridať položku</button></td></tr>
+        </tbody></table></div></div>`;
+    }
+  }).join('');
+  if(iec)setTimeout(()=>{const i=document.querySelector('.inp');if(i){i.focus();if(i.select)i.select();}},12);
+  if(ek)setTimeout(()=>{const f=document.getElementById('ep-n');if(f)f.focus();},12);
+  if(csOpen)renderCS();
+}
+
+function render(){renderStats();renderCats();}
+function togC(ci){coll[ci]=!coll[ci];renderCats();}
+function togEp(ci,ii){
+  const k=ci+'-'+ii;
+  if(ek===k){if(newItem&&newItem.ci===ci&&newItem.ii===ii){D[ci].items.splice(ii,1);newItem=null;ek=null;save();render();return;}ek=null;}
+  else ek=k;
+  iec=null;renderCats();
+}
+function cancelEp(){
+  if(newItem){D[newItem.ci].items.splice(newItem.ii,1);newItem=null;ek=null;save();render();return;}
+  ek=null;renderCats();
+}
+function saveEp(ci,ii){
+  const g=id=>document.getElementById(id),it=D[ci].items[ii];
+  it.n=g('ep-n').value.trim()||it.n;it.t=g('ep-t').value.trim();it.mj=g('ep-mj').value.trim();
+  it.st=g('ep-st').value;
+  it.qty=g('ep-qty').value===''?null:parseFloat(g('ep-qty').value);
+  it.up=g('ep-up').value===''?null:parseFloat(g('ep-up').value);
+  it.sup=g('ep-sup').value.trim();it.url=g('ep-url').value.trim();it.note=g('ep-note').value.trim();
+  newItem=null;ek=null;save();render();
+}
+function chSt(ci,ii,v){D[ci].items[ii].st=v;save();renderCats();renderStats();}
+function stIc(ci,ii,f){iec={ci,ii,f};ek=null;renderCats();}
+function addRow(ci){
+  D[ci].items.push({id:uid(),n:'Nová položka',t:'',mj:'ks',qty:1,up:0,sup:'',url:'',st:'Odhad',note:''});
+  const ii=D[ci].items.length-1;newItem={ci,ii};ek=ci+'-'+ii;iec=null;save();renderCats();
+}
+function delRow(ci,ii){
+  if(!confirm('Zmazať "'+D[ci].items[ii].n+'"?'))return;
+  if(newItem&&newItem.ci===ci&&newItem.ii===ii)newItem=null;
+  D[ci].items.splice(ii,1);ek=null;iec=null;save();render();
+}
+function dSt(e,ci,ii){drag={ci,ii};e.dataTransfer.effectAllowed='move';}
+function dOv(e,ci,ii){e.preventDefault();document.querySelectorAll('tr.R').forEach(r=>r.classList.remove('drag-over'));if(drag&&drag.ci===ci&&drag.ii!==ii)e.currentTarget.style.outline='2px dashed #3b82f6';}
+function dLv(e){e.currentTarget.style.outline='';}
+function dDp(e,ci,ii){
+  e.preventDefault();document.querySelectorAll('tr.R').forEach(r=>r.style.outline='');
+  if(!drag||drag.ci!==ci||drag.ii===ii){drag=null;return;}
+  const[m]=D[ci].items.splice(drag.ii,1);D[ci].items.splice(ii,0,m);drag=null;save();renderCats();
+}
+function expJSON(){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify({v:1,d:new Date().toISOString(),data:D},null,2)],{type:'application/json;charset=utf-8'}));
+  a.download='rekonstrukcia_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  msg('✓ JSON záloha uložená');
+}
+function togImp(){document.getElementById('improw').classList.toggle('h');document.getElementById('finp').value='';}
+function impJSON(inp){
+  const file=inp.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{try{
+    const p=JSON.parse(e.target.result),raw=Array.isArray(p)?p:(p.data||null);
+    if(!raw)throw new Error('Neplatný formát');
+    D=raw.map((c,i)=>({...c,color:c.color||CC[i%CC.length],items:(c.items||[]).map(it=>({...it,id:it.id||uid()}))}));
+    ek=null;iec=null;newItem=null;coll={};hist=[];histIdx=-1;save();renderCS();render();togImp();
+    msg('✓ Načítané: '+D.reduce((s,c)=>s+c.items.length,0)+' položiek');
+  }catch(err){msg('✗ '+err.message,false);}};r.readAsText(file,'utf-8');
+}
+
+/* Re-render on resize (desktop↔mobile switch) */
+let resizeT;window.addEventListener('resize',()=>{clearTimeout(resizeT);resizeT=setTimeout(()=>renderCats(),150);});
+
+init();
+</script>
+</body>
+</html>
