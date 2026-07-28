@@ -39,6 +39,16 @@ button.b.rst:hover{background:#fef2f2}
 .rtog.off .rtog-a{text-decoration:none;color:#dc2626;font-weight:700;margin-left:2px}
 .rtog-a{font-variant-numeric:tabular-nums}
 .rooms-save{margin-left:auto;font-size:15px;font-weight:700;color:#15803d;background:#dcfce7;padding:8px 14px;border-radius:9px}
+.alts-barw{background:#eff6ff;border-bottom:1px solid #bfdbfe}
+.atog{display:inline-flex;align-items:center;gap:9px;padding:8px 14px;background:#fff;border:1.5px solid #bfdbfe;border-radius:9px;cursor:pointer;font-size:14px;color:#1e293b;user-select:none;flex-wrap:wrap}
+.atog input{width:20px;height:20px;cursor:pointer;accent-color:#2563eb;flex-shrink:0}
+.atog.on{background:#dcfce7;border-color:#86efac}
+.atog-t{font-weight:600}
+.atog-p{font-size:13px;color:#64748b}
+.atog-p b{color:#15803d}
+.atog-prov{color:#2563eb;font-weight:500}
+.atog-s{font-size:13px;font-weight:700;color:#15803d}
+.alts-sum{margin-left:auto;font-size:14px;color:#334155;background:#fff;border:1px solid #bfdbfe;padding:8px 14px;border-radius:9px}
 /* Category summary */
 .csrow{background:#fff;border-bottom:1px solid #e2e8f0}
 .cshr{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;cursor:pointer;user-select:none;background:#f8fafc}
@@ -152,6 +162,10 @@ a.ul:hover{text-decoration:underline}
 .mc-name{font-size:19px;font-weight:500;color:#0f172a;margin-bottom:8px;line-height:1.35;white-space:normal;word-break:break-word}
 .mc-detail{font-size:15px;color:#64748b;margin-bottom:12px}
 .mc-ded{font-size:15px;color:#dc2626;font-weight:600;margin:-6px 0 12px}
+.alt-tag{display:inline-block;margin-left:8px;font-size:11px;font-weight:600;color:#2563eb;background:#eff6ff;border:1px solid #bfdbfe;padding:1px 7px;border-radius:7px;white-space:nowrap}
+.alt-tag.on{color:#15803d;background:#dcfce7;border-color:#86efac}
+.mc-alt{font-size:14px;color:#2563eb;font-weight:600;background:#eff6ff;border-radius:8px;padding:8px 12px;margin-bottom:10px}
+.mc-alt.on{color:#15803d;background:#dcfce7}
 .mc-dph{font-size:14px;color:#dc2626;font-weight:600;margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0}
 .mc-dph-g{color:#94a3b8;font-weight:500}
 .mc-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -209,6 +223,7 @@ a.ul:hover{text-decoration:underline}
 </div>
 <div class="stats" id="stats"></div>
 <div class="rooms-bar" id="rooms-bar"></div>
+<div class="rooms-bar alts-barw" id="alts-bar"></div>
 <div class="csrow">
   <div class="cshr" onclick="togCS()"><span>📊 Súhrn podľa kategórií</span><span id="cs-tog" style="font-size:22px;color:#94a3b8">▴</span></div>
   <div id="cs-body" class="csbd"></div>
@@ -229,6 +244,19 @@ const ROOMS={
   spalna:{label:"Spálňa (rodičia)",area:18}
 };
 let roomOn={detska:true,spalna:true};
+
+/* ── ALTERNATÍVNE PONUKY ────────────────────────────────────
+   Každá alternatíva nahrádza sadu položiek (podľa názvu) jednou cenou od iného dodávateľa.
+   Cena alternatívy je FINÁLNA (bez pripočítania DPH). */
+const ALTS=[
+  {id:'malby',label:'Maľby + penetrácia',provider:'Maliar Denis',contact:'info@maliardenis.sk',price:1200,
+   covers:['Príprava vnútor. podkladu WEBER (penetrácia)','Maľby akrylátové 2× ručne, do 3,8 m']}
+];
+let altOn={};
+// vráti aktívnu alternatívu pokrývajúcu danú položku (alebo null)
+function altForItem(it){for(const a of ALTS){if(altOn[a.id]&&a.covers.includes(it.n))return a;}return null;}
+// existuje alternatíva pre položku (aj neaktívna)?
+function altExists(it){for(const a of ALTS){if(a.covers.includes(it.n))return a;}return null;}
 // koľko MJ danej položky pripadá na vypnuté izby
 function offQty(it){if(!it.rooms)return 0;let q=0;for(const k in it.rooms){if(!roomOn[k])q+=it.rooms[k]||0;}return q;}
 // efektívny počet po odpočte vypnutých izieb
@@ -263,7 +291,9 @@ const INIT=[
     {n:"Priečka YTONG 80 mm",t:"Modul Company",mj:"m²",qty:2.5,up:36,sup:"Modul Company",url:"",st:"Určené",note:""}
   ]},
   {name:"ZDRAVOTECHNIKA",items:[
-    {n:"Prípojné body vody a kanalizácie + materiál",t:"Modul Company",mj:"ks",qty:10,up:95,sup:"Modul Company",url:"",st:"Určené",note:""}
+    {n:"Prípojné body vody a kanalizácie + materiál",t:"Modul Company",mj:"ks",qty:10,up:95,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Prerábka radiátora kuchyňa",t:"",mj:"kpl",qty:1,up:250,sup:"",url:"",st:"Zaplatené",note:""},
+    {n:"Prerábka radiátora kúpeľňa",t:"",mj:"kpl",qty:1,up:300,sup:"",url:"",st:"Odhad",note:""}
   ]},
   {name:"KÚPEĽŇA – SIKO ponuka č.1174607",items:[
     {n:"Obklad RDCN 33×100 cm pomice mat",t:"18,48 m² – ⚠ odhad plochy",mj:"m²",qty:18.48,up:29.87,sup:"SIKO.sk",url:"https://www.siko.sk/p/RDCN",st:"Určené",note:"cenník 35,99 €/m²"},
@@ -299,7 +329,7 @@ const INIT=[
     {n:"Kúpeľňa obloženie + geberit + sprcha (na kľúč)",t:"Modul Company – práca + stavebný materiál, jolly hrana, napojenie sanity",mj:"kpl",qty:1,up:3000,sup:"Modul Company",url:"",st:"Určené",note:"obklady, dlažba, geberit, sprcha – práca"}
   ]},
   {name:"PODLAHY (laminát)",items:[{n:"ZENN CLCF 55 PORTO laminát 74,39 m²",t:"Siko ponuka – materiál, celý byt",mj:"m²",qty:74.39,up:28.93,sup:"SIKO.sk",url:"https://www.siko.sk/p/60002235",st:"Určené",note:"⚠ Modul montuje vinyl/klik – over krytinu",rooms:{detska:14.5,spalna:18}},{n:"Cementová samonivelizačná stierka 20 mm",t:"Modul Company",mj:"m²",qty:76,up:40,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},{n:"Montáž vinyl/kompozit klik podlahy",t:"Modul Company",mj:"m²",qty:70,up:12,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},{n:"MDF lišty pod 45° + akryl",t:"Modul Company",mj:"bm",qty:70,up:7.80,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:15.6,spalna:17.4}}]},
-  {name:"DVERE",items:[{n:"Vnútorné dvere obyčajné – 3 ks",t:"SIKO",mj:"ks",qty:3,up:290,sup:"SIKO.sk",url:"https://www.siko.sk/dvere",st:"Určené",note:"3 ks × 290 €"},{n:"Kovanie na dvere – 3 ks",t:"kľučky",mj:"ks",qty:3,up:30,sup:"SIKO.sk",url:"",st:"Určené",note:"3 ks × 30 € = 90 €"},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Odhad",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company",mj:"ks",qty:4,up:78,sup:"Modul Company",url:"",st:"Určené",note:""}]},
+  {name:"DVERE",items:[{n:"Vnútorné dvere AURA6 70L + AURA7 80L + 80P (3 ks + zárubne)",t:"biele matné, SIKO ponuka č.1184514 (po zľave)",mj:"kpl",qty:1,up:949.87,sup:"SIKO.sk",url:"",st:"Určené",note:"platí do 26.8.2026, v hotovosti"},{n:"Kovanie – kľučky HIT-HR (1× WC + 2× bez zámku)",t:"biela mat, SIKO ponuka č.1184514",mj:"kpl",qty:1,up:76.33,sup:"SIKO.sk",url:"",st:"Určené",note:""},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Odhad",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company",mj:"ks",qty:4,up:78,sup:"Modul Company",url:"",st:"Určené",note:""}]},
   {name:"KUCHYŇA",items:[{n:"Kuchynská linka + spotrebiče – celok",t:"skrinky, doska, rúra, varná doska, digestor, chladnička, montáž",mj:"kpl",qty:1,up:6600,sup:"",url:"",st:"Určené",note:""},{n:"Drez SATSINK GE3 horný jazmín",t:"Siko ponuka",mj:"ks",qty:1,up:107.07,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATSINKGE3J",st:"Určené",note:""},{n:"Kuchynská batéria",t:"",mj:"ks",qty:1,up:80,sup:"",url:"",st:"Odhad",note:""},{n:"Montáž kuchyne",t:"montáž linky + spotrebičov",mj:"kpl",qty:1,up:1000,sup:"",url:"",st:"Odhad",note:"do 1 000 €"}]},
   {name:"PRÁČKA + SUŠIČKA",items:[{n:"Set Gorenje WG494A11 + DG48C NatureDry",t:"Práčka 9 kg + Sušička 8 kg",mj:"kpl",qty:1,up:881,sup:"Alza.sk",url:"https://www.alza.sk/gorenje-wg494a11-gorenje-dg48c-naturedry-d13374233.htm",st:"Určené",note:""},{n:"Skriňa na práčku GLAW biela",t:"99×44×40 cm",mj:"ks",qty:1,up:279,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/skrina-na-pracku-a-susicku-glaw-biela-415016104",st:"Určené",note:""}]},
   {name:"NÁBYTOK – JEDÁLEŇ / SPÁLŇA",items:[
@@ -342,6 +372,7 @@ document.addEventListener('keydown',e=>{
 function init(){
   try{const s=localStorage.getItem('rkBytu3');if(s)D=JSON.parse(s);}catch(e){}
   try{const rs=localStorage.getItem('rkRooms');if(rs)roomOn={...roomOn,...JSON.parse(rs)};}catch(e){}
+  try{const as=localStorage.getItem('rkAlts');if(as)altOn={...altOn,...JSON.parse(as)};}catch(e){}
   if(!D)D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
   applyRooms();
   pushHist();renderCS();render();
@@ -358,9 +389,9 @@ function _sv(){try{localStorage.setItem('rkBytu3',JSON.stringify(D));}catch(e){}
 function save(){pushHist();_sv();}
 function resetAll(){
   if(!confirm('Zmazať uložené dáta v prehliadači a načítať čerstvú verziu?\n\n(Stav položiek ako Zaplatené/Objednané sa stratí. Ak si chceš zmeny zachovať, najprv daj ⬇ JSON.)'))return;
-  try{localStorage.removeItem('rkBytu3');localStorage.removeItem('rkRooms');}catch(e){}
+  try{localStorage.removeItem('rkBytu3');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
   D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
-  roomOn={detska:true,spalna:true};
+  roomOn={detska:true,spalna:true};altOn={};
   ek=null;iec=null;newItem=null;coll={};hist=[];histIdx=-1;
   pushHist();_sv();renderCS();render();
   msg('✓ Resetované na čerstvú verziu');
@@ -403,8 +434,19 @@ function calc(){
     if(it.st==='Zaplatené')paid+=v;
     ded+=itemDed(it)*(it.sup==='Modul Company'?1.23:1);
   }));
-  const vat=work*0.23;
-  return {goods,work,vat,paid,total:goods+work+vat,ded,anyOff:Object.values(roomOn).some(v=>!v)};
+  const totalModul=goods+work*1.23;
+  // aplikuj aktívne alternatívy: odober pokryté Modul položky, pridaj cenu alternatívy
+  let altAdd=0,altReplNet=0,altSaving=0;
+  ALTS.forEach(a=>{
+    if(!altOn[a.id])return;
+    let covNet=0;D.forEach(c=>c.items.forEach(it=>{if(a.covers.includes(it.n))covNet+=itemNet(it);}));
+    altReplNet+=covNet;altAdd+=a.price;altSaving+=(covNet*1.23-a.price);
+  });
+  const workAfter=work-altReplNet;
+  const vat=workAfter*0.23;
+  const total=goods+workAfter*1.23+altAdd;
+  return {goods,work:workAfter,vat,paid,total,totalModul,altAdd,altSaving,ded,
+          anyOff:Object.values(roomOn).some(v=>!v),anyAlt:Object.values(altOn).some(v=>v)};
 }
 function renderStats(){
   const c=calc();
@@ -414,7 +456,7 @@ function renderStats(){
     ['Bez DPH prác (dohoda)',f2(c.total-c.vat),'background:rgba(22,163,74,.08);border-color:#86efac'],
     ['🟢 Zaplatené',f2(c.paid),''],
   ].map(([l,v,s])=>`<div class="stat" style="${s}"><div class="sl">${l}</div><div class="sv">${v}</div></div>`).join('');
-  renderRooms();
+  renderRooms();renderAlts();
 }
 /* ── PREPÍNAČE IZIEB ────────────────────────────────────── */
 function renderRooms(){
@@ -427,6 +469,24 @@ function renderRooms(){
   if(c.anyOff)bar.innerHTML+=`<span class="rooms-save">Ušetríš ${f2(c.ded)}</span>`;
 }
 function toggleRoom(k,on){roomOn[k]=on;try{localStorage.setItem('rkRooms',JSON.stringify(roomOn));}catch(e){}render();}
+/* ── ALTERNATÍVNE PONUKY (prepínač) ─────────────────────── */
+function renderAlts(){
+  const bar=document.getElementById('alts-bar');if(!bar)return;
+  if(!ALTS.length){bar.style.display='none';return;}
+  const c=calc();
+  let html='<span class="rooms-lbl">Alternatívne ceny:</span>';
+  html+=ALTS.map(a=>{
+    let covNet=0;D.forEach(cc=>cc.items.forEach(it=>{if(a.covers.includes(it.n))covNet+=itemNet(it);}));
+    const modul=covNet*1.23,on=altOn[a.id];
+    return `<label class="atog${on?' on':''}"><input type="checkbox" ${on?'checked':''} onchange="toggleAlt('${a.id}',this.checked)">
+      <span class="atog-t">${a.label}</span>
+      <span class="atog-p"><s>${f2(modul)}</s> → <b>${f2(a.price)}</b> <span class="atog-prov">${a.provider}</span></span>
+      <span class="atog-s">−${f2(modul-a.price)}</span></label>`;
+  }).join('');
+  html+=`<span class="alts-sum">Modul: <b>${f2(c.totalModul)}</b> &nbsp;|&nbsp; s alternatívami: <b style="color:#15803d">${f2(c.total)}</b>${c.anyAlt?` &nbsp;(ušetríš ${f2(c.altSaving)})`:''}</span>`;
+  bar.innerHTML=html;
+}
+function toggleAlt(id,on){altOn[id]=on;try{localStorage.setItem('rkAlts',JSON.stringify(altOn));}catch(e){}render();}
 
 /* ── CATEGORY SUMMARY ───────────────────────────────────── */
 function togCS(){csOpen=!csOpen;document.getElementById('cs-body').style.display=csOpen?'block':'none';document.getElementById('cs-tog').textContent=csOpen?'▴':'▾';if(csOpen)renderCS();}
@@ -510,13 +570,16 @@ function renderCats(){
         const qtyTxt=off>0?`<b style="color:#dc2626">${eff}</b> z ${it.qty}`:(it.qty!=null?it.qty:'');
         const det=[it.qty!=null?qtyTxt+'×':'',it.mj||'',it.up?f2(it.up):''].filter(Boolean).join(' ');
         const mcSu=sUrl(it.url);
+        const aFor=altForItem(it),aEx=altExists(it);
+        const altLine=aFor?`<div class="mc-alt on">→ nahradené: ${aFor.provider} (${aFor.label} ${f2(aFor.price)})</div>`:(aEx?`<div class="mc-alt">⚡ alternatíva: ${aEx.provider} ${f2(aEx.price)}</div>`:'');
         cards+=`<div class="mc ${it.st}">
           <div class="mc-name">${ev(it.n)}</div>
           ${det?`<div class="mc-detail">${det}</div>`:''}
+          ${altLine}
           ${ded>0?`<div class="mc-ded">− izby: −${f2(ded)}</div>`:''}
           ${it.url?`<a href="${ev(it.url)}" target="_blank" class="mc-link">↗ ${ev(mcSu||it.sup||it.url)}</a>`:''}
           <div class="mc-row">
-            <span class="mc-tot" id="rt-${ci}-${ii}">${f2(itot)}</span>
+            <span class="mc-tot" id="rt-${ci}-${ii}" ${aFor?'style="text-decoration:line-through;color:#94a3b8"':''}>${f2(itot)}</span>
             <select class="mc-ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select>
           </div>
           ${isWork?`<div class="mc-dph">+ DPH 23%: ${f2(dph)} &nbsp;→&nbsp; s DPH ${f2(itot*1.23)}</div>`:`<div class="mc-dph mc-dph-g">DPH v cene (tovar)</div>`}
@@ -547,15 +610,18 @@ function renderCats(){
         const qtyCell=ie&&iec.f==='qty'?`<input class="inp r" type="number" step="any" value="${it.qty??''}" style="width:56px" oninput="liveUp(${ci},${ii},'qty',this)" onblur="ic(${ci},${ii},'qty',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'qty',this.value)" autofocus>`:qtyDisp;
         const upCell=ie&&iec.f==='up'?`<input class="inp r" type="number" step="any" value="${it.up??''}" style="width:84px" oninput="liveUp(${ci},${ii},'up',this)" onblur="ic(${ci},${ii},'up',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'up',this.value)" autofocus>`:(it.up?f2(it.up):'—');
         const dphCell=isWork?`<span style="color:#dc2626;font-variant-numeric:tabular-nums">${f2(dph)}</span>`:`<span style="color:#94a3b8;font-size:12px">v cene</span>`;
+        const aFor=altForItem(it),aEx=altExists(it);
+        const altTag=aFor?`<span class="alt-tag on">→ ${aFor.provider}</span>`:(aEx?`<span class="alt-tag">⚡ alt ${aEx.provider}</span>`:'');
+        const totCell=aFor?`<s style="color:#94a3b8">${f2(itot)}</s>`:f2(itot);
         tbody+=`<tr class="R ${it.st}${isEd?' edi':''}" draggable="true"
           ondragstart="dSt(event,${ci},${ii})" ondragover="dOv(event,${ci},${ii})"
           ondragleave="dLv(event)" ondrop="dDp(event,${ci},${ii})">
           <td style="width:24px;padding:0 4px"><button class="dh">⠿</button></td>
-          <td class="ec" style="width:${anyOff?'21%':'25%'}" onclick="stIc(${ci},${ii},'n')" title="${ev(it.t)}">${nameCell}</td>
+          <td class="ec" style="width:${anyOff?'21%':'25%'}" onclick="stIc(${ci},${ii},'n')" title="${ev(it.t)}">${nameCell}${altTag}</td>
           <td class="ec" style="width:7%;text-align:right" onclick="stIc(${ci},${ii},'qty')">${qtyCell}</td>
           <td style="width:4%;text-align:center;color:#64748b;font-size:13px">${ev(it.mj||'')}</td>
           <td class="ec" style="width:9%;text-align:right" onclick="stIc(${ci},${ii},'up')">${upCell}</td>
-          <td class="tot" style="width:10%" id="rt-${ci}-${ii}">${f2(itot)}</td>
+          <td class="tot" style="width:10%" id="rt-${ci}-${ii}">${totCell}</td>
           <td style="width:9%;text-align:right">${dphCell}</td>
           ${anyOff?`<td style="width:8%;text-align:right;color:#dc2626;font-weight:600;font-variant-numeric:tabular-nums">${ded>0?'−'+f2(ded):'—'}</td>`:''}
           <td style="width:11%"><select class="ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select></td>
