@@ -48,6 +48,9 @@ button.b.rst:hover{background:#fef2f2}
 .atog-p b{color:#15803d}
 .atog-prov{color:#2563eb;font-weight:500}
 .atog-s{font-size:13px;font-weight:700;color:#15803d}
+.atog-note{flex-basis:100%;font-size:11px;color:#94a3b8;margin-top:2px}
+.atog-firm{font-size:10px;font-weight:700;color:#15803d;background:#dcfce7;padding:1px 6px;border-radius:6px;vertical-align:middle}
+.atog-orient{font-size:10px;font-weight:700;color:#b45309;background:#fef3c7;padding:1px 6px;border-radius:6px;vertical-align:middle}
 .alts-sum{margin-left:auto;font-size:14px;color:#334155;background:#fff;border:1px solid #bfdbfe;padding:8px 14px;border-radius:9px}
 /* Category summary */
 .csrow{background:#fff;border-bottom:1px solid #e2e8f0}
@@ -251,8 +254,18 @@ let roomOn={detska:true,spalna:true};
    Každá alternatíva nahrádza sadu položiek (podľa názvu) jednou cenou od iného dodávateľa.
    Cena alternatívy je FINÁLNA (bez pripočítania DPH). */
 const ALTS=[
-  {id:'malby',label:'Maľby + penetrácia',provider:'Maliar Denis',contact:'info@maliardenis.sk',price:1200,
-   covers:['Príprava vnútor. podkladu WEBER (penetrácia)','Maľby akrylátové 2× ručne, do 3,8 m']}
+  {id:'malby',group:'malby',label:'Maľby + penetrácia',provider:'Maliar Denis',contact:'info@maliardenis.sk',price:1200,firm:true,note:'komplet vrátane materiálu (vyber 1 z maliarskych)',
+   covers:['Príprava vnútor. podkladu WEBER (penetrácia)','Maľby akrylátové 2× ručne, do 3,8 m']},
+  {id:'malby2',group:'malby',label:'Maľby + penetrácia (2. ponuka)',provider:'Gabriš Stav & Services',price:2025,firm:true,note:'1575 práca + ~450 materiál (penetr.+farba ~1,4 €/m²)',
+   covers:['Príprava vnútor. podkladu WEBER (penetrácia)','Maľby akrylátové 2× ručne, do 3,8 m']},
+  {id:'stierka',label:'Stierkovanie stien',provider:'Gabriš Stav & Services',price:3120,firm:true,note:'2400 práca (2 vrstvy+brúsenie) + ~720 materiál (~3 €/m²)',
+   covers:['Stierkovanie stien (2 vrstvy)']},
+  {id:'sdkpriecka',label:'SDK priečka',provider:'Kovostav',price:852,note:'z cenníka 42,60 €/m² s materiálom × 20 m² – orient.',
+   covers:['Priečka SDK Rigips 125 mm dvojito, CW75 + izolácia']},
+  {id:'nivelacka',label:'Samonivelačka',provider:'Kovostav + materiál',price:1368,note:'~18 €/m² (8 práca + 10 materiál) × 76 m² – orient.',
+   covers:['Cementová samonivelizačná stierka 20 mm']},
+  {id:'podlaha',label:'Pokládka podlahy (klik)',provider:'Kovostav',price:476,note:'6,80 €/m² práca × 70 m² (krytina zvlášť – ZENN laminát) – orient.',
+   covers:['Montáž vinyl/kompozit klik podlahy']}
 ];
 let altOn={};
 // vráti aktívnu alternatívu pokrývajúcu danú položku (alebo null)
@@ -486,14 +499,19 @@ function renderAlts(){
     let covNet=0;D.forEach(cc=>cc.items.forEach(it=>{if(a.covers.includes(it.n))covNet+=itemNet(it);}));
     const modul=covNet*1.23,on=altOn[a.id];
     return `<label class="atog${on?' on':''}"><input type="checkbox" ${on?'checked':''} onchange="toggleAlt('${a.id}',this.checked)">
-      <span class="atog-t">${a.label}</span>
+      <span class="atog-t">${a.label} ${a.firm?'<span class="atog-firm">ponuka</span>':'<span class="atog-orient">orient.</span>'}</span>
       <span class="atog-p"><s>${f2(modul)}</s> → <b>${f2(a.price)}</b> <span class="atog-prov">${a.provider}</span></span>
-      <span class="atog-s">−${f2(modul-a.price)}</span></label>`;
+      <span class="atog-s">−${f2(modul-a.price)}</span>
+      ${a.note?`<span class="atog-note">${a.note}</span>`:''}</label>`;
   }).join('');
   html+=`<span class="alts-sum">Modul: <b>${f2(c.totalModul)}</b> &nbsp;|&nbsp; s alternatívami: <b style="color:#15803d">${f2(c.total)}</b>${c.anyAlt?` &nbsp;(ušetríš ${f2(c.altSaving)})`:''}</span>`;
   bar.innerHTML=html;
 }
-function toggleAlt(id,on){altOn[id]=on;try{localStorage.setItem('rkAlts',JSON.stringify(altOn));}catch(e){}render();}
+function toggleAlt(id,on){
+  altOn[id]=on;
+  if(on){const a=ALTS.find(x=>x.id===id);if(a&&a.group)ALTS.forEach(x=>{if(x.group===a.group&&x.id!==id)altOn[x.id]=false;});}
+  try{localStorage.setItem('rkAlts',JSON.stringify(altOn));}catch(e){}render();
+}
 
 /* ── CATEGORY SUMMARY ───────────────────────────────────── */
 function togCS(){csOpen=!csOpen;document.getElementById('cs-body').style.display=csOpen?'block':'none';document.getElementById('cs-tog').textContent=csOpen?'▴':'▾';if(csOpen)renderCS();}
