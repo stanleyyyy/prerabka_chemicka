@@ -164,6 +164,8 @@ a.ul:hover{text-decoration:underline}
 .mc-ded{font-size:15px;color:#dc2626;font-weight:600;margin:-6px 0 12px}
 .alt-tag{display:inline-block;margin-left:8px;font-size:11px;font-weight:600;color:#2563eb;background:#eff6ff;border:1px solid #bfdbfe;padding:1px 7px;border-radius:7px;white-space:nowrap}
 .alt-tag.on{color:#15803d;background:#dcfce7;border-color:#86efac}
+.alt-line{margin-top:5px;font-size:12.5px;color:#1d4ed8;background:#eff6ff;border-left:3px solid #2563eb;padding:5px 9px;border-radius:5px;white-space:normal;line-height:1.35}
+.alt-line.on{color:#15803d;background:#dcfce7;border-left-color:#16a34a}
 .mc-alt{font-size:14px;color:#2563eb;font-weight:600;background:#eff6ff;border-radius:8px;padding:8px 12px;margin-bottom:10px}
 .mc-alt.on{color:#15803d;background:#dcfce7}
 .mc-dph{font-size:14px;color:#dc2626;font-weight:600;margin-top:10px;padding-top:10px;border-top:1px dashed #e2e8f0}
@@ -400,9 +402,14 @@ function msg(t,ok=true){const el=document.getElementById('fmsg');el.textContent=
 
 /* ── HELPERS ────────────────────────────────────────────── */
 const f2=n=>n==null||isNaN(n)?'—':Number(n).toLocaleString('sk-SK',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
-const tot=c=>c.items.reduce((s,it)=>s+itemNet(it),0);
+const tot=c=>{
+  let s=0;
+  c.items.forEach(it=>{if(!altForItem(it))s+=itemNet(it);});
+  ALTS.forEach(a=>{if(altOn[a.id]){const fc=D.find(cc=>cc.items.some(it=>a.covers.includes(it.n)));if(fc===c)s+=a.price;}});
+  return s;
+};
 const grand=()=>D.reduce((s,c)=>s+tot(c),0);
-const stTot=st=>D.reduce((s,c)=>s+c.items.filter(i=>i.st===st).reduce((a,i)=>a+itemNet(i),0),0);
+const stTot=st=>D.reduce((s,c)=>s+c.items.filter(i=>i.st===st&&!altForItem(i)).reduce((a,i)=>a+itemNet(i),0),0);
 function ev(v){return String(v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function sUrl(url){if(!url)return null;try{const u=new URL(url),h=u.hostname.replace('www.',''),p=u.pathname.split('/').filter(Boolean);return p.length?h+'/'+p[p.length-1].slice(0,18):h;}catch(x){return url.slice(0,24);}}
 
@@ -571,7 +578,7 @@ function renderCats(){
         const det=[it.qty!=null?qtyTxt+'×':'',it.mj||'',it.up?f2(it.up):''].filter(Boolean).join(' ');
         const mcSu=sUrl(it.url);
         const aFor=altForItem(it),aEx=altExists(it);
-        const altLine=aFor?`<div class="mc-alt on">→ nahradené: ${aFor.provider} (${aFor.label} ${f2(aFor.price)})</div>`:(aEx?`<div class="mc-alt">⚡ alternatíva: ${aEx.provider} ${f2(aEx.price)}</div>`:'');
+        const altLine=aFor?`<div class="mc-alt on">✓ Alternatíva „${aFor.label}": ${aFor.provider} — ${f2(aFor.price)} (nahrádza Modul)</div>`:(aEx?`<div class="mc-alt">⚡ Alternatíva „${aEx.label}": ${aEx.provider} — ${f2(aEx.price)} (vypnutá)</div>`:'');
         cards+=`<div class="mc ${it.st}">
           <div class="mc-name">${ev(it.n)}</div>
           ${det?`<div class="mc-detail">${det}</div>`:''}
@@ -582,7 +589,7 @@ function renderCats(){
             <span class="mc-tot" id="rt-${ci}-${ii}" ${aFor?'style="text-decoration:line-through;color:#94a3b8"':''}>${f2(itot)}</span>
             <select class="mc-ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select>
           </div>
-          ${isWork?`<div class="mc-dph">+ DPH 23%: ${f2(dph)} &nbsp;→&nbsp; s DPH ${f2(itot*1.23)}</div>`:`<div class="mc-dph mc-dph-g">DPH v cene (tovar)</div>`}
+          ${aFor?`<div class="mc-dph mc-dph-g">Modul DPH sa neráta – nahradené alternatívou</div>`:(isWork?`<div class="mc-dph">+ DPH 23%: ${f2(dph)} &nbsp;→&nbsp; s DPH ${f2(itot*1.23)}</div>`:`<div class="mc-dph mc-dph-g">DPH v cene (tovar)</div>`)}
           <div class="mc-actions">
             <button class="mc-be${isEd?' ac':''}" onclick="togEp(${ci},${ii})">${isEd?'▲ Zavrieť':'✏ Upraviť'}</button>
             <button class="mc-bd" onclick="delRow(${ci},${ii})">✕</button>
@@ -602,22 +609,27 @@ function renderCats(){
       cat.items.forEach((it,ii)=>{
         const isEd=ek===ci+'-'+ii,ie=iec&&iec.ci===ci&&iec.ii===ii;
         const off=offQty(it),eff=effQty(it),itot=itemNet(it),ded=itemDed(it);catDed+=ded;
-        const isWork=it.sup==='Modul Company',dph=isWork?itot*0.23:0;catDph+=dph;
+        const aFor=altForItem(it),aEx=altExists(it);
+        const isWork=it.sup==='Modul Company',dph=(isWork&&!aFor)?itot*0.23:0;catDph+=dph;
         const su=sUrl(it.url);
         const urlCell=it.url?`<a class="ul" href="${ev(it.url)}" target="_blank">${ev(su||it.sup||'link')} ↗</a>`:`<span style="color:#94a3b8;font-size:13px">—</span>`;
         const nameCell=ie&&iec.f==='n'?`<input class="inp w" value="${ev(it.n)}" onblur="ic(${ci},${ii},'n',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'n',this.value)" autofocus>`:ev(it.n);
         const qtyDisp=off>0?`<b style="color:#dc2626">${eff}</b><span style="color:#94a3b8"> / ${it.qty}</span>`:(it.qty!=null?it.qty:'—');
         const qtyCell=ie&&iec.f==='qty'?`<input class="inp r" type="number" step="any" value="${it.qty??''}" style="width:56px" oninput="liveUp(${ci},${ii},'qty',this)" onblur="ic(${ci},${ii},'qty',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'qty',this.value)" autofocus>`:qtyDisp;
         const upCell=ie&&iec.f==='up'?`<input class="inp r" type="number" step="any" value="${it.up??''}" style="width:84px" oninput="liveUp(${ci},${ii},'up',this)" onblur="ic(${ci},${ii},'up',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'up',this.value)" autofocus>`:(it.up?f2(it.up):'—');
-        const dphCell=isWork?`<span style="color:#dc2626;font-variant-numeric:tabular-nums">${f2(dph)}</span>`:`<span style="color:#94a3b8;font-size:12px">v cene</span>`;
-        const aFor=altForItem(it),aEx=altExists(it);
-        const altTag=aFor?`<span class="alt-tag on">→ ${aFor.provider}</span>`:(aEx?`<span class="alt-tag">⚡ alt ${aEx.provider}</span>`:'');
+        const dphCell=aFor?`<span style="color:#94a3b8;font-size:12px">nahradené</span>`:(isWork?`<span style="color:#dc2626;font-variant-numeric:tabular-nums">${f2(dph)}</span>`:`<span style="color:#94a3b8;font-size:12px">v cene</span>`);
+        let altLine='';
+        if(aEx){
+          const cls=aFor?'alt-line on':'alt-line';
+          const state=aFor?'✓ aktívna – nahrádza Modul cenu':'vypnutá (zapni v modrom pruhu ↑)';
+          altLine=`<div class="${cls}">⚡ Alternatíva „${aEx.label}": <b>${aEx.provider} — ${f2(aEx.price)}</b> <span style="opacity:.75">(${state})</span></div>`;
+        }
         const totCell=aFor?`<s style="color:#94a3b8">${f2(itot)}</s>`:f2(itot);
         tbody+=`<tr class="R ${it.st}${isEd?' edi':''}" draggable="true"
           ondragstart="dSt(event,${ci},${ii})" ondragover="dOv(event,${ci},${ii})"
           ondragleave="dLv(event)" ondrop="dDp(event,${ci},${ii})">
           <td style="width:24px;padding:0 4px"><button class="dh">⠿</button></td>
-          <td class="ec" style="width:${anyOff?'21%':'25%'}" onclick="stIc(${ci},${ii},'n')" title="${ev(it.t)}">${nameCell}${altTag}</td>
+          <td class="ec" style="width:${anyOff?'21%':'25%'}" onclick="stIc(${ci},${ii},'n')" title="${ev(it.t)}">${nameCell}${altLine}</td>
           <td class="ec" style="width:7%;text-align:right" onclick="stIc(${ci},${ii},'qty')">${qtyCell}</td>
           <td style="width:4%;text-align:center;color:#64748b;font-size:13px">${ev(it.mj||'')}</td>
           <td class="ec" style="width:9%;text-align:right" onclick="stIc(${ci},${ii},'up')">${upCell}</td>
