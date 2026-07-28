@@ -253,20 +253,7 @@ let roomOn={detska:true,spalna:true};
 /* ── ALTERNATÍVNE PONUKY ────────────────────────────────────
    Každá alternatíva nahrádza sadu položiek (podľa názvu) jednou cenou od iného dodávateľa.
    Cena alternatívy je FINÁLNA (bez pripočítania DPH). */
-const ALTS=[
-  {id:'malby',group:'malby',label:'Maľby + penetrácia',provider:'Maliar Denis',contact:'info@maliardenis.sk',price:1200,firm:true,note:'komplet vrátane materiálu (vyber 1 z maliarskych)',
-   covers:['Príprava vnútor. podkladu WEBER (penetrácia)','Maľby akrylátové 2× ručne, do 3,8 m']},
-  {id:'malby2',group:'malby',label:'Maľby + penetrácia (2. ponuka)',provider:'Gabriš Stav & Services',price:2025,firm:true,note:'1575 práca + ~450 materiál (penetr.+farba ~1,4 €/m²)',
-   covers:['Príprava vnútor. podkladu WEBER (penetrácia)','Maľby akrylátové 2× ručne, do 3,8 m']},
-  {id:'stierka',label:'Stierkovanie stien',provider:'Gabriš Stav & Services',price:3120,firm:true,note:'2400 práca (2 vrstvy+brúsenie) + ~720 materiál (~3 €/m²)',
-   covers:['Stierkovanie stien (2 vrstvy)']},
-  {id:'sdkpriecka',label:'SDK priečka',provider:'Kovostav',price:852,note:'z cenníka 42,60 €/m² s materiálom × 20 m² – orient.',
-   covers:['Priečka SDK Rigips 125 mm dvojito, CW75 + izolácia']},
-  {id:'nivelacka',label:'Samonivelačka',provider:'Kovostav + materiál',price:1368,note:'~18 €/m² (8 práca + 10 materiál) × 76 m² – orient.',
-   covers:['Cementová samonivelizačná stierka 20 mm']},
-  {id:'podlaha',label:'Pokládka podlahy (klik)',provider:'Kovostav',price:476,note:'6,80 €/m² práca × 70 m² (krytina zvlášť – ZENN laminát) – orient.',
-   covers:['Montáž vinyl/kompozit klik podlahy']}
-];
+const ALTS=[];
 let altOn={};
 // vráti aktívnu alternatívu pokrývajúcu danú položku (alebo null)
 function altForItem(it){for(const a of ALTS){if(altOn[a.id]&&a.covers.includes(it.n))return a;}return null;}
@@ -280,33 +267,33 @@ function effQty(it){return Math.max(0,(it.qty||0)-offQty(it));}
 function itemNet(it){return effQty(it)*(it.up||0);}
 // koľko € sa odráta z položky kvôli vypnutým izbám
 function itemDed(it){return offQty(it)*(it.up||0);}
-// úspora jednej izby (materiál s DPH + práca Modul + 23% DPH)
-function roomSaving(k){let mat=0,work=0;D.forEach(c=>c.items.forEach(it=>{if(it.rooms&&it.rooms[k]){const v=it.rooms[k]*(it.up||0);if(it.sup==='Modul Company')work+=v;else mat+=v;}}));return mat+work*1.23;}
+// úspora jednej izby (bez DPH – Modul aj materiál sa počítajú priamo)
+function roomSaving(k){let mat=0,work=0;D.forEach(c=>c.items.forEach(it=>{if(it.rooms&&it.rooms[k]){const v=it.rooms[k]*(it.up||0);if(it.sup==='Modul Company')work+=v;else mat+=v;}}));return mat+work;}
 
 const INIT=[
   {name:"PRÍPRAVA",items:[{n:"Projekt / statické posúdenie",t:"statik – obhliadka + písomné posúdenie",mj:"kpl",qty:1,up:400,sup:"",url:"",st:"Zaplatené",note:"reálna cena júl 2026"},{n:"Stavebné povolenie / ohlásenie",t:"",mj:"kpl",qty:1,up:0,sup:"",url:"",st:"Odhad",note:"over na stavebnom úrade"}]},
   {name:"BÚRACIE A DEMONTÁŽNE PRÁCE",items:[
-    {n:"Búranie dlažieb",t:"Modul Company",mj:"m²",qty:68,up:6.60,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Búranie priečok tehla >4 m² (115–200 mm)",t:"Modul Company",mj:"m²",qty:26,up:20,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Odstránenie malieb oškrabaním",t:"Modul Company",mj:"m²",qty:240,up:2.40,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:35,spalna:39}},
-    {n:"Demontáž drevených/laminát. podláh + lišty",t:"Modul Company",mj:"m²",qty:35,up:4.80,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},
-    {n:"Odstránenie linolea lepeného",t:"Modul Company",mj:"m²",qty:72,up:8.40,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Demontáž a odvoz starého nábytku",t:"Modul Company",mj:"ks",qty:1.5,up:300,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Demontáž záchoda",t:"Modul Company",mj:"ks",qty:1,up:30,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Demontáž vane do sute",t:"Modul Company",mj:"ks",qty:1,up:50,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Demontáž umývadla",t:"Modul Company",mj:"ks",qty:1,up:30,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Vybúranie kovových zárubní + krídla",t:"Modul Company",mj:"ks",qty:4,up:50,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Prenájom kontajneru 8 m³",t:"Modul Company",mj:"ks",qty:1,up:700,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Skládka odpadu + doprava",t:"Modul Company",mj:"ks",qty:50,up:6,sup:"Modul Company",url:"",st:"Určené",note:""}
+    {n:"Búranie dlažieb",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:68,up:6.19,sup:"Modul Company",url:"",st:"Určené",note:"cenník 6,60 €/m²"},
+    {n:"Búranie priečok tehla >4 m² (115–200 mm)",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:26,up:18.76,sup:"Modul Company",url:"",st:"Určené",note:"cenník 20 €/m²"},
+    {n:"Odstránenie malieb oškrabaním",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:240,up:2.25,sup:"Modul Company",url:"",st:"Určené",note:"cenník 2,40 €/m²",rooms:{detska:35,spalna:39}},
+    {n:"Demontáž drevených/laminát. podláh + lišty",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:35,up:4.50,sup:"Modul Company",url:"",st:"Určené",note:"cenník 4,80 €/m²",rooms:{detska:14.5,spalna:18}},
+    {n:"Odstránenie linolea lepeného",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:72,up:7.88,sup:"Modul Company",url:"",st:"Určené",note:"cenník 8,40 €/m²"},
+    {n:"Demontáž a odvoz starého nábytku",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:1.5,up:281.34,sup:"Modul Company",url:"",st:"Určené",note:"cenník 300 €/ks"},
+    {n:"Demontáž záchoda",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:1,up:28.13,sup:"Modul Company",url:"",st:"Určené",note:"cenník 30 €"},
+    {n:"Demontáž vane do sute",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:1,up:46.89,sup:"Modul Company",url:"",st:"Určené",note:"cenník 50 €"},
+    {n:"Demontáž umývadla",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:1,up:28.13,sup:"Modul Company",url:"",st:"Určené",note:"cenník 30 €"},
+    {n:"Vybúranie kovových zárubní + krídla",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:4,up:46.89,sup:"Modul Company",url:"",st:"Určené",note:"cenník 50 €/ks"},
+    {n:"Prenájom kontajneru 8 m³",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:1,up:656.45,sup:"Modul Company",url:"",st:"Určené",note:"cenník 700 €"},
+    {n:"Skládka odpadu + doprava",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:50,up:5.63,sup:"Modul Company",url:"",st:"Určené",note:"cenník 6 €/ks"}
   ]},
-  {name:"ELEKTROINŠTALÁCIA",items:[{n:"Kompletná nová elektroinštalácia",t:"rozvody, ističe, zásuvky, vypínače, montáž",mj:"m²",qty:70.8,up:28.25,sup:"",url:"",st:"Odhad",note:"odhad ~28 €/m², proporčne na izbu",rooms:{detska:14.5,spalna:18}}]},
+  {name:"ELEKTROINŠTALÁCIA",items:[{n:"Kompletná nová elektroinštalácia",t:"rozvody, ističe, zásuvky, vypínače, montáž",mj:"kpl",qty:1,up:2500,sup:"",url:"",st:"Odhad",note:"zdvihnuté na 2 500 €"}]},
   {name:"MURÁRSKE + SADROKARTÓN",items:[
-    {n:"Priečka SDK Rigips 125 mm dvojito, CW75 + izolácia",t:"Modul Company",mj:"m²",qty:20,up:66,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Podhľad SDK biely 12,5 mm závesný Q2",t:"Modul Company – celý byt",mj:"m²",qty:76,up:39.60,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},
-    {n:"Priečka YTONG 80 mm",t:"Modul Company",mj:"m²",qty:2.5,up:36,sup:"Modul Company",url:"",st:"Určené",note:""}
+    {n:"Priečka SDK Rigips 125 mm dvojito, CW75 + izolácia",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:20,up:61.89,sup:"Modul Company",url:"",st:"Určené",note:"cenník 66 €/m²"},
+    {n:"Podhľad SDK biely 12,5 mm závesný Q2",t:"Modul Company – celý byt, dohoda (core 16 675 €)",mj:"m²",qty:76,up:37.14,sup:"Modul Company",url:"",st:"Určené",note:"cenník 39,60 €/m²",rooms:{detska:14.5,spalna:18}},
+    {n:"Priečka YTONG 80 mm",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:2.5,up:33.76,sup:"Modul Company",url:"",st:"Určené",note:"cenník 36 €/m²"}
   ]},
   {name:"ZDRAVOTECHNIKA",items:[
-    {n:"Prípojné body vody a kanalizácie + materiál",t:"Modul Company",mj:"ks",qty:10,up:95,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Prípojné body vody a kanalizácie + materiál",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:10,up:89.09,sup:"Modul Company",url:"",st:"Určené",note:"cenník 95 €/ks"},
     {n:"Prerábka radiátora kuchyňa",t:"",mj:"kpl",qty:1,up:250,sup:"",url:"",st:"Zaplatené",note:""},
     {n:"Prerábka radiátora kúpeľňa",t:"",mj:"kpl",qty:1,up:300,sup:"",url:"",st:"Odhad",note:""}
   ]},
@@ -341,10 +328,10 @@ const INIT=[
     {n:"Dóza SAT SATDEVO27BI",t:"",mj:"ks",qty:3,up:3.64,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATDEVO27BI",st:"Určené",note:""},
     {n:"Držadlo SIKOMADLO2",t:"",mj:"ks",qty:1,up:13.16,sup:"SIKO.sk",url:"https://www.siko.sk/p/SIKOMADLO2",st:"Určené",note:""},
     {n:"Vynesenie SIKO + obvodové lišty na podlahu",t:"rozdiel ponuky: 6 400 − 5 941 €",mj:"kpl",qty:1,up:459,sup:"SIKO.sk",url:"",st:"Určené",note:"navýšenie ponuky SIKO"},
-    {n:"Kúpeľňa obloženie + geberit + sprcha (na kľúč)",t:"Modul Company – práca + stavebný materiál, jolly hrana, napojenie sanity",mj:"kpl",qty:1,up:3000,sup:"Modul Company",url:"",st:"Určené",note:"obklady, dlažba, geberit, sprcha – práca"}
+    {n:"Kúpeľňa obloženie + geberit + sprcha (na kľúč)",t:"Modul Company – práca + stavebný materiál, jolly hrana, napojenie sanity",mj:"kpl",qty:1,up:2814.50,sup:"Modul Company",url:"",st:"Určené",note:"dohoda – core 16 675 € (cenník 3 000 €)"}
   ]},
-  {name:"PODLAHY (laminát)",items:[{n:"ZENN CLCF 55 PORTO laminát 74,39 m²",t:"Siko ponuka – materiál, celý byt",mj:"m²",qty:74.39,up:28.93,sup:"SIKO.sk",url:"https://www.siko.sk/p/60002235",st:"Určené",note:"⚠ Modul montuje vinyl/klik – over krytinu",rooms:{detska:14.5,spalna:18}},{n:"Cementová samonivelizačná stierka 20 mm",t:"Modul Company",mj:"m²",qty:76,up:40,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},{n:"Montáž vinyl/kompozit klik podlahy",t:"Modul Company",mj:"m²",qty:70,up:12,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},{n:"MDF lišty pod 45° + akryl",t:"Modul Company",mj:"bm",qty:70,up:7.80,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:15.6,spalna:17.4}}]},
-  {name:"DVERE",items:[{n:"Vnútorné dvere AURA6 70L + AURA7 80L + 80P (3 ks + zárubne)",t:"biele matné, SIKO ponuka č.1184514 (po zľave)",mj:"kpl",qty:1,up:949.87,sup:"SIKO.sk",url:"",st:"Určené",note:"platí do 26.8.2026, v hotovosti"},{n:"Kovanie – kľučky HIT-HR (1× WC + 2× bez zámku)",t:"biela mat, SIKO ponuka č.1184514",mj:"kpl",qty:1,up:76.33,sup:"SIKO.sk",url:"",st:"Určené",note:""},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Odhad",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company",mj:"ks",qty:4,up:78,sup:"Modul Company",url:"",st:"Určené",note:""}]},
+  {name:"PODLAHY (laminát)",items:[{n:"ZENN CLCF 55 PORTO laminát 74,39 m²",t:"Siko ponuka – materiál, celý byt",mj:"m²",qty:74.39,up:28.93,sup:"SIKO.sk",url:"https://www.siko.sk/p/60002235",st:"Určené",note:"⚠ Modul montuje vinyl/klik – over krytinu",rooms:{detska:14.5,spalna:18}},{n:"Cementová samonivelizačná stierka 20 mm",t:"Modul Company – EXTRA, mimo core 16 675 €",mj:"kpl",qty:1,up:2000,sup:"Modul Company",url:"",st:"Určené",note:"extra 2 000 € cez Modul (cenník 40 €/m² × 76)"},{n:"Montáž vinyl/kompozit klik podlahy",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:70,up:11.25,sup:"Modul Company",url:"",st:"Určené",note:"cenník 12 €/m²",rooms:{detska:14.5,spalna:18}},{n:"MDF lišty pod 45° + akryl",t:"Modul Company – dohoda (core 16 675 €)",mj:"bm",qty:70,up:7.31,sup:"Modul Company",url:"",st:"Určené",note:"cenník 7,80 €/bm",rooms:{detska:15.6,spalna:17.4}}]},
+  {name:"DVERE",items:[{n:"Vnútorné dvere AURA6 70L + AURA7 80L + 80P (3 ks + zárubne)",t:"biele matné, SIKO ponuka č.1184514 (po zľave)",mj:"kpl",qty:1,up:949.87,sup:"SIKO.sk",url:"",st:"Určené",note:"platí do 26.8.2026, v hotovosti"},{n:"Kovanie – kľučky HIT-HR (1× WC + 2× bez zámku)",t:"biela mat, SIKO ponuka č.1184514",mj:"kpl",qty:1,up:76.33,sup:"SIKO.sk",url:"",st:"Určené",note:""},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Odhad",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:4,up:73.15,sup:"Modul Company",url:"",st:"Určené",note:"cenník 78 €/ks"}]},
   {name:"KUCHYŇA",items:[{n:"Kuchynská linka + spotrebiče – celok",t:"skrinky, doska, rúra, varná doska, digestor, chladnička, montáž",mj:"kpl",qty:1,up:6600,sup:"",url:"",st:"Určené",note:""},{n:"Drez SATSINK GE3 horný jazmín",t:"Siko ponuka",mj:"ks",qty:1,up:107.07,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATSINKGE3J",st:"Určené",note:""},{n:"Kuchynská batéria",t:"",mj:"ks",qty:1,up:80,sup:"",url:"",st:"Odhad",note:""},{n:"Montáž kuchyne",t:"montáž linky + spotrebičov",mj:"kpl",qty:1,up:1000,sup:"",url:"",st:"Odhad",note:"do 1 000 €"}]},
   {name:"PRÁČKA + SUŠIČKA",items:[{n:"Set Gorenje WG494A11 + DG48C NatureDry",t:"Práčka 9 kg + Sušička 8 kg",mj:"kpl",qty:1,up:881,sup:"Alza.sk",url:"https://www.alza.sk/gorenje-wg494a11-gorenje-dg48c-naturedry-d13374233.htm",st:"Určené",note:""},{n:"Skriňa na práčku GLAW biela",t:"99×44×40 cm",mj:"ks",qty:1,up:279,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/skrina-na-pracku-a-susicku-glaw-biela-415016104",st:"Určené",note:""}]},
   {name:"NÁBYTOK – JEDÁLEŇ / SPÁLŇA",items:[
@@ -360,9 +347,9 @@ const INIT=[
     {n:"Stropné LED svietidlo JOKO biela",t:"",mj:"ks",qty:1,up:34.90,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/stropne-led-svietidlo-joko-biela-28751800",st:"Určené",note:""}
   ]},
   {name:"MAĽBY A POVRCHOVÉ ÚPRAVY",items:[
-    {n:"Stierkovanie stien (2 vrstvy)",t:"Modul Company",mj:"m²",qty:240,up:12,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:35,spalna:39}},
-    {n:"Príprava vnútor. podkladu WEBER (penetrácia)",t:"Modul Company",mj:"m²",qty:315,up:2.40,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:49.5,spalna:57}},
-    {n:"Maľby akrylátové 2× ručne, do 3,8 m",t:"Modul Company",mj:"m²",qty:315,up:7.20,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:49.5,spalna:57}}
+    {n:"Stierkovanie stien (2 vrstvy)",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:240,up:11.25,sup:"Modul Company",url:"",st:"Určené",note:"cenník 12 €/m² – v 16 675 €",rooms:{detska:35,spalna:39}},
+    {n:"Príprava vnútor. podkladu WEBER (penetrácia)",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:315,up:2.25,sup:"Modul Company",url:"",st:"Určené",note:"cenník 2,40 €/m² – v 16 675 €",rooms:{detska:49.5,spalna:57}},
+    {n:"Maľby akrylátové 2× ručne, do 3,8 m – Denis",t:"Maliar Denis – komplet vrátane farby, celý byt",mj:"kpl",qty:1,up:1200,sup:"Maliar Denis",url:"",st:"Určené",note:"mimo Modulu (penetráciu robí Modul)"}
   ]},
   {name:"OSTATNÉ",items:[{n:"Drobný materiál",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Odhad",note:""},{n:"Upratovanie po prerábke",t:"",mj:"kpl",qty:1,up:100,sup:"",url:"",st:"Odhad",note:""}]}
 ];
@@ -385,7 +372,7 @@ document.addEventListener('keydown',e=>{
 
 /* ── INIT / SAVE ────────────────────────────────────────── */
 function init(){
-  try{const s=localStorage.getItem('rkBytu3');if(s)D=JSON.parse(s);}catch(e){}
+  try{const s=localStorage.getItem('rkBytu7');if(s)D=JSON.parse(s);}catch(e){}
   try{const rs=localStorage.getItem('rkRooms');if(rs)roomOn={...roomOn,...JSON.parse(rs)};}catch(e){}
   try{const as=localStorage.getItem('rkAlts');if(as)altOn={...altOn,...JSON.parse(as)};}catch(e){}
   if(!D)D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
@@ -400,11 +387,11 @@ function applyRooms(){
   D.forEach(c=>c.items.forEach(it=>{if(map[it.n])it.rooms=map[it.n];else delete it.rooms;}));
 }
 function uid(){return Math.random().toString(36).slice(2);}
-function _sv(){try{localStorage.setItem('rkBytu3',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
+function _sv(){try{localStorage.setItem('rkBytu7',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
 function save(){pushHist();_sv();}
 function resetAll(){
   if(!confirm('Zmazať uložené dáta v prehliadači a načítať čerstvú verziu?\n\n(Stav položiek ako Zaplatené/Objednané sa stratí. Ak si chceš zmeny zachovať, najprv daj ⬇ JSON.)'))return;
-  try{localStorage.removeItem('rkBytu3');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
+  try{localStorage.removeItem('rkBytu7');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
   D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
   roomOn={detska:true,spalna:true};altOn={};
   ek=null;iec=null;newItem=null;coll={};hist=[];histIdx=-1;
@@ -452,28 +439,28 @@ function calc(){
     const v=itemNet(it);
     if(it.sup==='Modul Company')work+=v; else goods+=v;
     if(it.st==='Zaplatené')paid+=v;
-    ded+=itemDed(it)*(it.sup==='Modul Company'?1.23:1);
+    ded+=itemDed(it);
   }));
-  const totalModul=goods+work*1.23;
+  const totalModul=goods+work;
   // aplikuj aktívne alternatívy: odober pokryté Modul položky, pridaj cenu alternatívy
   let altAdd=0,altReplNet=0,altSaving=0;
   ALTS.forEach(a=>{
     if(!altOn[a.id])return;
     let covNet=0;D.forEach(c=>c.items.forEach(it=>{if(a.covers.includes(it.n))covNet+=itemNet(it);}));
-    altReplNet+=covNet;altAdd+=a.price;altSaving+=(covNet*1.23-a.price);
+    altReplNet+=covNet;altAdd+=a.price;altSaving+=(covNet-a.price);
   });
   const workAfter=work-altReplNet;
-  const vat=workAfter*0.23;
-  const total=goods+workAfter*1.23+altAdd;
+  const vat=0; // Modul bez DPH – 23 % sa už neráta
+  const total=goods+workAfter+altAdd;
   return {goods,work:workAfter,vat,paid,total,totalModul,altAdd,altSaving,ded,
           anyOff:Object.values(roomOn).some(v=>!v),anyAlt:Object.values(altOn).some(v=>v)};
 }
 function renderStats(){
   const c=calc();
   document.getElementById('stats').innerHTML=[
-    ['SPOLU s DPH',f2(c.total),'background:rgba(30,58,95,.08);border-color:#1e3a5f'],
-    ['DPH 23% z prác',f2(c.vat),'background:rgba(220,38,38,.06);border-color:#fca5a5'],
-    ['Bez DPH prác (dohoda)',f2(c.total-c.vat),'background:rgba(22,163,74,.08);border-color:#86efac'],
+    ['SPOLU (bez DPH)',f2(c.total),'background:rgba(30,58,95,.08);border-color:#1e3a5f'],
+    ['Práce Modul',f2(c.work),'background:rgba(37,99,235,.06);border-color:#93c5fd'],
+    ['Materiál / tovar',f2(c.goods),'background:rgba(22,163,74,.08);border-color:#86efac'],
     ['🟢 Zaplatené',f2(c.paid),''],
   ].map(([l,v,s])=>`<div class="stat" style="${s}"><div class="sl">${l}</div><div class="sv">${v}</div></div>`).join('');
   renderRooms();renderAlts();
@@ -497,7 +484,7 @@ function renderAlts(){
   let html='<span class="rooms-lbl">Alternatívne ceny:</span>';
   html+=ALTS.map(a=>{
     let covNet=0;D.forEach(cc=>cc.items.forEach(it=>{if(a.covers.includes(it.n))covNet+=itemNet(it);}));
-    const modul=covNet*1.23,on=altOn[a.id];
+    const modul=covNet,on=altOn[a.id];
     return `<label class="atog${on?' on':''}"><input type="checkbox" ${on?'checked':''} onchange="toggleAlt('${a.id}',this.checked)">
       <span class="atog-t">${a.label} ${a.firm?'<span class="atog-firm">ponuka</span>':'<span class="atog-orient">orient.</span>'}</span>
       <span class="atog-p"><s>${f2(modul)}</s> → <b>${f2(a.price)}</b> <span class="atog-prov">${a.provider}</span></span>
@@ -591,7 +578,6 @@ function renderCats(){
       cat.items.forEach((it,ii)=>{
         const isEd=ek===ci+'-'+ii;
         const off=offQty(it),eff=effQty(it),itot=itemNet(it),ded=itemDed(it);
-        const isWork=it.sup==='Modul Company',dph=isWork?itot*0.23:0;
         const qtyTxt=off>0?`<b style="color:#dc2626">${eff}</b> z ${it.qty}`:(it.qty!=null?it.qty:'');
         const det=[it.qty!=null?qtyTxt+'×':'',it.mj||'',it.up?f2(it.up):''].filter(Boolean).join(' ');
         const mcSu=sUrl(it.url);
@@ -607,7 +593,6 @@ function renderCats(){
             <span class="mc-tot" id="rt-${ci}-${ii}" ${aFor?'style="text-decoration:line-through;color:#94a3b8"':''}>${f2(itot)}</span>
             <select class="mc-ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select>
           </div>
-          ${aFor?`<div class="mc-dph mc-dph-g">Modul DPH sa neráta – nahradené alternatívou</div>`:(isWork?`<div class="mc-dph">+ DPH 23%: ${f2(dph)} &nbsp;→&nbsp; s DPH ${f2(itot*1.23)}</div>`:`<div class="mc-dph mc-dph-g">DPH v cene (tovar)</div>`)}
           <div class="mc-actions">
             <button class="mc-be${isEd?' ac':''}" onclick="togEp(${ci},${ii})">${isEd?'▲ Zavrieť':'✏ Upraviť'}</button>
             <button class="mc-bd" onclick="delRow(${ci},${ii})">✕</button>
@@ -623,19 +608,17 @@ function renderCats(){
     } else {
       /* ── DESKTOP TABLE ── */
       const anyOff=Object.values(roomOn).some(v=>!v);
-      let tbody='',catDed=0,catDph=0;
+      let tbody='',catDed=0;
       cat.items.forEach((it,ii)=>{
         const isEd=ek===ci+'-'+ii,ie=iec&&iec.ci===ci&&iec.ii===ii;
         const off=offQty(it),eff=effQty(it),itot=itemNet(it),ded=itemDed(it);catDed+=ded;
         const aFor=altForItem(it),aEx=altExists(it);
-        const isWork=it.sup==='Modul Company',dph=(isWork&&!aFor)?itot*0.23:0;catDph+=dph;
         const su=sUrl(it.url);
         const urlCell=it.url?`<a class="ul" href="${ev(it.url)}" target="_blank">${ev(su||it.sup||'link')} ↗</a>`:`<span style="color:#94a3b8;font-size:13px">—</span>`;
         const nameCell=ie&&iec.f==='n'?`<input class="inp w" value="${ev(it.n)}" onblur="ic(${ci},${ii},'n',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'n',this.value)" autofocus>`:ev(it.n);
         const qtyDisp=off>0?`<b style="color:#dc2626">${eff}</b><span style="color:#94a3b8"> / ${it.qty}</span>`:(it.qty!=null?it.qty:'—');
         const qtyCell=ie&&iec.f==='qty'?`<input class="inp r" type="number" step="any" value="${it.qty??''}" style="width:56px" oninput="liveUp(${ci},${ii},'qty',this)" onblur="ic(${ci},${ii},'qty',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'qty',this.value)" autofocus>`:qtyDisp;
         const upCell=ie&&iec.f==='up'?`<input class="inp r" type="number" step="any" value="${it.up??''}" style="width:84px" oninput="liveUp(${ci},${ii},'up',this)" onblur="ic(${ci},${ii},'up',this.value)" onkeydown="if(event.key==='Enter')ic(${ci},${ii},'up',this.value)" autofocus>`:(it.up?f2(it.up):'—');
-        const dphCell=aFor?`<span style="color:#94a3b8;font-size:12px">nahradené</span>`:(isWork?`<span style="color:#dc2626;font-variant-numeric:tabular-nums">${f2(dph)}</span>`:`<span style="color:#94a3b8;font-size:12px">v cene</span>`);
         let altLine='';
         if(aEx){
           const cls=aFor?'alt-line on':'alt-line';
@@ -650,9 +633,8 @@ function renderCats(){
           <td class="ec" style="width:${anyOff?'21%':'25%'}" onclick="stIc(${ci},${ii},'n')" title="${ev(it.t)}">${nameCell}${altLine}</td>
           <td class="ec" style="width:7%;text-align:right" onclick="stIc(${ci},${ii},'qty')">${qtyCell}</td>
           <td style="width:4%;text-align:center;color:#64748b;font-size:13px">${ev(it.mj||'')}</td>
-          <td class="ec" style="width:9%;text-align:right" onclick="stIc(${ci},${ii},'up')">${upCell}</td>
-          <td class="tot" style="width:10%" id="rt-${ci}-${ii}">${totCell}</td>
-          <td style="width:9%;text-align:right">${dphCell}</td>
+          <td class="ec" style="width:11%;text-align:right" onclick="stIc(${ci},${ii},'up')">${upCell}</td>
+          <td class="tot" style="width:13%" id="rt-${ci}-${ii}">${totCell}</td>
           ${anyOff?`<td style="width:8%;text-align:right;color:#dc2626;font-weight:600;font-variant-numeric:tabular-nums">${ded>0?'−'+f2(ded):'—'}</td>`:''}
           <td style="width:11%"><select class="ss ${it.st}" onchange="chSt(${ci},${ii},this.value)">${SO.map(s=>`<option value="${s}"${s===it.st?' selected':''}>${SI[s]} ${s}</option>`).join('')}</select></td>
           <td style="width:11%">${urlCell}</td>
@@ -663,13 +645,12 @@ function renderCats(){
         </tr>`;
         if(isEd)tbody+=deskEp(ci,ii);
       });
-      const nc=anyOff?11:10;
+      const nc=anyOff?10:9;
       return `<div class="cat dt-view">${hdr}<div style="border-top:1px solid rgba(255,255,255,.15)"><table>
         <thead><tr>
           <th style="width:24px"></th><th style="width:${anyOff?'21%':'25%'}">Položka</th>
           <th style="width:7%;text-align:right">Počet</th><th style="width:4%;text-align:center">MJ</th>
-          <th style="width:9%;text-align:right">Cena/ks</th><th style="width:10%;text-align:right">Bez DPH</th>
-          <th style="width:9%;text-align:right;color:#dc2626">DPH 23%</th>
+          <th style="width:11%;text-align:right">Cena/ks</th><th style="width:13%;text-align:right">Spolu (bez DPH)</th>
           ${anyOff?'<th style="width:8%;text-align:right;color:#dc2626">− izby</th>':''}
           <th style="width:11%">Stav</th><th style="width:11%">Odkaz</th><th style="width:8%"></th>
         </tr></thead>
@@ -677,7 +658,6 @@ function renderCats(){
           <tr class="sr">
             <td colspan="5" style="padding:7px 12px"><span class="srl">∑ medzisúčet – ${cat.items.length} položiek</span></td>
             <td class="srv" style="padding:7px 10px" id="cst-${ci}">${f2(t)}</td>
-            <td class="srv" style="padding:7px 10px;color:#dc2626;font-size:14px">${catDph>0?f2(catDph):''}</td>
             ${anyOff?`<td class="srv" style="padding:7px 10px;color:#dc2626;font-size:14px">${catDed>0?'−'+f2(catDed):''}</td>`:''}
             <td colspan="3"></td>
           </tr>
