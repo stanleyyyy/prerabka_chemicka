@@ -61,10 +61,15 @@ button.b.rst:hover{background:#fef2f2}
 .cstbl th{padding:7px 10px;text-align:left;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;background:#f8fafc}
 .cstbl td{padding:6px 10px;border-bottom:1px solid #f1f5f9;color:#1e293b}
 .cstbl tr:last-child td{font-weight:600;background:rgba(217,119,6,.06);border-bottom:none}
+.cstbl tr.cs-jump{cursor:pointer}
+.cstbl tr.cs-jump:hover td{background:rgba(37,99,235,.09)}
+.cstbl tr.cs-jump td:first-child::after{content:" ↧";color:#93c5fd;font-size:11px}
 .cdot{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:7px;vertical-align:middle}
 /* Categories */
 .cats{padding:12px 20px;display:flex;flex-direction:column;gap:10px}
-.cat{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#fff}
+.cat{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#fff;scroll-margin-top:66px}
+.cat.flash{animation:catflash 1.1s ease-out}
+@keyframes catflash{0%{box-shadow:0 0 0 3px rgba(37,99,235,.55)}100%{box-shadow:0 0 0 3px rgba(37,99,235,0)}}
 .ch{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;user-select:none}
 .cn{font-size:14px;font-weight:600;color:#fff}
 .ct{font-size:15px;font-weight:600;color:rgba(255,255,255,.9)}
@@ -503,11 +508,17 @@ function toggleAlt(id,on){
 
 /* ── CATEGORY SUMMARY ───────────────────────────────────── */
 function togCS(){csOpen=!csOpen;document.getElementById('cs-body').style.display=csOpen?'block':'none';document.getElementById('cs-tog').textContent=csOpen?'▴':'▾';if(csOpen)renderCS();}
+function goCat(ci){
+  if(coll[ci]){coll[ci]=false;renderCats();}
+  const el=document.getElementById('cat-'+ci);if(!el)return;
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+  el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
+}
 function renderCS(){
   const g=grand();
   document.getElementById('cs-body').innerHTML=`<table class="cstbl">
     <thead><tr><th style="width:50%">Kategória</th><th style="text-align:right;width:27%">Suma</th><th style="text-align:right;width:12%">%</th><th style="text-align:right;width:11%">pol.</th></tr></thead>
-    <tbody>${D.map((c,ci)=>`<tr><td><span class="cdot" style="background:${c.color}"></span>${ev(c.name)}</td><td style="text-align:right;font-variant-numeric:tabular-nums" id="cs-${ci}">${f2(tot(c))}</td><td style="text-align:right;color:#94a3b8">${g>0?Math.round(tot(c)/g*100):0}%</td><td style="text-align:right;color:#94a3b8">${c.items.length}</td></tr>`).join('')}
+    <tbody>${D.map((c,ci)=>`<tr class="cs-jump" onclick="goCat(${ci})" title="Prejsť na kategóriu"><td><span class="cdot" style="background:${c.color}"></span>${ev(c.name)}</td><td style="text-align:right;font-variant-numeric:tabular-nums" id="cs-${ci}">${f2(tot(c))}</td><td style="text-align:right;color:#94a3b8">${g>0?Math.round(tot(c)/g*100):0}%</td><td style="text-align:right;color:#94a3b8">${c.items.length}</td></tr>`).join('')}
     <tr><td><b>SPOLU (bez rezervy)</b></td><td style="text-align:right;font-variant-numeric:tabular-nums" id="cs-grand">${f2(g)}</td><td></td><td></td></tr></tbody>
   </table>`;
 }
@@ -571,7 +582,7 @@ function renderCats(){
       <div style="display:flex;align-items:center;gap:5px"><span class="cn">${ev(cat.name)}</span>${badges}</div>
       <div style="display:flex;align-items:center;gap:10px"><span class="ct" id="cht-${ci}">${f2(t)}</span><span style="color:rgba(255,255,255,.5);font-size:22px">${isC?'▸':'▾'}</span></div>
     </div>`;
-    if(isC)return `<div class="cat">${hdr}</div>`;
+    if(isC)return `<div class="cat" id="cat-${ci}">${hdr}</div>`;
 
     if(mob){
       /* ── MOBILE CARDS ── */
@@ -601,7 +612,7 @@ function renderCats(){
           ${isEd?mEp(ci,ii):''}
         </div>`;
       });
-      return `<div class="cat">${hdr}<div class="mc-list">
+      return `<div class="cat" id="cat-${ci}">${hdr}<div class="mc-list">
         ${cards}
         <div class="mc-sub"><span class="mc-sub-l">∑ medzisúčet – ${cat.items.length} pol.</span><span class="mc-sub-v" id="cst-${ci}">${f2(t)}</span></div>
         <button class="mc-add" onclick="addRow(${ci})">＋ Pridať položku</button>
@@ -647,7 +658,7 @@ function renderCats(){
         if(isEd)tbody+=deskEp(ci,ii);
       });
       const nc=anyOff?10:9;
-      return `<div class="cat dt-view">${hdr}<div style="border-top:1px solid rgba(255,255,255,.15)"><table>
+      return `<div class="cat dt-view" id="cat-${ci}">${hdr}<div style="border-top:1px solid rgba(255,255,255,.15)"><table>
         <thead><tr>
           <th style="width:24px"></th><th style="width:${anyOff?'21%':'25%'}">Položka</th>
           <th style="width:7%;text-align:right">Počet</th><th style="width:4%;text-align:center">MJ</th>
