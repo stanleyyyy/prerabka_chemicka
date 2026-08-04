@@ -273,27 +273,28 @@ function roomSaving(k){let mat=0,work=0;D.forEach(c=>c.items.forEach(it=>{if(it.
 const INIT=[
   {name:"PRÍPRAVA",items:[{n:"Projekt / statické posúdenie",t:"statik – obhliadka + písomné posúdenie",mj:"kpl",qty:1,up:400,sup:"",url:"",st:"Zaplatené",note:"reálna cena júl 2026"},{n:"Stavebné povolenie / ohlásenie",t:"",mj:"kpl",qty:1,up:0,sup:"",url:"",st:"Odhad",note:"over na stavebnom úrade"}]},
   {name:"BÚRACIE A DEMONTÁŽNE PRÁCE",items:[
-    {n:"Búranie dlažieb",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:68,up:6.19,sup:"Modul Company",url:"",st:"Určené",note:"cenník 6,60 €/m²"},
-    {n:"Búranie priečok tehla >4 m² (115–200 mm)",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:26,up:18.76,sup:"Modul Company",url:"",st:"Určené",note:"cenník 20 €/m²"},
-    {n:"Odstránenie malieb oškrabaním",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:240,up:2.25,sup:"Modul Company",url:"",st:"Určené",note:"cenník 2,40 €/m²",rooms:{detska:35,spalna:39}},
-    {n:"Demontáž drevených/laminát. podláh + lišty",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:35,up:4.50,sup:"Modul Company",url:"",st:"Určené",note:"cenník 4,80 €/m²",rooms:{detska:14.5,spalna:18}},
-    {n:"Odstránenie linolea lepeného",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:72,up:7.88,sup:"Modul Company",url:"",st:"Určené",note:"cenník 8,40 €/m²"},
-    {n:"Demontáž a odvoz starého nábytku",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:1.5,up:281.34,sup:"Modul Company",url:"",st:"Určené",note:"cenník 300 €/ks"},
-    {n:"Demontáž záchoda",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:1,up:28.13,sup:"Modul Company",url:"",st:"Určené",note:"cenník 30 €"},
-    {n:"Demontáž vane do sute",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:1,up:46.89,sup:"Modul Company",url:"",st:"Určené",note:"cenník 50 €"},
-    {n:"Demontáž umývadla",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:1,up:28.13,sup:"Modul Company",url:"",st:"Určené",note:"cenník 30 €"},
-    {n:"Vybúranie kovových zárubní + krídla",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:4,up:46.89,sup:"Modul Company",url:"",st:"Určené",note:"cenník 50 €/ks"},
-    {n:"Prenájom kontajneru 8 m³",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:1,up:656.45,sup:"Modul Company",url:"",st:"Určené",note:"cenník 700 €"},
-    {n:"Skládka odpadu + doprava",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:50,up:5.63,sup:"Modul Company",url:"",st:"Určené",note:"cenník 6 €/ks"}
+    {n:"Búranie dlažieb",t:"Modul Company – finálna CP",mj:"m²",qty:68,up:6.60,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Búranie priečok tehla >4 m² (115–200 mm)",t:"Modul Company – finálna CP",mj:"m²",qty:26,up:20,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Odstránenie malieb oškrabaním",t:"Modul Company – finálna CP",mj:"m²",qty:240,up:2.40,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:35,spalna:39}},
+    {n:"Demontáž drevených/laminát. podláh + lišty",t:"Modul Company – finálna CP",mj:"m²",qty:35,up:4.80,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},
+    {n:"Odstránenie linolea lepeného",t:"Modul Company – finálna CP",mj:"m²",qty:72,up:8.40,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Demontáž a odvoz starého nábytku",t:"Modul Company – finálna CP",mj:"ks",qty:1.5,up:167,sup:"Modul Company",url:"",st:"Určené",note:"znížené z 300 €/ks"},
+    {n:"Demontáž záchoda",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:30,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Demontáž vane do sute",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:50,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Demontáž umývadla",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:30,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Vybúranie kovových zárubní + krídla",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:55,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Vybúranie drevených zárubní + krídla",t:"Modul Company – finálna CP",mj:"ks",qty:4,up:24,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Prenájom kontajneru 8 m³",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:700,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Skládka odpadu + doprava",t:"Modul Company – finálna CP",mj:"ks",qty:50,up:6,sup:"Modul Company",url:"",st:"Určené",note:""}
   ]},
-  {name:"ELEKTROINŠTALÁCIA",items:[{n:"Kompletná nová elektroinštalácia",t:"rozvody, ističe, zásuvky, vypínače, montáž",mj:"kpl",qty:1,up:2500,sup:"",url:"",st:"Odhad",note:"zdvihnuté na 2 500 €"}]},
+  {name:"ELEKTROINŠTALÁCIA",items:[{n:"Kompletná nová elektroinštalácia",t:"Roman Marko – rozvody, ističe, zásuvky, vypínače, montáž",mj:"kpl",qty:1,up:2500,sup:"Roman Marko",url:"",st:"Odhad",note:"robí Roman Marko (nie Modul), odhad 2 500 €"}]},
   {name:"MURÁRSKE + SADROKARTÓN",items:[
-    {n:"Priečka SDK Rigips 125 mm dvojito, CW75 + izolácia",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:20,up:61.89,sup:"Modul Company",url:"",st:"Určené",note:"cenník 66 €/m²"},
-    {n:"Podhľad SDK biely 12,5 mm závesný Q2",t:"Modul Company – celý byt, dohoda (core 16 675 €)",mj:"m²",qty:76,up:37.14,sup:"Modul Company",url:"",st:"Určené",note:"cenník 39,60 €/m²",rooms:{detska:14.5,spalna:18}},
-    {n:"Priečka YTONG 80 mm",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:2.5,up:33.76,sup:"Modul Company",url:"",st:"Určené",note:"cenník 36 €/m²"}
+    {n:"Podhľad SDK biely 12,5 mm závesný Q2",t:"Modul Company – finálna CP, celý byt",mj:"m²",qty:76,up:39.60,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},
+    {n:"Priečka YTONG 80 mm",t:"Modul Company – finálna CP",mj:"m²",qty:2.5,up:36,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Priečka YTONG 150–200 mm",t:"Modul Company – finálna CP",mj:"m²",qty:7,up:54,sup:"Modul Company",url:"",st:"Určené",note:"nová položka vo finálnej CP"}
   ]},
   {name:"ZDRAVOTECHNIKA",items:[
-    {n:"Prípojné body vody a kanalizácie + materiál",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:10,up:89.09,sup:"Modul Company",url:"",st:"Určené",note:"cenník 95 €/ks"},
+    {n:"Prípojné body vody a kanalizácie + materiál",t:"Modul Company – finálna CP",mj:"ks",qty:10,up:95,sup:"Modul Company",url:"",st:"Určené",note:""},
     {n:"Prerábka radiátora kuchyňa",t:"",mj:"kpl",qty:1,up:250,sup:"",url:"",st:"Zaplatené",note:""},
     {n:"Prerábka radiátora kúpeľňa",t:"",mj:"kpl",qty:1,up:300,sup:"",url:"",st:"Odhad",note:""}
   ]},
@@ -328,10 +329,10 @@ const INIT=[
     {n:"Dóza SAT SATDEVO27BI",t:"",mj:"ks",qty:3,up:3.64,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATDEVO27BI",st:"Určené",note:""},
     {n:"Držadlo SIKOMADLO2",t:"",mj:"ks",qty:1,up:13.16,sup:"SIKO.sk",url:"https://www.siko.sk/p/SIKOMADLO2",st:"Určené",note:""},
     {n:"Vynesenie SIKO + obvodové lišty na podlahu",t:"rozdiel ponuky: 6 400 − 5 941 €",mj:"kpl",qty:1,up:459,sup:"SIKO.sk",url:"",st:"Určené",note:"navýšenie ponuky SIKO"},
-    {n:"Kúpeľňa obloženie + geberit + sprcha (na kľúč)",t:"Modul Company – práca + stavebný materiál, jolly hrana, napojenie sanity",mj:"kpl",qty:1,up:2814.50,sup:"Modul Company",url:"",st:"Určené",note:"dohoda – core 16 675 € (cenník 3 000 €)"}
+    {n:"Kúpeľňa obloženie + geberit + sprcha (na kľúč)",t:"Modul Company – práca + stavebný materiál, jolly hrana, napojenie sanity",mj:"kpl",qty:1,up:3000,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP"}
   ]},
-  {name:"PODLAHY (laminát)",items:[{n:"ZENN CLCF 55 PORTO laminát 74,39 m²",t:"Siko ponuka – materiál, celý byt",mj:"m²",qty:74.39,up:28.93,sup:"SIKO.sk",url:"https://www.siko.sk/p/60002235",st:"Určené",note:"⚠ Modul montuje vinyl/klik – over krytinu",rooms:{detska:14.5,spalna:18}},{n:"Cementová samonivelizačná stierka 20 mm",t:"Modul Company – EXTRA, mimo core 16 675 €",mj:"kpl",qty:1,up:2000,sup:"Modul Company",url:"",st:"Určené",note:"extra 2 000 € cez Modul (cenník 40 €/m² × 76)"},{n:"Montáž vinyl/kompozit klik podlahy",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:70,up:11.25,sup:"Modul Company",url:"",st:"Určené",note:"cenník 12 €/m²",rooms:{detska:14.5,spalna:18}},{n:"MDF lišty pod 45° + akryl",t:"Modul Company – dohoda (core 16 675 €)",mj:"bm",qty:70,up:7.31,sup:"Modul Company",url:"",st:"Určené",note:"cenník 7,80 €/bm",rooms:{detska:15.6,spalna:17.4}}]},
-  {name:"DVERE",items:[{n:"Vnútorné dvere AURA6 70L + AURA7 80L + 80P (3 ks + zárubne)",t:"biele matné, SIKO ponuka č.1184514 (po zľave)",mj:"kpl",qty:1,up:949.87,sup:"SIKO.sk",url:"",st:"Určené",note:"platí do 26.8.2026, v hotovosti"},{n:"Kovanie – kľučky HIT-HR (1× WC + 2× bez zámku)",t:"biela mat, SIKO ponuka č.1184514",mj:"kpl",qty:1,up:76.33,sup:"SIKO.sk",url:"",st:"Určené",note:""},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Odhad",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company – dohoda (core 16 675 €)",mj:"ks",qty:4,up:73.15,sup:"Modul Company",url:"",st:"Určené",note:"cenník 78 €/ks"}]},
+  {name:"PODLAHY (laminát)",items:[{n:"ZENN CLCF 55 PORTO laminát 74,39 m²",t:"Siko ponuka – materiál, celý byt",mj:"m²",qty:74.39,up:28.93,sup:"SIKO.sk",url:"https://www.siko.sk/p/60002235",st:"Určené",note:"⚠ Modul montuje vinyl/klik – over krytinu",rooms:{detska:14.5,spalna:18}},{n:"Samonivelačka (cementová stierka 20 mm)",t:"iná firma – nie Modul",mj:"kpl",qty:1,up:2000,sup:"Iná firma",url:"",st:"Určené",note:"robí iná firma (nie v CP Modul)"},{n:"Montáž vinyl/kompozit klik podlahy",t:"iná firma – nie Modul",mj:"m²",qty:70,up:5,sup:"Iná firma",url:"",st:"Určené",note:"iná firma, 5 €/m²",rooms:{detska:14.5,spalna:18}},{n:"MDF lišty pod 45° + akryl",t:"iná firma – nie Modul",mj:"bm",qty:70,up:5,sup:"Iná firma",url:"",st:"Určené",note:"iná firma, 5 €/bm",rooms:{detska:15.6,spalna:17.4}}]},
+  {name:"DVERE",items:[{n:"Vnútorné dvere AURA6 70L + AURA7 80L + 80P (3 ks + zárubne)",t:"biele matné, SIKO ponuka č.1184514 (po zľave)",mj:"kpl",qty:1,up:949.87,sup:"SIKO.sk",url:"",st:"Určené",note:"platí do 26.8.2026, v hotovosti"},{n:"Kovanie – kľučky HIT-HR (1× WC + 2× bez zámku)",t:"biela mat, SIKO ponuka č.1184514",mj:"kpl",qty:1,up:76.33,sup:"SIKO.sk",url:"",st:"Určené",note:""},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Odhad",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company – finálna CP",mj:"ks",qty:3,up:78,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP: 3 ks (bolo 4)"},{n:"Montáž vstupných dverí",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:200,sup:"Modul Company",url:"",st:"Určené",note:"osadenie bezpečnostných dverí"}]},
   {name:"KUCHYŇA",items:[{n:"Kuchynská linka + spotrebiče – celok",t:"skrinky, doska, rúra, varná doska, digestor, chladnička, montáž",mj:"kpl",qty:1,up:6600,sup:"",url:"",st:"Určené",note:""},{n:"Drez SATSINK GE3 horný jazmín",t:"Siko ponuka",mj:"ks",qty:1,up:107.07,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATSINKGE3J",st:"Určené",note:""},{n:"Kuchynská batéria",t:"",mj:"ks",qty:1,up:80,sup:"",url:"",st:"Odhad",note:""},{n:"Montáž kuchyne",t:"montáž linky + spotrebičov",mj:"kpl",qty:1,up:1000,sup:"",url:"",st:"Odhad",note:"do 1 000 €"}]},
   {name:"PRÁČKA + SUŠIČKA",items:[{n:"Set Gorenje WG494A11 + DG48C NatureDry",t:"Práčka 9 kg + Sušička 8 kg",mj:"kpl",qty:1,up:881,sup:"Alza.sk",url:"https://www.alza.sk/gorenje-wg494a11-gorenje-dg48c-naturedry-d13374233.htm",st:"Určené",note:""},{n:"Skriňa na práčku GLAW biela",t:"99×44×40 cm",mj:"ks",qty:1,up:279,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/skrina-na-pracku-a-susicku-glaw-biela-415016104",st:"Určené",note:""}]},
   {name:"NÁBYTOK – JEDÁLEŇ / SPÁLŇA",items:[
@@ -347,11 +348,11 @@ const INIT=[
     {n:"Stropné LED svietidlo JOKO biela",t:"",mj:"ks",qty:1,up:34.90,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/stropne-led-svietidlo-joko-biela-28751800",st:"Určené",note:""}
   ]},
   {name:"MAĽBY A POVRCHOVÉ ÚPRAVY",items:[
-    {n:"Stierkovanie stien (2 vrstvy)",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:240,up:11.25,sup:"Modul Company",url:"",st:"Určené",note:"cenník 12 €/m² – v 16 675 €",rooms:{detska:35,spalna:39}},
-    {n:"Príprava vnútor. podkladu WEBER (penetrácia)",t:"Modul Company – dohoda (core 16 675 €)",mj:"m²",qty:315,up:2.25,sup:"Modul Company",url:"",st:"Určené",note:"cenník 2,40 €/m² – v 16 675 €",rooms:{detska:49.5,spalna:57}},
+    {n:"Stierkovanie stien (2 vrstvy)",t:"Modul Company – finálna CP",mj:"m²",qty:240,up:15,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP: 15 €/m² (bolo 12)",rooms:{detska:35,spalna:39}},
+    {n:"Príprava vnútor. podkladu WEBER (penetrácia)",t:"Modul Company – finálna CP",mj:"m²",qty:315,up:2,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP: 2,00 €/m²",rooms:{detska:49.5,spalna:57}},
     {n:"Maľby akrylátové 2× ručne, do 3,8 m – Denis",t:"Maliar Denis – komplet vrátane farby, celý byt",mj:"kpl",qty:1,up:1200,sup:"Maliar Denis",url:"",st:"Určené",note:"mimo Modulu (penetráciu robí Modul)"}
   ]},
-  {name:"OSTATNÉ",items:[{n:"Drobný materiál",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Odhad",note:""},{n:"Upratovanie po prerábke",t:"",mj:"kpl",qty:1,up:100,sup:"",url:"",st:"Odhad",note:""}]}
+  {name:"OSTATNÉ",items:[{n:"Sťahovanie a uskladnenie gaučov",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Určené",note:""},{n:"Drobný materiál",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Odhad",note:""},{n:"Upratovanie po prerábke",t:"",mj:"kpl",qty:1,up:100,sup:"",url:"",st:"Odhad",note:""}]}
 ];
 
 let D,coll={},ek=null,iec=null,drag=null,svT=null,msgT=null,csOpen=true,newItem=null;
@@ -372,7 +373,7 @@ document.addEventListener('keydown',e=>{
 
 /* ── INIT / SAVE ────────────────────────────────────────── */
 function init(){
-  try{const s=localStorage.getItem('rkBytu7');if(s)D=JSON.parse(s);}catch(e){}
+  try{const s=localStorage.getItem('rkBytu9');if(s)D=JSON.parse(s);}catch(e){}
   try{const rs=localStorage.getItem('rkRooms');if(rs)roomOn={...roomOn,...JSON.parse(rs)};}catch(e){}
   try{const as=localStorage.getItem('rkAlts');if(as)altOn={...altOn,...JSON.parse(as)};}catch(e){}
   if(!D)D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
@@ -387,11 +388,11 @@ function applyRooms(){
   D.forEach(c=>c.items.forEach(it=>{if(map[it.n])it.rooms=map[it.n];else delete it.rooms;}));
 }
 function uid(){return Math.random().toString(36).slice(2);}
-function _sv(){try{localStorage.setItem('rkBytu7',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
+function _sv(){try{localStorage.setItem('rkBytu9',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
 function save(){pushHist();_sv();}
 function resetAll(){
   if(!confirm('Zmazať uložené dáta v prehliadači a načítať čerstvú verziu?\n\n(Stav položiek ako Zaplatené/Objednané sa stratí. Ak si chceš zmeny zachovať, najprv daj ⬇ JSON.)'))return;
-  try{localStorage.removeItem('rkBytu7');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
+  try{localStorage.removeItem('rkBytu9');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
   D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
   roomOn={detska:true,spalna:true};altOn={};
   ek=null;iec=null;newItem=null;coll={};hist=[];histIdx=-1;
