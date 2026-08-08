@@ -135,6 +135,14 @@ code, .m { font-family:var(--mono); font-size:.9em; }
 .unit-a { fill:var(--fan-fill); stroke:var(--fan-stroke); stroke-width:1.2; }
 .num { font-family:var(--mono); font-size:11px; font-weight:700; }
 .nums { font-family:var(--mono); font-size:10px; font-weight:700; }
+.rcd .face { fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.2; }
+.rcd text { fill:var(--accent-ink); }
+.gry .face { fill:var(--surface-2); stroke:var(--rule-strong); stroke-width:1.2; }
+.gry text { fill:var(--ink-2); }
+.free .face { fill:none; stroke:var(--rule-strong); stroke-width:1; stroke-dasharray:4 3; }
+.free text { fill:var(--ink-3); }
+.mod { font-family:var(--mono); font-size:11px; font-weight:700; }
+.mods { font-family:var(--mono); font-size:9.5px; }
 .kcode { font-family:var(--mono); font-size:12px; font-weight:700; fill:var(--sw-text); }
 .rm { font-family:var(--sans); font-size:13px; font-weight:650; fill:var(--ink); }
 .rm-s { font-family:var(--sans); font-size:11px; fill:var(--ink-3); }
@@ -567,8 +575,8 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
         <tr><td>Mikrovlnka</td><td>tamtiež, vedľa — <strong>overiť dosah kábla 1 350 mm</strong></td><td class="n">~450</td><td class="n">Z6</td></tr>
         <tr><td>Varná doska</td><td>krabica s vývodkou v skrinke <strong>3</strong>, pevné pripojenie</td><td class="n">~500</td><td class="n">Z1</td></tr>
         <tr><td>Digestor</td><td>vnútri hornej skrinky <strong>12</strong>, hore vzadu</td><td class="n">~2 000</td><td class="n">Z5a</td></tr>
-        <tr><td>2× zásuvka</td><td>zástena nad skrinkou <strong>3</strong>, čo najviac doľava</td><td class="n">1 100</td><td class="n">Z5a</td></tr>
-        <tr><td>2× zásuvka</td><td>zástena nad skrinkou <strong>5</strong></td><td class="n">1 100</td><td class="n">Z5b</td></tr>
+        <tr><td>2× jednozásuvka</td><td>zástena nad skrinkou <strong>3</strong>, čo najviac doľava — <strong>horizontálne vedľa seba</strong> v dvojrámiku</td><td class="n">1 100</td><td class="n">Z5a</td></tr>
+        <tr><td>2× jednozásuvka</td><td>zástena nad skrinkou <strong>5</strong> — <strong>horizontálne vedľa seba</strong> v dvojrámiku</td><td class="n">1 100</td><td class="n">Z5b</td></tr>
       </tbody>
     </table>
   </div>
@@ -621,7 +629,7 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
       <tbody>
         <tr><td>Drez</td><td>skrinka <strong>6</strong> — bez elektrického vývodu</td><td class="n">—</td><td class="n">—</td></tr>
         <tr><td>Umývačka</td><td>spotrebič v skrinke <strong>7</strong>, zásuvka v susednej skrinke <strong>8</strong> — kábel 1 500 mm pohodlne dosiahne</td><td class="n">~450</td><td class="n">Z3</td></tr>
-        <tr><td>2× zásuvka</td><td>zástena nad skrinkou <strong>8</strong></td><td class="n">1 100</td><td class="n">Z5b</td></tr>
+        <tr><td>2× jednozásuvka</td><td>zástena nad skrinkou <strong>8</strong> — <strong>horizontálne vedľa seba</strong> v dvojrámiku</td><td class="n">1 100</td><td class="n">Z5b</td></tr>
         <tr><td>Klíma</td><td>voľná stena za linkou, pri vnútornej jednotke</td><td class="n">~2 300</td><td class="n">Z14</td></tr>
       </tbody>
     </table>
@@ -670,7 +678,68 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
     <li><strong>Zatiaľ dvojpólové chrániče</strong>, nie štvorpólové. Pri prechode na tri fázy sa vymenia — je to lacná výmena a teraz ušetríš šesť modulov aj peniaze.</li>
     <li>Chrániče sú istené hlavným ističom 32 A, preto stačí menovitý prúd 40 A.</li>
   </ul>
-  <p>Obsadenie rozvádzača vychádza zhruba na <strong>32 modulov</strong> — hlavný vypínač 3, prepäťovka 4, tri chrániče 6, ističe 17, RCBO 2. V rozvádzači 4 × 12 tak zostane okolo 16 voľných pozícií.</p>
+  <h3>Rozloženie v rozvádzači</h3>
+  <p>Kľúč k celému rozloženiu: <strong>každý rad je jedna chráničová skupina.</strong> Chránič je vždy prvý zľava a jeho okruhy nasledujú hneď za ním, takže sa dá jedným kusom hrebeňovej lišty prepojiť celý rad a nič sa nekríži.</p>
+  <div class="plan-wrap">
+    <svg viewBox="0 0 680 400" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>Rozloženie prístrojov v bytovom rozvádzači 4 rady po 12 modulov</title>
+      <desc>Štyri rady po dvanásť modulov. Prvý rad obsahuje hlavný vypínač, prepäťovú ochranu a RCBO chladničky. Druhý rad chránič RCD 1 a kuchynské okruhy Z1, Z2, Z3, Z5a, Z5b a Z6. Tretí rad chránič RCD 2 a okruhy Z7, Z8, Z9, Z13 a Z14, plus rezervované miesto pre prúdový hliadač. Štvrtý rad chránič RCD 3 a okruhy Z10, Z11, Z12 a svetelné okruhy S1 a S2. V každom rade zostávajú voľné moduly ako rezerva.</desc>
+
+      <text class="rm" x="80" y="52">Rad 1 — prívod</text>
+      <g class="gry"><rect class="face" x="80" y="60" width="120" height="56" rx="3"/><text class="mod" x="140" y="84" text-anchor="middle">HLAVNÝ VYPÍNAČ</text><text class="mods" x="140" y="100" text-anchor="middle">3-pól · 40 A</text></g>
+      <g class="gry"><rect class="face" x="200" y="60" width="160" height="56" rx="3"/><text class="mod" x="280" y="84" text-anchor="middle">PREPÄŤOVÁ OCHRANA</text><text class="mods" x="280" y="100" text-anchor="middle">typ 2</text></g>
+      <g class="app"><rect class="face" x="360" y="60" width="80" height="56" rx="3"/><text class="mod" x="400" y="80" text-anchor="middle">Z4 RCBO</text><text class="mods" x="400" y="96" text-anchor="middle">B16 · 30 mA · A</text><text class="mods" x="400" y="108" text-anchor="middle">chladnička</text></g>
+      <g class="free"><rect class="face" x="440" y="60" width="120" height="56" rx="3"/><text class="mods" x="500" y="94" text-anchor="middle">rezerva 3 moduly</text></g>
+
+      <text class="rm" x="80" y="136">Rad 2 — RCD 1 · kuchyňa</text>
+      <g class="rcd"><rect class="face" x="80" y="144" width="80" height="56" rx="3"/><text class="mod" x="120" y="168" text-anchor="middle">RCD 1</text><text class="mods" x="120" y="184" text-anchor="middle">40A/30mA F</text></g>
+      <g class="app"><rect class="face" x="160" y="144" width="40" height="56" rx="3"/><text class="mod" x="180" y="168" text-anchor="middle">Z1</text><text class="mods" x="180" y="184" text-anchor="middle">B25</text></g>
+      <g class="app"><rect class="face" x="200" y="144" width="40" height="56" rx="3"/><text class="mod" x="220" y="168" text-anchor="middle">Z2</text><text class="mods" x="220" y="184" text-anchor="middle">B16</text></g>
+      <g class="app"><rect class="face" x="240" y="144" width="40" height="56" rx="3"/><text class="mod" x="260" y="168" text-anchor="middle">Z3</text><text class="mods" x="260" y="184" text-anchor="middle">B16</text></g>
+      <g class="soc"><rect class="face" x="280" y="144" width="40" height="56" rx="3"/><text class="mod" x="300" y="168" text-anchor="middle">Z5a</text><text class="mods" x="300" y="184" text-anchor="middle">B16</text></g>
+      <g class="soc"><rect class="face" x="320" y="144" width="40" height="56" rx="3"/><text class="mod" x="340" y="168" text-anchor="middle">Z5b</text><text class="mods" x="340" y="184" text-anchor="middle">B16</text></g>
+      <g class="app"><rect class="face" x="360" y="144" width="40" height="56" rx="3"/><text class="mod" x="380" y="168" text-anchor="middle">Z6</text><text class="mods" x="380" y="184" text-anchor="middle">B16</text></g>
+      <g class="free"><rect class="face" x="400" y="144" width="160" height="56" rx="3"/><text class="mods" x="480" y="178" text-anchor="middle">rezerva 4 moduly</text></g>
+
+      <text class="rm" x="80" y="220">Rad 3 — RCD 2 · kúpeľňa a technika</text>
+      <g class="rcd"><rect class="face" x="80" y="228" width="80" height="56" rx="3"/><text class="mod" x="120" y="252" text-anchor="middle">RCD 2</text><text class="mods" x="120" y="268" text-anchor="middle">40A/30mA F</text></g>
+      <g class="app"><rect class="face" x="160" y="228" width="40" height="56" rx="3"/><text class="mod" x="180" y="252" text-anchor="middle">Z7</text><text class="mods" x="180" y="268" text-anchor="middle">B16</text></g>
+      <g class="app"><rect class="face" x="200" y="228" width="40" height="56" rx="3"/><text class="mod" x="220" y="252" text-anchor="middle">Z8</text><text class="mods" x="220" y="268" text-anchor="middle">B16</text></g>
+      <g class="soc"><rect class="face" x="240" y="228" width="40" height="56" rx="3"/><text class="mod" x="260" y="252" text-anchor="middle">Z9</text><text class="mods" x="260" y="268" text-anchor="middle">B16</text></g>
+      <g class="soc"><rect class="face" x="280" y="228" width="40" height="56" rx="3"/><text class="mod" x="300" y="252" text-anchor="middle">Z13</text><text class="mods" x="300" y="268" text-anchor="middle">B16</text></g>
+      <g class="app"><rect class="face" x="320" y="228" width="40" height="56" rx="3"/><text class="mod" x="340" y="252" text-anchor="middle">Z14</text><text class="mods" x="340" y="268" text-anchor="middle">B16</text></g>
+      <g class="free"><rect class="face" x="360" y="228" width="80" height="56" rx="3"/><text class="mod" x="400" y="252" text-anchor="middle">hliadač</text><text class="mods" x="400" y="268" text-anchor="middle">rezerva</text></g>
+      <g class="free"><rect class="face" x="440" y="228" width="120" height="56" rx="3"/><text class="mods" x="500" y="262" text-anchor="middle">rezerva 3 moduly</text></g>
+
+      <text class="rm" x="80" y="304">Rad 4 — RCD 3 · izby a svetlá</text>
+      <g class="rcd"><rect class="face" x="80" y="312" width="80" height="56" rx="3"/><text class="mod" x="120" y="336" text-anchor="middle">RCD 3</text><text class="mods" x="120" y="352" text-anchor="middle">40A/30mA A</text></g>
+      <g class="soc"><rect class="face" x="160" y="312" width="40" height="56" rx="3"/><text class="mod" x="180" y="336" text-anchor="middle">Z10</text><text class="mods" x="180" y="352" text-anchor="middle">B16</text></g>
+      <g class="soc"><rect class="face" x="200" y="312" width="40" height="56" rx="3"/><text class="mod" x="220" y="336" text-anchor="middle">Z11</text><text class="mods" x="220" y="352" text-anchor="middle">B16</text></g>
+      <g class="soc"><rect class="face" x="240" y="312" width="40" height="56" rx="3"/><text class="mod" x="260" y="336" text-anchor="middle">Z12</text><text class="mods" x="260" y="352" text-anchor="middle">B16</text></g>
+      <g class="light"><rect class="face" x="280" y="312" width="40" height="56" rx="3"/><text class="mod" x="300" y="336" text-anchor="middle">S1</text><text class="mods" x="300" y="352" text-anchor="middle">B6</text></g>
+      <g class="light"><rect class="face" x="320" y="312" width="40" height="56" rx="3"/><text class="mod" x="340" y="336" text-anchor="middle">S2</text><text class="mods" x="340" y="352" text-anchor="middle">B6</text></g>
+      <g class="free"><rect class="face" x="360" y="312" width="200" height="56" rx="3"/><text class="mods" x="460" y="346" text-anchor="middle">rezerva 5 modulov</text></g>
+
+      <text class="rm-s" x="80" y="388">Každé políčko = 1 modul (17,5 mm). Obsadených 33 zo 48.</text>
+    </svg>
+  </div>
+  <div class="legend">
+    <div class="leg"><svg width="20" height="15" viewBox="0 0 20 15"><g class="rcd"><rect class="face" x="1" y="1" width="18" height="13" rx="3"/></g></svg><div>Prúdový chránič</div></div>
+    <div class="leg"><svg width="20" height="15" viewBox="0 0 20 15"><g class="app"><rect class="face" x="1" y="1" width="18" height="13" rx="3"/></g></svg><div>Vyhradený okruh spotrebiča</div></div>
+    <div class="leg"><svg width="20" height="15" viewBox="0 0 20 15"><g class="soc"><rect class="face" x="1" y="1" width="18" height="13" rx="3"/></g></svg><div>Zásuvkový okruh</div></div>
+    <div class="leg"><svg width="20" height="15" viewBox="0 0 20 15"><g class="light"><rect class="face" x="1" y="1" width="18" height="13" rx="3"/></g></svg><div>Svetelný okruh</div></div>
+  </div>
+
+  <h3>Čo pri montáži rozhoduje</h3>
+  <ul class="notes">
+    <li><strong>Každý chránič musí mať vlastnú nulovú svorkovnicu.</strong> Toto je najčastejšia chyba v rozvádzačoch s viacerými chráničmi — ak sa nuly zmiešajú, chrániče budú vypadávať náhodne a nikto nezistí prečo. Tri chrániče znamenajú <strong>tri oddelené N svorkovnice</strong> plus jednu pre RCBO. Ochranná PE svorkovnica je naopak jedna spoločná.</li>
+    <li><strong>Hrebeňová lišta samostatne pre každý rad</strong>, vždy od výstupu chrániča doprava. Nikdy neprepájať lištu medzi radmi, prepojili by sa tým dva chrániče.</li>
+    <li><strong>Prepäťová ochrana čo najbližšie k prívodu</strong> a s čo najkratšími vodičmi — celková dĺžka pripojenia L, N a PE má byť pod 0,5 m, inak jej účinnosť výrazne klesne. Zálohové istenie jej zabezpečí hlavný istič 32 A.</li>
+    <li><strong>Hlavný vypínač 3-pólový</strong>, prípojnice L1, L2, L3 zatiaľ premostené na jednu fázu. Pri navýšení sa most odstráni, chrániče vymenia za štvorpólové a okruhy sa rozdelia po radoch — rad 2 kuchyňa na jednu fázu, rad 3 na druhú, rad 4 na tretiu. Preto sú okruhy rozdelené presne takto.</li>
+    <li><strong>RCBO chladničky je v prvom rade zámerne</strong>, mimo chráničových skupín. Vizuálne aj elektricky patrí k prívodu, nie k žiadnej skupine.</li>
+    <li>Vnútorné prepojenie: prívod do hlavného vypínača 10 mm², z neho na chrániče 6 mm², z chráničov hrebeňové lišty.</li>
+    <li><strong>Popísať každý istič</strong> označením okruhu a miestnosťou, nie len číslom. O päť rokov to nikto neuhádne.</li>
+  </ul>
 </section>
 
 <section>
@@ -816,11 +885,33 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
   </div>
   <div class="tw">
     <table>
+      <caption>Zásuvky, krabice a rámiky</caption>
+      <thead><tr><th>Diel</th><th class="n">Ks</th><th>Kde</th></tr></thead>
+      <tbody>
+        <tr><td>Krabica KU 68, hlboká</td><td class="n">35</td><td>do každého vývodu; kde sú vývody vedľa seba, spojiteľné s roztečou 71 mm</td></tr>
+        <tr><td><strong>Dvojzásuvka</strong> 230 V</td><td class="n">16</td><td>spálňa 5, obývačka 4, detská 4, predsieň 2, kúpeľňa 1</td></tr>
+        <tr><td>Jednozásuvka 230 V</td><td class="n">14</td><td>linka 6, vstavané spotrebiče 5, práčka a sušička 2, klíma 1</td></tr>
+        <tr><td>Dátová zásuvka CAT6</td><td class="n">4</td><td>D1 – D4</td></tr>
+        <tr><td>Krabica s vývodkou</td><td class="n">1</td><td>varná doska, skrinka 3 — pevné pripojenie, nie zásuvka</td></tr>
+        <tr><td><strong>Rámik dvojnásobný</strong></td><td class="n">5</td><td>3× linka, práčka + sušička, rúra + mikrovlnka</td></tr>
+        <tr><td>Rámik jednoduchý</td><td class="n">24</td><td>ostatné vývody</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="notes">
+    <li><strong>Dvojzásuvky všade, kde to dáva zmysel</strong> — v izbách, predsieni a kúpeľni. Jedna krabica, jeden vývod, dva prístroje.</li>
+    <li><strong>Na linke nie dvojzásuvky, ale dve samostatné jednozásuvky vedľa seba</strong> v dvojrámiku, horizontálne. Do dvojzásuvky sa dva hranaté adaptéry často nezmestia vedľa seba, pri dvoch samostatných to nie je problém.</li>
+    <li><strong>Dvojzásuvka je 16 A dokopy, nie 2× 16 A.</strong> Aj preto sú zásuvky linky rozdelené na dva okruhy — kanvica a hriankovač si tak neprekážajú.</li>
+    <li>Práčka so sušičkou a rúra s mikrovlnkou majú <strong>samostatné okruhy</strong>, takže musia byť v dvoch krabiciach. Spoločný dvojrámik je len estetika, elektricky sú oddelené.</li>
+    <li>Počty vychádzajú z tohto návrhu. Pred objednaním ich prekontrolovať proti finálnemu rozmiestneniu nábytku.</li>
+  </ul>
+  <div class="tw">
+    <table>
       <caption>Inštalačný materiál</caption>
       <thead><tr><th>Diel</th><th class="n">Ks</th><th>Poznámka</th></tr></thead>
       <tbody>
         <tr><td>Prístrojová krabica hlboká, cca 65 mm</td><td class="n">4</td><td>K2, K3, K6, K7 — kvôli 2PM</td></tr>
-        <tr><td>Prístrojová krabica hlboká</td><td class="n">3</td><td>K1, K4, K5</td></tr>
+        <tr><td>Prístrojová krabica hlboká</td><td class="n">3</td><td>K1, K4, K5 — vypínače</td></tr>
         <tr><td>Odbočná krabica ⌀125 mm</td><td class="n">1</td><td>RK v predsieni, 8 káblov</td></tr>
         <tr><td>CYKY-J 5×10</td><td class="n">—</td><td>prívod od elektromera</td></tr>
         <tr><td>CYKY-J 3×6</td><td class="n">—</td><td>Z1 varná doska</td></tr>
