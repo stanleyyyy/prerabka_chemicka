@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Návrh elektroinštalácie bytu — svetelné a zásuvkové okruhy, kuchynské vývody, bilancia výkonu, rozvádzač, kabeláž a zoznam dielov.">
+<title>Elektroinštalácia — byt</title>
+<style>
+/* --- reset --- */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+h1,h2,h3,h4,p,figure,blockquote,dl,dd{margin:0}
+ul,ol{margin:0}
+img,svg{max-width:100%}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+:root {
+  --paper:#F3F4F0; --surface:#FBFBF9; --surface-2:#EDEFE8;
+  --ink:#1B2019; --ink-2:#4E564D; --ink-3:#767D73;
+  --rule:#D6D8CF; --rule-strong:#B6BAAF;
+  --accent:#2F6FB5; --accent-soft:#E3ECF7; --accent-ink:#1B4C82;
+  --warn:#8A5A0B; --warn-soft:#FAF0DC; --warn-line:#C9861F;
+  --light-fill:#F8ECD6; --light-stroke:#C9861F; --light-text:#7A5209;
+  --fan-fill:#F9E5DD; --fan-stroke:#B4532E; --fan-text:#7A3319;
+  --sw-fill:#DEF0E9; --sw-stroke:#1D7A63; --sw-text:#0E4A3B;
+  --dat-fill:#E9E7FB; --dat-stroke:#5B51C4; --dat-text:#332C7E;
+  --sensor-fill:#E6E8E3; --sensor-stroke:#6B7268; --sensor-text:#3A403A;
+  --serif:'Iowan Old Style','Palatino Linotype',Palatino,'Book Antiqua',Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --mono:ui-monospace,'Cascadia Mono','SFMono-Regular',Consolas,'Liberation Mono',monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:#141712; --surface:#1C201A; --surface-2:#232821;
+    --ink:#E9EBE4; --ink-2:#A6ADA0; --ink-3:#828A7D;
+    --rule:#333830; --rule-strong:#4A5147;
+    --accent:#7FB0E4; --accent-soft:#1D2833; --accent-ink:#A8CBEE;
+    --warn:#E0B466; --warn-soft:#2E2716; --warn-line:#D9A24A;
+    --light-fill:#463206; --light-stroke:#D9A24A; --light-text:#F3DFBA;
+    --fan-fill:#452014; --fan-stroke:#D97A54; --fan-text:#F6D9CB;
+    --sw-fill:#0E3A2F; --sw-stroke:#4FBFA2; --sw-text:#CFF0E5;
+    --dat-fill:#241F52; --dat-stroke:#9A92E8; --dat-text:#DCD9F7;
+    --sensor-fill:#282C26; --sensor-stroke:#8B9287; --sensor-text:#D7DBD3;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:#141712; --surface:#1C201A; --surface-2:#232821;
+  --ink:#E9EBE4; --ink-2:#A6ADA0; --ink-3:#828A7D;
+  --rule:#333830; --rule-strong:#4A5147;
+  --accent:#7FB0E4; --accent-soft:#1D2833; --accent-ink:#A8CBEE;
+  --warn:#E0B466; --warn-soft:#2E2716; --warn-line:#D9A24A;
+  --light-fill:#463206; --light-stroke:#D9A24A; --light-text:#F3DFBA;
+  --fan-fill:#452014; --fan-stroke:#D97A54; --fan-text:#F6D9CB;
+  --sw-fill:#0E3A2F; --sw-stroke:#4FBFA2; --sw-text:#CFF0E5;
+  --dat-fill:#241F52; --dat-stroke:#9A92E8; --dat-text:#DCD9F7;
+  --sensor-fill:#282C26; --sensor-stroke:#8B9287; --sensor-text:#D7DBD3;
+}
+:root[data-theme="light"] {
+  --paper:#F3F4F0; --surface:#FBFBF9; --surface-2:#EDEFE8;
+  --ink:#1B2019; --ink-2:#4E564D; --ink-3:#767D73;
+  --rule:#D6D8CF; --rule-strong:#B6BAAF;
+  --accent:#2F6FB5; --accent-soft:#E3ECF7; --accent-ink:#1B4C82;
+  --warn:#8A5A0B; --warn-soft:#FAF0DC; --warn-line:#C9861F;
+  --light-fill:#F8ECD6; --light-stroke:#C9861F; --light-text:#7A5209;
+  --fan-fill:#F9E5DD; --fan-stroke:#B4532E; --fan-text:#7A3319;
+  --sw-fill:#DEF0E9; --sw-stroke:#1D7A63; --sw-text:#0E4A3B;
+  --dat-fill:#E9E7FB; --dat-stroke:#5B51C4; --dat-text:#332C7E;
+  --sensor-fill:#E6E8E3; --sensor-stroke:#6B7268; --sensor-text:#3A403A;
+}
+
+body { background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+.page { max-width:1060px; margin:0 auto; padding:48px 24px 96px; display:flex; flex-direction:column; gap:56px; counter-reset:sec; }
+
+.theme-toggle{position:fixed;top:16px;right:16px;z-index:10;display:inline-flex;align-items:center;gap:7px;
+  padding:7px 12px;background:var(--surface);color:var(--ink-2);border:1px solid var(--rule-strong);
+  border-radius:2px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  cursor:pointer;transition:border-color .15s ease,color .15s ease}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+@media print{.theme-toggle{display:none}}
+@media (max-width:640px){.theme-toggle{position:static;align-self:flex-end;margin:16px 16px 0}}
+
+.masthead { display:flex; flex-direction:column; gap:20px; padding-bottom:28px; border-bottom:2px solid var(--ink); }
+.eyebrow { font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); }
+.masthead h1 { font-family:var(--serif); font-size:clamp(34px,5.5vw,52px); line-height:1.05; font-weight:600; letter-spacing:-.015em; text-wrap:balance; }
+.standfirst { font-size:18px; line-height:1.55; color:var(--ink-2); max-width:62ch; }
+.facts { display:flex; flex-wrap:wrap; gap:0; border-top:1px solid var(--rule); padding-top:18px; }
+.fact { padding-right:30px; margin-right:30px; border-right:1px solid var(--rule); }
+.fact:last-child { border-right:none; margin-right:0; padding-right:0; }
+.fact dt { font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); }
+.fact dd { margin:2px 0 0; font-family:var(--serif); font-size:26px; font-variant-numeric:tabular-nums; line-height:1.1; }
+.fact dd small { font-family:var(--sans); font-size:13px; color:var(--ink-2); }
+
+section { display:flex; flex-direction:column; gap:20px; counter-increment:sec; }
+section > h2 { font-family:var(--serif); font-size:27px; font-weight:600; letter-spacing:-.01em; padding-top:14px; border-top:1px solid var(--rule-strong); display:flex; gap:14px; align-items:baseline; text-wrap:balance; }
+section > h2::before { content:counter(sec,decimal-leading-zero); font-family:var(--mono); font-size:12px; font-weight:400; color:var(--accent); letter-spacing:.08em; flex:none; }
+h3 { font-family:var(--sans); font-size:14px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-2); margin-top:12px; }
+p { max-width:70ch; }
+ul.notes { padding-left:20px; display:flex; flex-direction:column; gap:8px; max-width:70ch; }
+ul.notes li::marker { color:var(--accent); }
+strong { font-weight:650; }
+code, .m { font-family:var(--mono); font-size:.9em; }
+
+.plan-wrap { background:var(--surface); border:1px solid var(--rule); border-radius:2px; padding:8px; overflow-x:auto; }
+.plan-wrap svg { display:block; width:100%; min-width:560px; height:auto; }
+.w-fill { fill:var(--surface-2); }
+.w-out { fill:none; stroke:var(--ink); stroke-width:4; stroke-linejoin:round; }
+.w-in { fill:none; stroke:var(--ink); stroke-width:3; }
+.w-thin { fill:none; stroke:var(--ink-3); stroke-width:3; }
+.win { fill:var(--surface); stroke:var(--ink-3); stroke-width:.7; }
+.arrow { stroke:var(--ink-3); stroke-width:1.5; fill:none; }
+.gd { fill:none; stroke:var(--ink-3); stroke-width:.6; stroke-dasharray:4 3; }
+.light .face, .light .bar { fill:var(--light-fill); stroke:var(--light-stroke); stroke-width:1.2; }
+.light text { fill:var(--light-text); }
+.dot { fill:var(--light-stroke); }
+.fan .face { fill:var(--fan-fill); stroke:var(--fan-stroke); stroke-width:1.2; }
+.fan text { fill:var(--fan-text); }
+.sw .face { fill:var(--sw-fill); stroke:var(--sw-stroke); stroke-width:1.2; }
+.sw .face.loose { stroke-dasharray:4 3; }
+.sw .btn { fill:none; stroke:var(--sw-stroke); stroke-width:1; }
+.soc .face { fill:var(--sw-fill); stroke:var(--sw-stroke); stroke-width:1.2; }
+.soc text { fill:var(--sw-text); }
+.app .face { fill:var(--fan-fill); stroke:var(--fan-stroke); stroke-width:1.2; }
+.app text { fill:var(--fan-text); }
+.dat .face { fill:var(--dat-fill); stroke:var(--dat-stroke); stroke-width:1.2; }
+.dat text { fill:var(--dat-text); }
+.sensor .face { fill:var(--sensor-fill); stroke:var(--sensor-stroke); stroke-width:1.2; }
+.sensor text { fill:var(--sensor-text); }
+.rk .face { fill:var(--surface); stroke:var(--ink-2); stroke-width:1.2; }
+.rk text { fill:var(--ink-2); }
+.unit { fill:var(--surface-2); stroke:var(--rule-strong); stroke-width:1; }
+.unit-a { fill:var(--fan-fill); stroke:var(--fan-stroke); stroke-width:1.2; }
+.num { font-family:var(--mono); font-size:11px; font-weight:700; }
+.nums { font-family:var(--mono); font-size:10px; font-weight:700; }
+.kcode { font-family:var(--mono); font-size:12px; font-weight:700; fill:var(--sw-text); }
+.rm { font-family:var(--sans); font-size:13px; font-weight:650; fill:var(--ink); }
+.rm-s { font-family:var(--sans); font-size:11px; fill:var(--ink-3); }
+.rm-a { font-family:var(--sans); font-size:11px; fill:var(--fan-text); }
+
+.legend { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px 28px; padding-top:16px; }
+.leg { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--ink-2); }
+.leg svg { flex:none; margin-top:1px; }
+
+.tw { overflow-x:auto; border:1px solid var(--rule); border-radius:2px; background:var(--surface); }
+table { border-collapse:collapse; width:100%; font-size:14px; min-width:520px; }
+caption { text-align:left; font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); padding-bottom:8px; }
+th, td { text-align:left; padding:9px 14px; border-bottom:1px solid var(--rule); vertical-align:top; }
+thead th { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2); font-weight:700; background:var(--surface-2); border-bottom:1px solid var(--rule-strong); white-space:nowrap; }
+tbody tr:last-child td { border-bottom:none; }
+td.n, th.n { font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.tag { display:inline-block; font-family:var(--mono); font-size:11px; font-weight:700; padding:2px 7px; border-radius:2px; white-space:nowrap; }
+.tag.c { background:var(--light-fill); color:var(--light-text); border:1px solid var(--light-stroke); }
+.tag.v { background:var(--fan-fill); color:var(--fan-text); border:1px solid var(--fan-stroke); }
+.tag.k { background:var(--sw-fill); color:var(--sw-text); border:1px solid var(--sw-stroke); }
+.tag.d { background:var(--dat-fill); color:var(--dat-text); border:1px solid var(--dat-stroke); }
+.ok { color:var(--sw-text); font-weight:700; }
+.no { color:var(--fan-text); font-weight:700; }
+
+.wires { display:flex; flex-direction:column; border:1px solid var(--rule); border-radius:2px; background:var(--surface); }
+.wire { display:flex; gap:14px; align-items:baseline; padding:12px 16px; border-bottom:1px solid var(--rule); }
+.wire:last-child { border-bottom:none; }
+.chip { flex:none; width:34px; height:14px; border-radius:2px; border:1px solid var(--rule-strong); align-self:center; }
+.wire b { font-family:var(--mono); font-size:12px; font-weight:700; min-width:88px; flex:none; }
+.wire span { font-size:14px; color:var(--ink-2); }
+
+.callout { border-left:3px solid var(--accent); background:var(--accent-soft); padding:16px 20px; display:flex; flex-direction:column; gap:10px; border-radius:0 2px 2px 0; }
+.callout h3 { margin-top:0; color:var(--accent-ink); }
+.callout.warn { border-left-color:var(--warn-line); background:var(--warn-soft); }
+.callout.warn h3 { color:var(--warn); }
+
+.check { list-style:none; display:flex; flex-direction:column; border:1px solid var(--rule); border-radius:2px; background:var(--surface); }
+.check li { display:flex; gap:14px; padding:12px 16px; border-bottom:1px solid var(--rule); font-size:14.5px; align-items:flex-start; }
+.check li:last-child { border-bottom:none; }
+.check li::before { content:""; flex:none; width:14px; height:14px; margin-top:4px; border:1.5px solid var(--rule-strong); border-radius:2px; }
+
+footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; color:var(--ink-3); max-width:70ch; display:flex; flex-direction:column; gap:8px; }
+
+@media print { body{background:#fff} .page{padding:0;gap:32px} section{break-inside:avoid} }
+@media (max-width:640px){ .page{padding:32px 16px 64px} .fact{padding-right:20px;margin-right:20px} }
+</style>
+</head>
+<body>
+<button class="theme-toggle" type="button" id="themeToggle" aria-live="polite">Tmavý režim</button>
+
+<div class="page">
+
+<header class="masthead">
+  <div class="eyebrow">Elektroprojekt · byt 67,4 m² · návrh</div>
+  <h1>Elektroinštalácia bytu</h1>
+  <p class="standfirst">Osvetlenie riadené modulmi Shelly v krabiciach pod vypínačmi, zásuvkové okruhy so samostatnými vývodmi pre spotrebiče, nový rozvádzač pripravený na neskoršie navýšenie na tri fázy.</p>
+  <dl class="facts">
+    <div class="fact"><dt>Prípojka</dt><dd>1×32 A <small>230 V, jedna fáza</small></dd></div>
+    <div class="fact"><dt>Zásuvkové okruhy</dt><dd>15</dd></div>
+    <div class="fact"><dt>Svetelné okruhy</dt><dd>7 <small>+ 2 ventilátory</small></dd></div>
+    <div class="fact"><dt>Shelly moduly</dt><dd>6</dd></div>
+    <div class="fact"><dt>Dátové body</dt><dd>4 <small>CAT6, hviezda</small></dd></div>
+  </dl>
+</header>
+
+<section>
+  <h2>Východiská</h2>
+  <p>Byt má <strong>jednofázovú prípojku</strong>. Pôvodný hlavný istič je 1×B25; návrh počíta s navýšením na <strong>1×32 A</strong>, o ktoré je potrebné požiadať distribútora. Bez tohto navýšenia návrh nefunguje — dôvod je v kapitole o bilancii výkonu.</p>
+  <p>Osvetlenie a zásuvky sú riešené odlišne a je to zámer. <strong>Svetlá</strong> majú relé Shelly v krabiciach pod vypínačmi, takže sa slučkuje na vypínači a nie v strope. <strong>Zásuvky</strong> sú klasické, bez elektroniky — spotrebiče nemajú dôvod závisieť od modulu, ktorý sa dá zablokovať zlým skriptom.</p>
+  <p>Rozvádzač je navrhnutý ako <strong>trojfázový aj pri jednej fáze</strong>. Okruhy sú už teraz rozdelené do troch skupín tak, ako by sedeli na fázach. Pri budúcom navýšení sa odstráni prepojka a nemusí sa nič prekáblovať.</p>
+</section>
+
+<section>
+  <h2>Bilancia výkonu</h2>
+  <p><strong>1×32 A pri 230 V = 7 360 W.</strong> Toto je najprísnejšie obmedzenie celého návrhu a diktuje výber varnej dosky.</p>
+  <div class="tw">
+    <table>
+      <caption>Príkony hlavných spotrebičov</caption>
+      <thead><tr><th>Spotrebič</th><th class="n">Príkon</th><th class="n">Prúd</th><th>Poznámka</th></tr></thead>
+      <tbody>
+        <tr><td>Varná doska IKEA KOLSTAN</td><td class="n">7 400 W</td><td class="n">32 A</td><td><strong>nastaviteľný limit</strong> 7,4 / 6 / 5 / 4 / 3,5 / 3 / 2,5 kW</td></tr>
+        <tr><td>Rúra IKEA FRILLESBO</td><td class="n">2 290 W</td><td class="n">10 A</td><td>kábel 1 560 mm</td></tr>
+        <tr><td>Mikrovlnka IKEA FRILLESBO</td><td class="n">1 300 W</td><td class="n">5,7 A</td><td>kábel 1 350 mm</td></tr>
+        <tr><td>Umývačka IKEA FRÖSLUNDA</td><td class="n">~1 900 W</td><td class="n">8,3 A</td><td>45 cm, kábel 1 500 mm — IKEA príkon neuvádza, overiť na štítku</td></tr>
+        <tr><td>Práčka Gorenje WG494A11</td><td class="n">~2 000 W</td><td class="n">9 A</td><td>počas ohrevu</td></tr>
+        <tr><td>Sušička Gorenje DG48C</td><td class="n">~800 W</td><td class="n">3,5 A</td><td>tepelné čerpadlo — overiť na štítku</td></tr>
+        <tr><td>Rýchlovarná kanvica</td><td class="n">~2 200 W</td><td class="n">9,6 A</td><td></td></tr>
+        <tr><td>Základná záťaž</td><td class="n">~700 W</td><td class="n">3 A</td><td>chladnička, router, LED svetlá, TV</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Nastavenie limitu varnej dosky</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th class="n">Limit</th><th class="n">Doska</th><th class="n">+ rúra + základ</th><th class="n">+ ešte mikrovlnka</th><th>Verdikt</th></tr></thead>
+      <tbody>
+        <tr><td class="n">3,5 kW</td><td class="n">15,2 A</td><td class="n">28,2 A</td><td class="n">33,9 A</td><td class="ok">bezpečné</td></tr>
+        <tr><td class="n"><strong>4,0 kW</strong></td><td class="n">17,4 A</td><td class="n"><strong>30,4 A</strong></td><td class="n">36,1 A</td><td class="ok">odporúčané</td></tr>
+        <tr><td class="n">5,0 kW</td><td class="n">21,7 A</td><td class="n">34,7 A</td><td class="n">40,4 A</td><td>prejde bez mikrovlnky</td></tr>
+        <tr><td class="n">6,0 kW</td><td class="n">26 A</td><td class="n">39 A</td><td class="n">44,7 A</td><td class="no">vypadne</td></tr>
+        <tr><td class="n">7,4 kW</td><td class="n">32 A</td><td class="n">45 A</td><td class="n">50,7 A</td><td class="no">vypadne</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p><strong>Nastav 4,0 kW.</strong> Inštalatér limit zadá pri prvom zapnutí cez servisné menu dosky. V praxi to znamená dve zóny naplno súčasne, alebo jednu zónu s boosterom a k nej jednu menšiu. Štyri hrnce naraz na plný výkon nie.</p>
+
+  <div class="callout warn">
+    <h3>Čo sa nedá robiť naraz</h3>
+    <ul class="notes">
+      <li>Varenie naplno a súčasne <strong>umývačka aj práčka</strong>. Obe majú odložený štart — použi ho, je to zadarmo.</li>
+      <li>Ak by aj to bolo tesné, poistkou je <strong>prúdový hliadač</strong> na DIN lište (napr. Elko HRN-43), ktorý pri prekročení nastaveného prúdu odpojí sušičku alebo umývačku. Jeden modul, dá sa doplniť kedykoľvek neskôr.</li>
+      <li>Po navýšení na tri fázy stačí zmeniť limit dosky na 7,4 kW alebo ju pripojiť dvojfázovo. <strong>V stene sa nemení nič.</strong></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Pôdorys — osvetlenie</h2>
+  <div class="plan-wrap">
+    <svg viewBox="24 8 632 486" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>Pôdorys bytu s rozmiestnením svietidiel, ventilátorov, vypínačov K1 až K7, stropného PIR a rozvodnej krabice</title>
+      <desc>Byt so vstupom v spodnej stene predsiene. Kúpeľňa s WC vľavo hore, predsieň pod ňou s dvomi paralelne spojenými svietidlami a stropným PIR, otvorená kuchyňa s jedálňou a obývačkou vpravo, detská izba a spálňa v spodnej časti, obe so svetlom aj ventilátorom.</desc>
+      <polygon class="w-fill" points="40,60 640,60 640,476 129,476 129,259 40,259"/>
+      <path class="w-out" d="M40,60 L640,60 L640,476 L129,476 L129,259 L100,259 M60,259 L40,259 L40,60"/>
+      <path class="w-thin" d="M248,60 L248,23 L432,23 L432,60"/>
+      <path class="w-in" d="M156,60 L156,176"/>
+      <path class="w-in" d="M40,176 L96,176 M140,176 L156,176"/>
+      <path class="w-in" d="M129,259 L187,259 M236,259 L395,259 M444,259 L640,259"/>
+      <path class="w-in" d="M322,259 L322,476"/>
+      <rect class="win" x="469" y="56" width="85" height="8"/>
+      <rect class="win" x="175" y="472" width="85" height="8"/>
+      <rect class="win" x="432" y="472" width="110" height="8"/>
+      <text class="rm-s" x="80" y="278" text-anchor="middle">vchod</text>
+
+      <g class="light"><circle class="face" cx="98" cy="98" r="10"/><text class="num" x="98" y="102" text-anchor="middle">1</text></g>
+      <text class="rm" x="98" y="132" text-anchor="middle">Kúpeľňa + WC</text>
+      <g class="sw"><rect class="face" x="66" y="146" width="22" height="22" rx="4"/><rect class="btn" x="70" y="150" width="14" height="14" rx="2"/></g>
+      <text class="kcode" x="94" y="162">K1</text>
+
+      <g class="light"><circle class="face" cx="58" cy="190" r="10"/><text class="num" x="58" y="194" text-anchor="middle">2</text></g>
+      <g class="light"><circle class="face" cx="106" cy="190" r="10"/><text class="num" x="106" y="194" text-anchor="middle">2</text></g>
+      <g class="sensor"><rect class="face" x="126" y="183" width="28" height="14" rx="4"/><text class="num" x="140" y="194" text-anchor="middle">PIR</text></g>
+      <g class="sw"><rect class="face" x="104" y="212" width="22" height="22" rx="4"/><rect class="btn" x="108" y="216" width="14" height="14" rx="2"/></g>
+      <text class="kcode" x="130" y="228">K2</text>
+      <g class="rk"><rect class="face" x="152" y="214" width="30" height="16" rx="3"/><text class="num" x="167" y="226" text-anchor="middle">RK</text></g>
+      <text class="rm" x="186" y="251" text-anchor="middle">Predsieň</text>
+
+      <g class="sw"><rect class="face" x="166" y="68" width="22" height="22" rx="4"/><rect class="btn" x="170" y="72" width="14" height="14" rx="2"/></g>
+      <text class="kcode" x="192" y="84">K4</text>
+      <g class="light"><rect class="bar" x="168" y="102" width="90" height="12" rx="6"/><text class="num" x="266" y="112">4</text></g>
+      <text class="rm-s" x="213" y="130" text-anchor="middle">kuchynská linka</text>
+      <text class="rm" x="213" y="156" text-anchor="middle">Kuchyňa</text>
+
+      <g class="sw"><rect class="face loose" x="300" y="68" width="22" height="22" rx="4"/><rect class="btn" x="304" y="72" width="14" height="14" rx="2"/></g>
+      <text class="kcode" x="326" y="84">K5</text>
+      <g class="light"><rect class="bar" x="340" y="105" width="14" height="95" rx="6"/><text class="num" x="332" y="158" text-anchor="end">5</text></g>
+      <circle class="dot" cx="347" cy="116" r="2"/><circle class="dot" cx="347" cy="131" r="2"/><circle class="dot" cx="347" cy="146" r="2"/><circle class="dot" cx="347" cy="161" r="2"/><circle class="dot" cx="347" cy="176" r="2"/><circle class="dot" cx="347" cy="191" r="2"/>
+      <text class="rm" x="410" y="175" text-anchor="middle">Jedáleň</text>
+
+      <g class="light"><circle class="face" cx="530" cy="130" r="10"/><text class="num" x="530" y="134" text-anchor="middle">3</text></g>
+      <text class="rm" x="530" y="175" text-anchor="middle">Obývačka</text>
+      <g class="sw"><rect class="face" x="250" y="215" width="22" height="22" rx="4"/><rect class="btn" x="254" y="219" width="14" height="6" rx="1.5"/><rect class="btn" x="254" y="227" width="14" height="6" rx="1.5"/></g>
+      <text class="kcode" x="278" y="231">K3</text>
+
+      <g class="sw"><rect class="face" x="245" y="268" width="22" height="22" rx="4"/><rect class="btn" x="249" y="272" width="14" height="6" rx="1.5"/><rect class="btn" x="249" y="280" width="14" height="6" rx="1.5"/></g>
+      <text class="kcode" x="271" y="284">K6</text>
+      <g class="light"><circle class="face" cx="200" cy="340" r="10"/><text class="num" x="200" y="344" text-anchor="middle">6</text></g>
+      <g class="fan"><circle class="face" cx="250" cy="340" r="10"/><text class="num" x="250" y="344" text-anchor="middle">V1</text></g>
+      <text class="rm" x="222" y="380" text-anchor="middle">Detská izba</text>
+
+      <g class="sw"><rect class="face" x="455" y="268" width="22" height="22" rx="4"/><rect class="btn" x="459" y="272" width="14" height="6" rx="1.5"/><rect class="btn" x="459" y="280" width="14" height="6" rx="1.5"/></g>
+      <text class="kcode" x="481" y="284">K7</text>
+      <g class="light"><circle class="face" cx="450" cy="340" r="10"/><text class="num" x="450" y="344" text-anchor="middle">7</text></g>
+      <g class="fan"><circle class="face" cx="500" cy="340" r="10"/><text class="num" x="500" y="344" text-anchor="middle">V2</text></g>
+      <text class="rm" x="475" y="380" text-anchor="middle">Spálňa</text>
+    </svg>
+  </div>
+  <div class="legend">
+    <div class="leg"><svg width="22" height="22" viewBox="0 0 22 22"><g class="light"><circle class="face" cx="11" cy="11" r="9"/></g></svg><div>Svietidlo — číslo okruhu</div></div>
+    <div class="leg"><svg width="22" height="22" viewBox="0 0 22 22"><g class="fan"><circle class="face" cx="11" cy="11" r="9"/></g></svg><div>Ventilátor — V1, V2</div></div>
+    <div class="leg"><svg width="24" height="22" viewBox="0 0 24 22"><g class="sw"><rect class="face" x="1" y="0" width="22" height="22" rx="4"/><rect class="btn" x="5" y="4" width="14" height="6" rx="1.5"/><rect class="btn" x="5" y="12" width="14" height="6" rx="1.5"/></g></svg><div>Vypínač s relé — prúžky = tlačidlá</div></div>
+    <div class="leg"><svg width="24" height="22" viewBox="0 0 24 22"><g class="sw"><rect class="face loose" x="1" y="0" width="22" height="22" rx="4"/><rect class="btn" x="5" y="4" width="14" height="14" rx="2"/></g></svg><div>Len tlačidlo, bez relé (K5)</div></div>
+    <div class="leg"><svg width="30" height="16" viewBox="0 0 30 16"><g class="sensor"><rect class="face" x="1" y="1" width="28" height="14" rx="4"/></g></svg><div>PIR senzor v strope</div></div>
+    <div class="leg"><svg width="32" height="18" viewBox="0 0 32 18"><g class="rk"><rect class="face" x="1" y="1" width="30" height="16" rx="3"/></g></svg><div>Rozvodná krabica svetiel</div></div>
+  </div>
+  <p class="m" style="font-size:13px;color:var(--ink-3)">Nákres je schematický, vychádza z ručnej skice. Presné polohy treba zamerať na stavbe.</p>
+</section>
+
+<section>
+  <h2>Svetelné okruhy a vypínače</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th class="n">Okruh</th><th>Svietidlo</th><th>Vypínač</th><th class="n">Tlačidlá</th><th>Relé</th></tr></thead>
+      <tbody>
+        <tr><td class="n"><span class="tag c">1</span></td><td>Kúpeľňa + WC — stropné</td><td><span class="tag k">K1</span> kúpeľňa, vľavo od dverí zvnútra</td><td class="n">1</td><td>1 Mini</td></tr>
+        <tr><td class="n"><span class="tag c">2</span></td><td>Predsieň — 2 svietidlá paralelne</td><td><span class="tag k">K2</span> predsieň, pri vchode <strong>+ PIR</strong></td><td class="n">1</td><td>2PM</td></tr>
+        <tr><td class="n"><span class="tag c">3</span></td><td>Obývačka — luster</td><td><span class="tag k">K3</span> vstup do kuchyne, ľavé tl.</td><td class="n">2</td><td>2PM</td></tr>
+        <tr><td class="n"><span class="tag c">4</span></td><td>Kuchynská linka — podlinkové</td><td><span class="tag k">K4</span> kuchyňa, vľavo hore</td><td class="n">1</td><td>1 Mini</td></tr>
+        <tr><td class="n"><span class="tag c">5</span></td><td>Jedáleň — svetelná lišta, 6 spotov</td><td><span class="tag k">K3</span> pravé tl. + <span class="tag k">K5</span> pri balkóne</td><td class="n">1</td><td>— <span class="m">(relé v K3)</span></td></tr>
+        <tr><td class="n"><span class="tag c">6</span></td><td>Detská — stropné</td><td><span class="tag k">K6</span> detská, pri dverách</td><td class="n">2</td><td>2PM</td></tr>
+        <tr><td class="n"><span class="tag v">V1</span></td><td>Detská — ventilátor</td><td><span class="tag k">K6</span> pravé tl.</td><td class="n">—</td><td>2PM</td></tr>
+        <tr><td class="n"><span class="tag c">7</span></td><td>Spálňa — stropné</td><td><span class="tag k">K7</span> spálňa, pri dverách</td><td class="n">2</td><td>2PM</td></tr>
+        <tr><td class="n"><span class="tag v">V2</span></td><td>Spálňa — ventilátor</td><td><span class="tag k">K7</span> pravé tl.</td><td class="n">—</td><td>2PM</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Číslovanie je zarovnané: <strong><span class="m">K&lt;n&gt;</span> ovláda okruh <span class="m">&lt;n&gt;</span></strong>. Ventilátory majú vlastnú radu V1, V2, aby to zarovnanie nerozbili — na dvojtlačidlových vypínačoch je pravé tlačidlo vždy ventilátor.</p>
+
+  <div class="callout">
+    <h3>K2 — jediná krabica s PIR</h3>
+    <ul class="notes">
+      <li><strong>SW1 (tlačidlo)</strong> v normálnom režime priamo na O1 — svetlo funguje aj keby skript zlyhal.</li>
+      <li><strong>SW2 (PIR)</strong> v režime <span class="m">detached</span>. Časovanie a podmienky rieši lokálny skript v module, nie paralelné zapojenie — PIR sa dá kedykoľvek softvérovo vypnúť.</li>
+      <li>Vstupy aj výstup sú na jednom zariadení, takže <strong>všetko funguje bez siete</strong>.</li>
+      <li><strong>O2 zostáva voľné</strong> — vyviesť naň rezervný pár do stropu.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Pôdorys — zásuvky</h2>
+  <div class="plan-wrap">
+    <svg viewBox="24 8 632 486" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>Pôdorys bytu s rozmiestnením zásuvkových okruhov a dátových bodov</title>
+      <desc>Byt so vstupom v spodnej stene predsiene. V kúpeľni okruh Z9 pri zrkadle a na fén, plus Z7 práčka a Z8 sušička. V predsieni okruh Z13, dátový rozvádzač a rezervný dátový bod D4. V kuchyni vyhradené okruhy Z1 až Z6 pre spotrebiče a linku, klíma na Z14. V obývačke okruh Z10 na pravej stene a na TV stene medzi obývačkou a spálňou, tam aj dátový bod D1. V detskej okruh Z11 s dvomi dvojzásuvkami na každej stene a dátový bod D2 pri TV na ľavej stene. V spálni okruh Z12 pri posteli, pri skrini a pri TV, s dátovým bodom D3.</desc>
+      <polygon class="w-fill" points="40,60 640,60 640,476 129,476 129,259 40,259"/>
+      <path class="w-out" d="M40,60 L640,60 L640,476 L129,476 L129,259 L100,259 M60,259 L40,259 L40,60"/>
+      <path class="w-thin" d="M248,60 L248,23 L432,23 L432,60"/>
+      <path class="w-in" d="M156,60 L156,176"/>
+      <path class="w-in" d="M40,176 L96,176 M140,176 L156,176"/>
+      <path class="w-in" d="M129,259 L187,259 M236,259 L395,259 M444,259 L640,259"/>
+      <path class="w-in" d="M322,259 L322,476"/>
+      <rect class="win" x="469" y="56" width="85" height="8"/>
+      <rect class="win" x="175" y="472" width="85" height="8"/>
+      <rect class="win" x="432" y="472" width="110" height="8"/>
+      <text class="rm-s" x="80" y="278" text-anchor="middle">vchod</text>
+
+      <g class="soc"><rect class="face" x="42" y="149" width="22" height="13" rx="3"/><text class="nums" x="53" y="158.5" text-anchor="middle">9</text></g>
+      <text class="rm-s" x="53" y="145" text-anchor="middle">fén</text>
+      <g class="app"><rect class="face" x="131" y="131" width="16" height="13" rx="3"/><text class="nums" x="139" y="140.5" text-anchor="middle">7</text></g>
+      <g class="app"><rect class="face" x="131" y="149" width="16" height="13" rx="3"/><text class="nums" x="139" y="158.5" text-anchor="middle">8</text></g>
+      <text class="rm-s" x="127" y="141" text-anchor="end">práčka</text>
+      <text class="rm-s" x="127" y="159" text-anchor="end">sušička</text>
+      <text class="rm" x="98" y="105" text-anchor="middle">Kúpeľňa + WC</text>
+
+      <g class="soc"><rect class="face" x="52" y="190" width="16" height="13" rx="3"/><text class="nums" x="60" y="199.5" text-anchor="middle">13</text></g>
+      <g class="dat"><rect class="face" x="88" y="190" width="34" height="13" rx="3"/><text class="nums" x="105" y="199.5" text-anchor="middle">RACK</text></g>
+      <g class="dat"><rect class="face" x="133" y="190" width="18" height="13" rx="3"/><text class="nums" x="142" y="199.5" text-anchor="middle">D4</text></g>
+      <g class="soc"><rect class="face" x="182" y="190" width="16" height="13" rx="3"/><text class="nums" x="190" y="199.5" text-anchor="middle">13</text></g>
+      <text class="rm" x="110" y="240" text-anchor="middle">Predsieň</text>
+
+      <g class="app"><rect class="face" x="169" y="66" width="18" height="13" rx="3"/><text class="nums" x="178" y="75.5" text-anchor="middle">1</text></g>
+      <g class="app"><rect class="face" x="191" y="66" width="18" height="13" rx="3"/><text class="nums" x="200" y="75.5" text-anchor="middle">2</text></g>
+      <g class="app"><rect class="face" x="213" y="66" width="18" height="13" rx="3"/><text class="nums" x="222" y="75.5" text-anchor="middle">4</text></g>
+      <g class="app"><rect class="face" x="235" y="66" width="18" height="13" rx="3"/><text class="nums" x="244" y="75.5" text-anchor="middle">6</text></g>
+      <g class="app"><rect class="face" x="257" y="66" width="18" height="13" rx="3"/><text class="nums" x="266" y="75.5" text-anchor="middle">3</text></g>
+      <g class="soc"><rect class="face" x="170" y="88" width="20" height="13" rx="3"/><text class="nums" x="180" y="97.5" text-anchor="middle">5a</text></g>
+      <g class="soc"><rect class="face" x="196" y="88" width="20" height="13" rx="3"/><text class="nums" x="206" y="97.5" text-anchor="middle">5b</text></g>
+      <text class="rm" x="225" y="125" text-anchor="middle">Kuchyňa</text>
+
+      <g class="app"><rect class="face" x="470" y="66" width="20" height="13" rx="3"/><text class="nums" x="480" y="75.5" text-anchor="middle">14</text></g>
+      <text class="rm-s" x="480" y="94" text-anchor="middle">klíma</text>
+      <text class="rm" x="400" y="145" text-anchor="middle">Jedáleň</text>
+
+      <g class="soc"><rect class="face" x="615" y="114" width="22" height="13" rx="3"/><text class="nums" x="626" y="123.5" text-anchor="middle">10</text></g>
+      <g class="soc"><rect class="face" x="615" y="169" width="22" height="13" rx="3"/><text class="nums" x="626" y="178.5" text-anchor="middle">10</text></g>
+      <text class="rm-s" x="600" y="145" text-anchor="end">lampa</text>
+      <g class="dat"><rect class="face" x="483" y="240" width="18" height="13" rx="3"/><text class="nums" x="492" y="249.5" text-anchor="middle">D1</text></g>
+      <g class="soc"><rect class="face" x="511" y="240" width="22" height="13" rx="3"/><text class="nums" x="522" y="249.5" text-anchor="middle">10</text></g>
+      <g class="soc"><rect class="face" x="545" y="240" width="22" height="13" rx="3"/><text class="nums" x="556" y="249.5" text-anchor="middle">10</text></g>
+      <text class="rm-s" x="522" y="232" text-anchor="middle">TV stena</text>
+      <text class="rm" x="560" y="205" text-anchor="middle">Obývačka</text>
+
+      <g class="soc"><rect class="face" x="241" y="266" width="22" height="13" rx="3"/><text class="nums" x="252" y="275.5" text-anchor="middle">11</text></g>
+      <text class="rm-s" x="252" y="291" text-anchor="middle">pri dverách</text>
+      <g class="soc"><rect class="face" x="135" y="324" width="22" height="13" rx="3"/><text class="nums" x="146" y="333.5" text-anchor="middle">11</text></g>
+      <g class="soc"><rect class="face" x="135" y="394" width="22" height="13" rx="3"/><text class="nums" x="146" y="403.5" text-anchor="middle">11</text></g>
+      <g class="dat"><rect class="face" x="137" y="419" width="18" height="13" rx="3"/><text class="nums" x="146" y="428.5" text-anchor="middle">D2</text></g>
+      <text class="rm-s" x="163" y="429" text-anchor="start">TV</text>
+      <g class="soc"><rect class="face" x="295" y="354" width="22" height="13" rx="3"/><text class="nums" x="306" y="363.5" text-anchor="middle">11</text></g>
+      <text class="rm" x="222" y="450" text-anchor="middle">Detská izba</text>
+
+      <g class="soc"><rect class="face" x="469" y="266" width="22" height="13" rx="3"/><text class="nums" x="480" y="275.5" text-anchor="middle">12</text></g>
+      <g class="soc"><rect class="face" x="549" y="266" width="22" height="13" rx="3"/><text class="nums" x="560" y="275.5" text-anchor="middle">12</text></g>
+      <text class="rm-s" x="520" y="291" text-anchor="middle">posteľ</text>
+      <g class="soc"><rect class="face" x="327" y="314" width="22" height="13" rx="3"/><text class="nums" x="338" y="323.5" text-anchor="middle">12</text></g>
+      <g class="soc"><rect class="face" x="327" y="374" width="22" height="13" rx="3"/><text class="nums" x="338" y="383.5" text-anchor="middle">12</text></g>
+      <text class="rm-s" x="355" y="352" text-anchor="start">skriňa</text>
+      <g class="soc"><rect class="face" x="559" y="456" width="22" height="13" rx="3"/><text class="nums" x="570" y="465.5" text-anchor="middle">12</text></g>
+      <g class="dat"><rect class="face" x="596" y="456" width="18" height="13" rx="3"/><text class="nums" x="605" y="465.5" text-anchor="middle">D3</text></g>
+      <text class="rm-s" x="585" y="446" text-anchor="middle">TV</text>
+      <text class="rm" x="460" y="390" text-anchor="middle">Spálňa</text>
+    </svg>
+  </div>
+  <div class="legend">
+    <div class="leg"><svg width="24" height="15" viewBox="0 0 24 15"><g class="soc"><rect class="face" x="1" y="1" width="22" height="13" rx="3"/></g></svg><div>Dvojzásuvka — číslo je okruh</div></div>
+    <div class="leg"><svg width="18" height="15" viewBox="0 0 18 15"><g class="soc"><rect class="face" x="1" y="1" width="16" height="13" rx="3"/></g></svg><div>Jednozásuvka</div></div>
+    <div class="leg"><svg width="20" height="15" viewBox="0 0 20 15"><g class="app"><rect class="face" x="1" y="1" width="18" height="13" rx="3"/></g></svg><div>Vývod pre jeden spotrebič, vyhradený okruh</div></div>
+    <div class="leg"><svg width="20" height="15" viewBox="0 0 20 15"><g class="dat"><rect class="face" x="1" y="1" width="18" height="13" rx="3"/></g></svg><div>Dátová zásuvka CAT6</div></div>
+  </div>
+  <p>Číslo v značke je <strong>číslo okruhu</strong>. Široká značka je dvojzásuvka, úzka jednozásuvka. Presné polohy v kuchyni sú v kapitole 07, kde sú obe steny nakreslené s kótami.</p>
+  <div class="tw">
+    <table>
+      <caption>Zásuvky podľa miestností</caption>
+      <thead><tr><th>Miestnosť</th><th class="n">Okruh</th><th class="n">Vývodov</th><th>Umiestnenie</th></tr></thead>
+      <tbody>
+        <tr><td>Kúpeľňa + WC</td><td class="n">Z9</td><td class="n">1</td><td>dvojzásuvka na <strong>ľavej stene dole</strong>, smerom k dverám</td></tr>
+        <tr><td>Kúpeľňa — spotrebiče</td><td class="n">Z7, Z8</td><td class="n">2</td><td>práčka a sušička na <strong>pravej stene dole</strong>, smerom k dverám</td></tr>
+        <tr><td>Predsieň, chodba</td><td class="n">Z13</td><td class="n">2</td><td>jedna pri vchode, jedna pri dátovom racku</td></tr>
+        <tr><td>Kuchyňa — linka</td><td class="n">Z5a, Z5b</td><td class="n">3</td><td>2 nad skrinkou 3, 2 nad skrinkou 5, 2 nad skrinkou 8</td></tr>
+        <tr><td>Kuchyňa — spotrebiče</td><td class="n">Z1 – Z4, Z6</td><td class="n">5</td><td>doska, rúra, mikrovlnka, umývačka, chladnička</td></tr>
+        <tr><td>Jedáleň</td><td class="n">Z14</td><td class="n">1</td><td>klíma, ~2 300 mm</td></tr>
+        <tr><td>Obývačka</td><td class="n">Z10</td><td class="n">4</td><td>2 na pravej stene (lampa), 2 na TV stene</td></tr>
+        <tr><td>Detská izba</td><td class="n">Z11</td><td class="n">4</td><td>2 na ľavej stene (spodná s TV a dátami), 1 pri dverách, 1 na pravej stene</td></tr>
+        <tr><td>Spálňa</td><td class="n">Z12</td><td class="n">5</td><td>2 pri posteli, 2 pri skrini, 1 pri TV</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <h3>Prečo má každá izba jeden okruh</h3>
+    <p>Obývačka, detská aj spálňa majú <strong>všetky zásuvky na jednom okruhu</strong>. Deliť ich nemá zmysel — pri jednofázovej prípojke to nepridá ani watt kapacity a len minie moduly v rozvádzači. Delené sú len tie okruhy, kde na tom naozaj záleží: kuchynská linka, kde sa stretne kanvica s hriankovačom, a spotrebiče, ktoré majú vlastný okruh každý zvlášť.</p>
+    <p>Strop je <strong>10 zásuvkových vývodov na jeden okruh</strong> podľa STN 33 2130. Najhustejšia je spálňa s piatimi vývodmi, takže rezerva je všade dvojnásobná — elektrikár nech si to overí voči aktuálnemu vydaniu normy.</p>
+  </div>
+  <p class="m" style="font-size:13px;color:var(--ink-3)">Polohy mimo kuchyne sú schematické. Presné výšky a odstupy upresniť podľa rozmiestnenia nábytku pred sekaním drážok.</p>
+</section>
+
+<section>
+  <h2>Zásuvkové okruhy</h2>
+  <div class="tw">
+    <table>
+      <thead><tr><th class="n">Okruh</th><th>Čo</th><th class="n">Istenie</th><th class="n">Kábel</th><th class="n">Chránič</th><th>Poznámka</th></tr></thead>
+      <tbody>
+        <tr><td class="n"><span class="tag k">Z1</span></td><td>Varná doska KOLSTAN</td><td class="n">B25</td><td class="n">CYKY-J 3×6</td><td class="n">RCD 1</td><td><strong>pevné pripojenie</strong>, limit 4 kW</td></tr>
+        <tr><td class="n"><span class="tag k">Z2</span></td><td>Rúra FRILLESBO</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 1</td><td>samostatne</td></tr>
+        <tr><td class="n"><span class="tag k">Z3</span></td><td>Umývačka</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 1</td><td>samostatne</td></tr>
+        <tr><td class="n"><span class="tag k">Z4</span></td><td>Chladnička s mrazákom</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n"><strong>RCBO</strong></td><td>vlastný chránič, viď nižšie</td></tr>
+        <tr><td class="n"><span class="tag k">Z5a</span></td><td>Linka vľavo od dosky + digestor</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 1</td><td>2 zásuvky</td></tr>
+        <tr><td class="n"><span class="tag k">Z5b</span></td><td>Linka vpravo od dosky + zástena</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 1</td><td>4 zásuvky</td></tr>
+        <tr><td class="n"><span class="tag k">Z6</span></td><td>Mikrovlnka FRILLESBO</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 1</td><td>samostatne</td></tr>
+        <tr><td class="n"><span class="tag k">Z7</span></td><td>Práčka</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 2</td><td>odporúčaný typ F</td></tr>
+        <tr><td class="n"><span class="tag k">Z8</span></td><td>Sušička</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 2</td><td>odporúčaný typ F</td></tr>
+        <tr><td class="n"><span class="tag k">Z9</span></td><td>Kúpeľňa — fén a spol., ľavá stena</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 2</td><td>1 dvojzásuvka</td></tr>
+        <tr><td class="n"><span class="tag k">Z10</span></td><td>Obývačka — <strong>všetky zásuvky</strong></td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 3</td><td>4 vývody</td></tr>
+        <tr><td class="n"><span class="tag k">Z11</span></td><td>Detská izba — <strong>všetky zásuvky</strong></td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 3</td><td>4 vývody</td></tr>
+        <tr><td class="n"><span class="tag k">Z12</span></td><td>Spálňa — <strong>všetky zásuvky</strong></td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 3</td><td>5 vývodov</td></tr>
+        <tr><td class="n"><span class="tag k">Z13</span></td><td>Chodba, predsieň, vysávač, router</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 2</td><td>2 vývody</td></tr>
+        <tr><td class="n"><span class="tag k">Z14</span></td><td>Klíma</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 2</td><td>samostatne, odporúčaný typ F</td></tr>
+        <tr><td class="n"><span class="tag c">S1</span></td><td>Svetlá — kúpeľňa, predsieň, kuchyňa, jedáleň, obývačka</td><td class="n">B6</td><td class="n">CYKY-J 3×1,5</td><td class="n">RCD 3</td><td>—</td></tr>
+        <tr><td class="n"><span class="tag c">S2</span></td><td>Svetlá — detská, spálňa, ventilátory</td><td class="n">B6</td><td class="n">CYKY-J 3×1,5</td><td class="n">RCD 3</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>Prečo práve takto</h3>
+  <ul class="notes">
+    <li><strong>Doska má B25 a 6 mm²</strong>, hoci pri limite 4 kW by stačilo menej. Je to zámerné predimenzovanie — po navýšení prípojky sa len zmení nastavenie dosky a v stene sa nemení nič. Je to kábel, ktorý po osadení linky nevytiahneš.</li>
+    <li><strong>Chladnička má vlastný RCBO</strong>, aby ti výpadok chrániča kdekoľvek inde nerozmrazil zásoby. Rozdelenie ostatných okruhov do troch chráničov je v kapitole 09.</li>
+    <li><strong>Mikrovlnka nesmie ísť na okruh linky.</strong> Mikrovlnka 1,3 kW plus kanvica 2,2 kW je 15,2 A, čo je na B16 na hrane.</li>
+    <li><strong>Linka je rozdelená na dva okruhy.</strong> Šesť zásuviek na jednom B16 je málo — kanvica a hriankovač už sú 14 A. Takto máš po oboch stranách dosky nezávislé istenie.</li>
+    <li><strong>Izby majú po jednom okruhu.</strong> Deliť obývačku alebo detskú na viac okruhov by pri jednofázovej prípojke nepridalo žiadnu kapacitu a len minulo moduly v rozvádzači.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Kuchyňa — vývody</h2>
+  <h3>Ľavá stena — doska, rúra, chladnička</h3>
+  <div class="plan-wrap">
+    <svg viewBox="30 30 600 355" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>Pohľad na ľavú stenu kuchyne s umiestnením vývodov a zásuviek</title>
+      <desc>Elevácia ľavej steny kuchyne dlhej 4600 mm. Vľavo priechod do chodby. Vysoké skrinky 1 a 2 s chladničkou a s rúrou a mikrovlnkou, spodné skrinky 3, 4 a 5 s varnou doskou v skrinke 4, horné skrinky 11 až 14 s digestorom v skrinke 12. Vyznačené sú vývody okruhov Z1, Z2, Z4, Z5a, Z5b a Z6 a výškové kóty 910, 1100 a 1480 milimetrov.</desc>
+      <path class="gd" d="M209.5,235.4 L586,235.4"/>
+      <path class="gd" d="M209.5,213.5 L586,213.5"/>
+      <path class="gd" d="M209.5,169.8 L586,169.8"/>
+      <text class="rm-s" x="592" y="239">910</text>
+      <text class="rm-s" x="592" y="211">1100</text>
+      <text class="rm-s" x="592" y="173">1480</text>
+
+      <line x1="200" y1="340" x2="590" y2="340" stroke="var(--ink)" stroke-width="3"/>
+      <path d="M60,340 L60,60 L209.5,60 L209.5,340" fill="none" stroke="var(--ink-3)" stroke-width="2" stroke-dasharray="6 4"/>
+      <text class="rm-s" x="134" y="196" text-anchor="middle">priechod</text>
+      <text class="rm-s" x="134" y="212" text-anchor="middle">do chodby</text>
+
+      <rect class="unit-a" x="209.5" y="89.3" width="69" height="241.5" rx="2"/>
+      <text class="rm-a" x="244" y="322" text-anchor="middle">1</text>
+      <text class="rm-a" x="244" y="180" text-anchor="middle">chladn.</text>
+      <rect class="unit-a" x="278.5" y="89.3" width="69" height="241.5" rx="2"/>
+      <text class="rm-a" x="313" y="322" text-anchor="middle">2</text>
+      <text class="rm-a" x="313" y="168" text-anchor="middle">rúra</text>
+      <text class="rm-a" x="313" y="182" text-anchor="middle">mikro</text>
+
+      <rect class="unit" x="347.5" y="238.6" width="46" height="92.2" rx="2"/>
+      <text class="rm-s" x="370" y="322" text-anchor="middle">3</text>
+      <rect class="unit-a" x="393.5" y="238.6" width="69" height="92.2" rx="2"/>
+      <text class="rm-a" x="428" y="322" text-anchor="middle">4</text>
+      <text class="rm-a" x="428" y="262" text-anchor="middle">doska</text>
+      <rect class="unit" x="462.5" y="238.6" width="100.6" height="92.2" rx="2"/>
+      <text class="rm-s" x="512" y="322" text-anchor="middle">5</text>
+      <rect x="347.5" y="234.6" width="215.6" height="5" rx="1" fill="var(--ink)"/>
+
+      <rect class="unit" x="351" y="54.8" width="45.9" height="115" rx="2"/>
+      <text class="rm-s" x="374" y="80" text-anchor="middle">11</text>
+      <rect class="unit-a" x="396.9" y="54.8" width="69" height="115" rx="2"/>
+      <text class="rm-a" x="431" y="80" text-anchor="middle">12</text>
+      <text class="rm-a" x="431" y="146" text-anchor="middle">digestor</text>
+      <rect class="unit" x="465.9" y="54.8" width="46" height="115" rx="2"/>
+      <text class="rm-s" x="489" y="80" text-anchor="middle">13</text>
+      <rect class="unit" x="511.9" y="54.8" width="69" height="115" rx="2"/>
+      <text class="rm-s" x="546" y="80" text-anchor="middle">14</text>
+
+      <g class="soc"><rect class="face" x="226" y="105" width="36" height="18" rx="4"/><text class="num" x="244" y="118" text-anchor="middle">Z4</text></g>
+      <g class="soc"><rect class="face" x="286" y="279" width="26" height="18" rx="4"/><text class="num" x="299" y="292" text-anchor="middle">Z2</text></g>
+      <g class="soc"><rect class="face" x="314" y="279" width="26" height="18" rx="4"/><text class="num" x="327" y="292" text-anchor="middle">Z6</text></g>
+      <g class="app"><rect class="face" x="352" y="279" width="36" height="18" rx="4"/><text class="num" x="370" y="292" text-anchor="middle">Z1</text></g>
+      <g class="soc"><rect class="face" x="352" y="204" width="40" height="19" rx="4"/><text class="num" x="372" y="217" text-anchor="middle">Z5a</text></g>
+      <g class="soc"><rect class="face" x="492" y="204" width="40" height="19" rx="4"/><text class="num" x="512" y="217" text-anchor="middle">Z5b</text></g>
+      <g class="soc"><rect class="face" x="413" y="100" width="36" height="18" rx="4"/><text class="num" x="431" y="113" text-anchor="middle">Z5a</text></g>
+
+      <text class="rm" x="60" y="368">Ľavá stena, 4 600 mm — čísla skriniek podľa IKEA výkresu</text>
+    </svg>
+  </div>
+
+  <div class="tw">
+    <table>
+      <caption>Vývody — ľavá stena</caption>
+      <thead><tr><th>Vývod</th><th>Kde presne</th><th class="n">Výška</th><th class="n">Okruh</th></tr></thead>
+      <tbody>
+        <tr><td>Chladnička</td><td>horná časť skrinky <strong>1</strong>, nad chladničkou</td><td class="n">~1 950</td><td class="n">Z4</td></tr>
+        <tr><td>Rúra</td><td>spodný priestor skrinky <strong>2</strong></td><td class="n">~450</td><td class="n">Z2</td></tr>
+        <tr><td>Mikrovlnka</td><td>tamtiež, vedľa — <strong>overiť dosah kábla 1 350 mm</strong></td><td class="n">~450</td><td class="n">Z6</td></tr>
+        <tr><td>Varná doska</td><td>krabica s vývodkou v skrinke <strong>3</strong>, pevné pripojenie</td><td class="n">~500</td><td class="n">Z1</td></tr>
+        <tr><td>Digestor</td><td>vnútri hornej skrinky <strong>12</strong>, hore vzadu</td><td class="n">~2 000</td><td class="n">Z5a</td></tr>
+        <tr><td>2× zásuvka</td><td>zástena nad skrinkou <strong>3</strong>, čo najviac doľava</td><td class="n">1 100</td><td class="n">Z5a</td></tr>
+        <tr><td>2× zásuvka</td><td>zástena nad skrinkou <strong>5</strong></td><td class="n">1 100</td><td class="n">Z5b</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>Pravá stena — drez, umývačka, klíma</h3>
+  <div class="plan-wrap">
+    <svg viewBox="30 30 600 355" role="img" xmlns="http://www.w3.org/2000/svg">
+      <title>Pohľad na pravú stenu kuchyne s umiestnením vývodov</title>
+      <desc>Elevácia pravej steny kuchyne. Od rohu skrinka 5, potom skrinka 6 s drezom, skrinka 7 s umývačkou a skrinka 8. Zásuvka umývačky Z3 je v skrinke 8, dve zásuvky Z5b na zástene nad ňou, vývod klímy Z14 na voľnej stene. Vyznačené sú výškové kóty 910, 1100, 1480 a 2300 milimetrov.</desc>
+      <path class="gd" d="M60,235.4 L586,235.4"/>
+      <path class="gd" d="M60,213.5 L586,213.5"/>
+      <path class="gd" d="M60,169.8 L586,169.8"/>
+      <path class="gd" d="M60,75.5 L586,75.5"/>
+      <text class="rm-s" x="592" y="239">910</text>
+      <text class="rm-s" x="592" y="211">1100</text>
+      <text class="rm-s" x="592" y="173">1480</text>
+      <text class="rm-s" x="592" y="79">2300</text>
+
+      <line x1="55" y1="340" x2="589" y2="340" stroke="var(--ink)" stroke-width="3"/>
+      <path d="M589,340 L589,54.8" fill="none" stroke="var(--ink-3)" stroke-width="2" stroke-dasharray="6 4"/>
+      <text class="rm-s" x="470" y="300" text-anchor="middle">voľná stena — pokračuje do jedálne</text>
+
+      <rect class="unit" x="60" y="238.6" width="100.6" height="92.2" rx="2"/>
+      <text class="rm-s" x="110" y="322" text-anchor="middle">5</text>
+      <text class="rm-s" x="110" y="290" text-anchor="middle">roh</text>
+      <rect class="unit" x="160.6" y="238.6" width="69" height="92.2" rx="2"/>
+      <text class="rm-s" x="195" y="322" text-anchor="middle">6</text>
+      <text class="rm-s" x="195" y="290" text-anchor="middle">drez</text>
+      <rect class="unit-a" x="229.6" y="238.6" width="51.8" height="92.2" rx="2"/>
+      <text class="rm-a" x="255" y="322" text-anchor="middle">7</text>
+      <text class="rm-a" x="255" y="264" text-anchor="middle">umýv.</text>
+      <rect class="unit" x="281.4" y="238.6" width="46" height="92.2" rx="2"/>
+      <text class="rm-s" x="304" y="322" text-anchor="middle">8</text>
+      <rect x="60" y="234.6" width="268.8" height="5" rx="1" fill="var(--ink)"/>
+
+      <rect class="unit" x="60" y="54.8" width="100.6" height="115" rx="2"/>
+      <text class="rm-s" x="110" y="80" text-anchor="middle">13/14/15</text>
+      <text class="rm-s" x="110" y="96" text-anchor="middle">roh</text>
+
+      <g class="app"><rect class="face" x="289" y="279" width="30" height="18" rx="4"/><text class="num" x="304" y="292" text-anchor="middle">Z3</text></g>
+      <g class="soc"><rect class="face" x="284" y="204" width="40" height="19" rx="4"/><text class="num" x="304" y="217" text-anchor="middle">Z5b</text></g>
+      <g class="app"><rect class="face" x="432" y="66" width="36" height="19" rx="4"/><text class="num" x="450" y="79" text-anchor="middle">Z14</text></g>
+
+      <text class="rm" x="60" y="368">Pravá stena, prvých 4 600 mm od rohu — čísla skriniek podľa IKEA výkresu</text>
+    </svg>
+  </div>
+  <div class="tw">
+    <table>
+      <caption>Vývody — pravá stena</caption>
+      <thead><tr><th>Vývod</th><th>Kde presne</th><th class="n">Výška</th><th class="n">Okruh</th></tr></thead>
+      <tbody>
+        <tr><td>Drez</td><td>skrinka <strong>6</strong> — bez elektrického vývodu</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>Umývačka</td><td>spotrebič v skrinke <strong>7</strong>, zásuvka v susednej skrinke <strong>8</strong> — kábel 1 500 mm pohodlne dosiahne</td><td class="n">~450</td><td class="n">Z3</td></tr>
+        <tr><td>2× zásuvka</td><td>zástena nad skrinkou <strong>8</strong></td><td class="n">1 100</td><td class="n">Z5b</td></tr>
+        <tr><td>Klíma</td><td>voľná stena za linkou, pri vnútornej jednotke</td><td class="n">~2 300</td><td class="n">Z14</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warn">
+    <h3>Tri pravidlá, ktoré sa nedajú opraviť dodatočne</h3>
+    <ul class="notes">
+      <li><strong>Žiadny vývod za spotrebičom.</strong> Rúra, umývačka ani chladnička sa nesmú dať odpojiť len vytiahnutím — vývod musí byť dostupný z vedľajšej skrinky.</li>
+      <li><strong>Nad varnou doskou ani nad drezom žiadna zásuvka.</strong> Preto sú zásuvky nad skrinkami 3 a 5, ktoré dosku obchádzajú z oboch strán. Výrez 560 v skrinke 600 nechá po stranách len 20 mm, takže hrana dosky je prakticky na spoji skriniek — zásuvky nad skrinkou 3 posunúť čo najviac doľava.</li>
+      <li><strong>Presné pozície treba dať výrobcovi zásteny.</strong> Výrezy sa robia vopred, po montáži sa to už nevŕta.</li>
+    </ul>
+  </div>
+  <p>Kóty: podlaha 0, sokel 80, spodná skrinka 802, <strong>pracovná doska 910</strong>, voľný pás zásteny 570, <strong>spodná hrana horných skriniek 1 480</strong>, ich horná hrana 2 480. Výrez pre dosku 560 × 490 mm — rovnaký pre MATMÄSSIG aj KOLSTAN, takže výmena dosky nevyžaduje zmenu pracovnej dosky.</p>
+</section>
+
+<section>
+  <h2>Rozvádzač</h2>
+  <p>Nový bytový rozvádzač pod omietku, <strong>minimálne 4 rady × 12 modulov</strong>. Návrh obsadí 17 ističov plus chrániče, hlavný vypínač a prepäťovú ochranu — zvyšok je rezerva, ktorú budeš potrebovať.</p>
+  <ul class="notes">
+    <li><strong>Hlavný vypínač 3-pólový</strong>, prípojnice L1/L2/L3 premostené na jednu fázu. Pri navýšení sa most odstráni.</li>
+    <li><strong>Okruhy rozdelené do troch skupín</strong> už teraz, tak ako by sedeli na fázach: skupina A kuchyňa a spotrebiče, B izby a obývačka, C kúpeľňa, chodba, klíma a svetlá.</li>
+    <li><strong>Prúdové chrániče 30 mA</strong> na všetko — rozdelenie do troch skupín je v tabuľke nižšie.</li>
+    <li><strong>Prepäťová ochrana typ 2.</strong> Máš tam 6 modulov Shelly, router, dve TV a indukčnú dosku — jednorazová prepäťová špička ich vezme naraz.</li>
+    <li><strong>Prívod od elektromera: CYKY-J 5×10.</strong> Pre 32 A na jednej fáze by stačilo 3×6, ale päťžilová desiatka stojí o pár desiatok eur viac a je to kábel, ktorý sa neskôr prekladá najhoršie.</li>
+    <li>Miesto na <strong>prúdový hliadač</strong> nechať voľné, aj keď sa hneď neosadí.</li>
+  </ul>
+
+  <h3>Prúdové chrániče</h3>
+  <p><strong>Každý okruh je za chráničom 30 mA</strong>, vrátane svetiel — to dnes vyžaduje STN 33 2000-4-41 pre byty. Nie je to ale jeden spoločný chránič: pri sedemnástich okruhoch by sa zvodové prúdy elektroniky sčítali a jedna porucha by zhasla celý byt.</p>
+  <div class="tw">
+    <table>
+      <caption>Rozdelenie do skupín</caption>
+      <thead><tr><th class="n">Chránič</th><th class="n">Typ</th><th class="n">Okruhov</th><th>Čo chráni</th></tr></thead>
+      <tbody>
+        <tr><td class="n">RCD 1</td><td class="n">40 A / 30 mA, <strong>typ F</strong></td><td class="n">6</td><td>kuchyňa — Z1, Z2, Z3, Z5a, Z5b, Z6</td></tr>
+        <tr><td class="n">RCD 2</td><td class="n">40 A / 30 mA, <strong>typ F</strong></td><td class="n">5</td><td>kúpeľňa a technika — Z7, Z8, Z9, Z13, Z14</td></tr>
+        <tr><td class="n">RCD 3</td><td class="n">40 A / 30 mA, typ A</td><td class="n">5</td><td>izby a svetlá — Z10, Z11, Z12, S1, S2</td></tr>
+        <tr><td class="n">RCBO</td><td class="n">B16 / 30 mA, typ A</td><td class="n">1</td><td>chladnička Z4</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="notes">
+    <li><strong>Chladnička má vlastný RCBO</strong> práve preto, aby ju nezhodila porucha inde. Je to jediný spotrebič, ktorému výpadok počas dovolenky naozaj uškodí.</li>
+    <li><strong>Typ F namiesto typu A</strong> tam, kde sú meniče: indukčná doska, práčka, sušička s tepelným čerpadlom a klíma. Tie produkujú vysokofrekvenčné zvodové prúdy, na ktoré typ A nemusí zareagovať a zároveň býva ich príčinou falošných výpadkov. Typ A je minimum, typ F je o pár desiatok eur drahší a ušetrí ti hľadanie, prečo to občas padá.</li>
+    <li><strong>Zatiaľ dvojpólové chrániče</strong>, nie štvorpólové. Pri prechode na tri fázy sa vymenia — je to lacná výmena a teraz ušetríš šesť modulov aj peniaze.</li>
+    <li>Chrániče sú istené hlavným ističom 32 A, preto stačí menovitý prúd 40 A.</li>
+  </ul>
+  <p>Obsadenie rozvádzača vychádza zhruba na <strong>32 modulov</strong> — hlavný vypínač 3, prepäťovka 4, tri chrániče 6, ističe 17, RCBO 2. V rozvádzači 4 × 12 tak zostane okolo 16 voľných pozícií.</p>
+</section>
+
+<section>
+  <h2>Dátové rozvody</h2>
+  <p>Router a dátový rozvádzač budú v <strong>predsieni</strong>. Všetky dátové zásuvky sa ťahajú <strong>hviezdou</strong> do tohto bodu — žiadne reťazenie.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Bod</th><th>Kde</th><th class="n">Kábel</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag d">D1</span> Obývačka</td><td><strong>TV stena</strong> — stena medzi obývačkou a spálňou, spolu so zásuvkami Z10</td><td class="n">CAT6 U/FTP</td></tr>
+        <tr><td><span class="tag d">D2</span> Detská</td><td>ľavá stena dole, smerom k oknu — pri TV zásuvke Z11</td><td class="n">CAT6 U/FTP</td></tr>
+        <tr><td><span class="tag d">D3</span> Spálňa</td><td>spodná stena vpravo od okna — pri TV zásuvke Z12</td><td class="n">CAT6 U/FTP</td></tr>
+        <tr><td><span class="tag d">D4</span> Rezerva</td><td>strop chodby — budúci Wi-Fi prístupový bod</td><td class="n">CAT6 U/FTP</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Do predsiene k routeru priviesť aj <strong>zásuvku z okruhu Z13</strong>. Dátové káble veď <strong>oddelene od silových</strong>, pri súbehu min. 200 mm odstup, kríženie pod 90°.</p>
+</section>
+
+<section>
+  <h2>Zóny v kúpeľni</h2>
+  <p>Vypínač <span class="tag k">K1</span> je na želanie <strong>vnútri kúpeľne</strong>, takže tam je aj modul Shelly. To je prípustné, ale len mimo ochranných zón podľa <span class="m">STN 33 2000-7-701</span>.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th class="n">Zóna</th><th>Rozsah</th><th>Čo tam smie</th></tr></thead>
+      <tbody>
+        <tr><td class="n">0</td><td>vnútro vane alebo sprchovej vaničky</td><td>len SELV 12 V, IPX7 — nič z tejto inštalácie</td></tr>
+        <tr><td class="n">1</td><td>nad vaňou / sprchou do výšky 2,25 m</td><td>svietidlo min. IPX4, bez spínacích prvkov</td></tr>
+        <tr><td class="n">2</td><td>pás 0,6 m okolo zóny 1</td><td>svietidlo min. IPX4, spínače neprípustné</td></tr>
+        <tr><td class="n">mimo</td><td>zvyšok miestnosti</td><td><strong>sem patrí K1, modul aj zásuvky Z7, Z8, Z9</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="notes">
+    <li>Poloha pri dverách zvyčajne vychádza mimo zón, ale <strong>odstup treba overiť pred sekaním drážok</strong> — pri otvorenom sprchovom kúte býva zóna väčšia, než sa čaká.</li>
+    <li>Zásuvky práčky a sušičky sú <strong>v skrinke</strong>, mimo zón, prístupné z čela.</li>
+    <li>Vyhotoviť <strong>doplnkové ochranné pospájanie</strong> vodičom CYA 4 mm² na kovové časti a rozvody.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Kabeláž — svetlá</h2>
+  <p>Relé Shelly sedia v krabiciach pod vypínačmi, takže sa <strong>slučkuje na vypínači, nie v strope</strong>. Toto treba dohodnúť pred sekaním drážok, je to opak bežnej praxe. Rozvodná krabica <span class="m">RK</span> v predsieni rozvádza len L, N, PE — žiadny spínaný vodič cez ňu neprechádza.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Trasa</th><th class="n">Kábel</th><th>Obsadenie žíl</th></tr></thead>
+      <tbody>
+        <tr><td>RZ → RK, okruh S1 a S2</td><td class="n">2× CYKY-J 3×1,5</td><td>hnedá L · modrá N · ze/žl PE</td></tr>
+        <tr><td>RK → K1, K2, K3, K4, K6, K7</td><td class="n">6× CYKY-J 3×1,5</td><td>hnedá L · modrá N · ze/žl PE</td></tr>
+        <tr><td>K1 → strop kúpeľne</td><td class="n">CYKY-J 3×1,5</td><td>hnedá okruh 1 · modrá N · ze/žl PE</td></tr>
+        <tr><td><strong>K2 → strop predsiene</strong></td><td class="n">CYKY-J 5×1,5</td><td>hnedá L trvalá pre PIR · čierna okruh 2 · šedá signál PIR → SW2 · modrá N · ze/žl PE</td></tr>
+        <tr><td>strop predsiene → druhé svietidlo</td><td class="n">CYKY-J 3×1,5</td><td>hnedá okruh 2 · modrá N · ze/žl PE</td></tr>
+        <tr><td>K2 → strop predsiene, rezerva pre O2</td><td class="n">CYKY-J 3×1,5</td><td>nezapojené, izolovať a označiť</td></tr>
+        <tr><td><strong>K3 → strop jedálne</strong></td><td class="n">CYKY-J 5×1,5</td><td>hnedá okruh 3 · čierna okruh 5 · šedá rezerva · modrá N · ze/žl PE</td></tr>
+        <tr><td>strop jedálne → luster</td><td class="n">CYKY-J 3×1,5</td><td>hnedá okruh 3 · modrá N · ze/žl PE</td></tr>
+        <tr><td>K4 → podlinka</td><td class="n">CYKY-J 3×1,5</td><td>hnedá okruh 4 · modrá N · ze/žl PE</td></tr>
+        <tr><td><strong>K5 → K3</strong></td><td class="n">CYKY-J 5×1,5</td><td>hnedá L trvalá · čierna signál → SW2 v K3 · šedá rezerva · modrá N rezerva · ze/žl PE</td></tr>
+        <tr><td>K6 → strop detskej</td><td class="n">CYKY-J 5×1,5</td><td>hnedá okruh 6 · čierna V1 · šedá rezerva · modrá N · ze/žl PE</td></tr>
+        <tr><td>K7 → strop spálne</td><td class="n">CYKY-J 5×1,5</td><td>hnedá okruh 7 · čierna V2 · šedá rezerva · modrá N · ze/žl PE</td></tr>
+        <tr><td>strop → ventilátor (2×)</td><td class="n">2× CYKY-J 3×1,5</td><td>hnedá V1 resp. V2 · modrá N · ze/žl PE</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Krabice <strong>K2, K3, K6, K7 hlboké</strong> kvôli 2PM, ostatné bežné hlboké KU 68. RK má 8 káblov — odbočná krabica min. ⌀125 mm alebo dve prepojené.</p>
+</section>
+
+<section>
+  <h2>Kabeláž — zásuvky</h2>
+  <p>Zásuvkové okruhy idú <strong>priamo z rozvádzača</strong>, každý ako samostatná vetva. Žiadne reťazenie okruhov cez spoločné krabice.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th class="n">Okruh</th><th>Trasa</th><th class="n">Kábel</th><th>Zakončenie</th></tr></thead>
+      <tbody>
+        <tr><td class="n">Z1</td><td>RZ → skrinka 3</td><td class="n">CYKY-J 3×6</td><td>krabica s vývodkou, pevné pripojenie</td></tr>
+        <tr><td class="n">Z2</td><td>RZ → skrinka 2, spodný priestor</td><td class="n">CYKY-J 3×2,5</td><td>zásuvka</td></tr>
+        <tr><td class="n">Z3</td><td>RZ → skrinka 8</td><td class="n">CYKY-J 3×2,5</td><td>zásuvka</td></tr>
+        <tr><td class="n">Z4</td><td>RZ → skrinka 1, horná časť</td><td class="n">CYKY-J 3×2,5</td><td>zásuvka</td></tr>
+        <tr><td class="n">Z5a</td><td>RZ → zástena nad skrinkou 3 → skrinka 12</td><td class="n">CYKY-J 3×2,5</td><td>2 zásuvky + zásuvka digestora</td></tr>
+        <tr><td class="n">Z5b</td><td>RZ → zástena nad skrinkou 5 → nad skrinkou 8</td><td class="n">CYKY-J 3×2,5</td><td>4 zásuvky</td></tr>
+        <tr><td class="n">Z6</td><td>RZ → skrinka 2, spodný priestor</td><td class="n">CYKY-J 3×2,5</td><td>zásuvka</td></tr>
+        <tr><td class="n">Z7, Z8, Z9</td><td>RZ → kúpeľňa</td><td class="n">3× CYKY-J 3×2,5</td><td>zásuvky mimo zón 0–2</td></tr>
+        <tr><td class="n">Z10</td><td>RZ → obývačka, pravá stena → TV stena</td><td class="n">CYKY-J 3×2,5</td><td>4 vývody, os 300 mm; pri TV stene 400 mm</td></tr>
+        <tr><td class="n">Z11</td><td>RZ → detská, ľavá stena → dvere → pravá stena</td><td class="n">CYKY-J 3×2,5</td><td>4 vývody, os 300 mm</td></tr>
+        <tr><td class="n">Z12</td><td>RZ → spálňa, stena pri obývačke → skriňa → TV</td><td class="n">CYKY-J 3×2,5</td><td>5 vývodov, os 300 mm</td></tr>
+        <tr><td class="n">Z13</td><td>RZ → predsieň, chodba</td><td class="n">CYKY-J 3×2,5</td><td>2 vývody, jeden pri dátovom racku</td></tr>
+        <tr><td class="n">Z14</td><td>RZ → vnútorná jednotka klímy</td><td class="n">CYKY-J 3×2,5</td><td>zásuvka vo výške ~2 300 mm</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Označenie žíl</h2>
+  <p>Celá inštalácia dodržiava štandardné farebné značenie. <strong>Modrá ani zelenožltá sa nikde nepoužívajú na nič iné</strong> — ani ako signálový vodič, ani ako rezerva na fázu.</p>
+  <div class="wires">
+    <div class="wire"><span class="chip" style="background:#9BA61E"></span><b>zelenožltá</b><span>Výhradne ochranný vodič PE. Nikdy nič iné, za žiadnych okolností.</span></div>
+    <div class="wire"><span class="chip" style="background:#2F6FB5"></span><b>modrá</b><span>Výhradne nulový vodič N. Aj tam, kde v danom kábli N nie je potrebná, zostáva nezapojená ako rezerva pre N — neprefarbuje sa.</span></div>
+    <div class="wire"><span class="chip" style="background:#7A4A2B"></span><b>hnedá</b><span>Fáza. Buď trvalá L, alebo prvá spínaná vetva v danom kábli.</span></div>
+    <div class="wire"><span class="chip" style="background:#26282A"></span><b>čierna</b><span>Druhá spínaná vetva alebo signál od tlačidla.</span></div>
+    <div class="wire"><span class="chip" style="background:#8C9098"></span><b>šedá</b><span>Tretia vetva, signál od PIR alebo rezerva.</span></div>
+  </div>
+  <ul class="notes">
+    <li>Keď nevychádza počet žíl, ide sa o <strong>kábel s viac žilami</strong>. Nikdy sa neprefarbuje modrá ani zelenožltá.</li>
+    <li>Signálové vodiče od tlačidiel a od PIR sú <strong>na fázovom potenciáli</strong>. Všetko je CYKY-J, žiadny slaboprúdový kábel.</li>
+    <li>Nezapojené rezervné žily zaizolovať na oboch koncoch a označiť, nie odstrihnúť.</li>
+    <li>Každý kábel popísať na <strong>oboch koncoch</strong>: <span class="m">RZ-Z5a</span>, <span class="m">K3-JEDALEN</span>, <span class="m">K2-PIR</span>. Pri 18 okruhoch a 6 moduloch sa to bez popisu spätne nerozlúšti.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Zoznam dielov</h2>
+  <div class="tw">
+    <table>
+      <caption>Shelly a senzorika</caption>
+      <thead><tr><th>Diel</th><th class="n">Ks</th><th>Kde</th></tr></thead>
+      <tbody>
+        <tr><td>Shelly 2PM</td><td class="n">4</td><td>K2, K3, K6, K7</td></tr>
+        <tr><td>Shelly 1 Mini</td><td class="n">2</td><td>K1, K4</td></tr>
+        <tr><td>Shelly Wall Switch, 2 tlačidlá</td><td class="n">3</td><td>K3, K6, K7</td></tr>
+        <tr><td>Shelly Wall Switch, 1 tlačidlo</td><td class="n">4</td><td>K1, K2, K4, K5</td></tr>
+        <tr><td>Rámiky k Wall Switch</td><td class="n">7</td><td>overiť kompatibilitu série</td></tr>
+        <tr><td>PIR senzor 230 V, stropný</td><td class="n">1</td><td>strop predsiene</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tw">
+    <table>
+      <caption>Rozvádzač</caption>
+      <thead><tr><th>Diel</th><th class="n">Ks</th><th>Poznámka</th></tr></thead>
+      <tbody>
+        <tr><td>Rozvádzač pod omietku, 4 rady × 12</td><td class="n">1</td><td>min. 48 modulov</td></tr>
+        <tr><td>Hlavný vypínač 3-pólový</td><td class="n">1</td><td>prípojnice premostené na jednu fázu</td></tr>
+        <tr><td>Prepäťová ochrana typ 2</td><td class="n">1</td><td></td></tr>
+        <tr><td>Prúdový chránič 2-pól 40 A / 30 mA, <strong>typ F</strong></td><td class="n">2</td><td>RCD 1 kuchyňa, RCD 2 kúpeľňa a technika</td></tr>
+        <tr><td>Prúdový chránič 2-pól 40 A / 30 mA, typ A</td><td class="n">1</td><td>RCD 3 izby a svetlá</td></tr>
+        <tr><td>RCBO B16 / 30 mA, typ A</td><td class="n">1</td><td>chladnička Z4</td></tr>
+        <tr><td>Istič B25</td><td class="n">1</td><td>Z1 varná doska</td></tr>
+        <tr><td>Istič B16</td><td class="n">13</td><td>Z2, Z3, Z5a, Z5b, Z6 – Z14</td></tr>
+        <tr><td>Istič B6</td><td class="n">2</td><td>S1, S2 svetlá</td></tr>
+        <tr><td>Prúdový hliadač</td><td class="n">0–1</td><td>rezerva, miesto nechať voľné</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="tw">
+    <table>
+      <caption>Inštalačný materiál</caption>
+      <thead><tr><th>Diel</th><th class="n">Ks</th><th>Poznámka</th></tr></thead>
+      <tbody>
+        <tr><td>Prístrojová krabica hlboká, cca 65 mm</td><td class="n">4</td><td>K2, K3, K6, K7 — kvôli 2PM</td></tr>
+        <tr><td>Prístrojová krabica hlboká</td><td class="n">3</td><td>K1, K4, K5</td></tr>
+        <tr><td>Odbočná krabica ⌀125 mm</td><td class="n">1</td><td>RK v predsieni, 8 káblov</td></tr>
+        <tr><td>CYKY-J 5×10</td><td class="n">—</td><td>prívod od elektromera</td></tr>
+        <tr><td>CYKY-J 3×6</td><td class="n">—</td><td>Z1 varná doska</td></tr>
+        <tr><td>CYKY-J 3×2,5</td><td class="n">—</td><td>18 trás zásuviek</td></tr>
+        <tr><td>CYKY-J 5×1,5</td><td class="n">—</td><td>5 trás svetiel</td></tr>
+        <tr><td>CYKY-J 3×1,5</td><td class="n">—</td><td>14 trás svetiel</td></tr>
+        <tr><td>Pružná šnúra 3×4 mm², min. 70 °C</td><td class="n">1</td><td>pripojenie varnej dosky, s priechodkami</td></tr>
+        <tr><td>CAT6 U/FTP</td><td class="n">—</td><td>4 trasy, hviezda do predsiene</td></tr>
+        <tr><td>CYA 4 mm², zelenožltý</td><td class="n">—</td><td>pospájanie v kúpeľni</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="m" style="font-size:13px;color:var(--ink-3)">Metráž káblov doplniť po zameraní trás na stavbe.</p>
+</section>
+
+<section>
+  <h2>Nastavenie modulov Shelly</h2>
+  <ul class="notes">
+    <li><strong>Vstupy nastaviť ako <span class="m">Button</span>, nie <span class="m">Switch</span>.</strong> Wall Switch je momentové tlačidlo — pri režime Switch by svetlo reagovalo obrátene.</li>
+    <li>Všetky moduly okrem K2 nechať v <strong>normálnom (attached) režime</strong>. Spína priamo firmvér, nič nezávisí od skriptov ani od siete.</li>
+    <li><strong>K2:</strong> SW1 attached na O1, SW2 (PIR) detached so skriptom bežiacim lokálne na module.</li>
+    <li>Moduly pomenovať podľa tejto schémy — <span class="m">K1-kupelna</span>, <span class="m">K3-obyvacka-jedalen</span> — a v routeri im rezervovať pevné IP adresy.</li>
+    <li>Po osadení aktualizovať firmvér a <strong>vyskúšať funkciu s odpojenou wifi</strong>. Všetky tlačidlá aj PIR musia fungovať.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Pred realizáciou</h2>
+  <ul class="check">
+    <li><strong>Podať žiadosť distribútorovi o navýšenie na 1×32 A.</strong> Trvá týždne a bez toho návrh nefunguje. Ak je čo i len šanca na 3×25 A, pýtať rovno tri fázy — problém s varnou doskou tým zmizne úplne.</li>
+    <li>Objednať varnú dosku <strong>KOLSTAN</strong>, nie MATMÄSSIG — jediná z tých dvoch má nastaviteľný limit výkonu. Výrez je rovnaký, pracovná doska sa nemení.</li>
+    <li>Pri prvom zapnutí nechať inštalatéra <strong>nastaviť limit dosky na 4,0 kW</strong>.</li>
+    <li>Odsúhlasiť s elektrikárom, že sa pri svetlách <strong>slučkuje na vypínačoch, nie v strope</strong>.</li>
+    <li>Overiť odstup krabice K1 a zásuviek Z7 – Z9 od vane a sprchy voči zónam 0–2.</li>
+    <li>Overiť <strong>dosah kábla mikrovlnky</strong> (1 350 mm) k zásuvke v spodnom priestore skrinky 2.</li>
+    <li>Doplniť model a príkon <strong>klímy</strong> do bilancie. Príkon <strong>umývačky FRÖSLUNDA</strong> IKEA neuvádza — odčítať z typového štítku.</li>
+    <li>Overiť príkon <strong>sušičky</strong> na typovom štítku — pri kondenzačnej namiesto tepelného čerpadla sa bilancia mení.</li>
+    <li>Dať presné pozície zásuviek <strong>výrobcovi zásteny</strong> pred výrobou.</li>
+    <li>Overiť hĺbku krabíc pre 2PM — v štandardnej krabici je modul spolu s Wall Switch veľmi tesný.</li>
+  </ul>
+  <p>Návrh vychádza z ručnej skice a z IKEA výkresov kuchyne, takže rozmery a presné polohy mimo kuchyne sú orientačné. Realizáciu a pripojenie na 230 V musí vykonať osoba s odbornou spôsobilosťou a inštaláciu ukončiť <strong>východisková revízna správa</strong>.</p>
+</section>
+
+<footer>
+  <div>Návrh elektroinštalácie bytu — 7 svetelných okruhov, 2 ventilátory, 15 zásuvkových okruhov, 4 dátové body, 6 modulov Shelly.</div>
+  <div>Dokument slúži ako podklad pre elektrikára, nenahrádza projektovú dokumentáciu ani revíznu správu.</div>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement, btn = document.getElementById('themeToggle');
+  var media = window.matchMedia('(prefers-color-scheme: dark)');
+  var stored = null;
+  try { stored = localStorage.getItem('theme'); } catch (e) {}
+  function isDark() {
+    var t = root.getAttribute('data-theme');
+    return t ? t === 'dark' : media.matches;
+  }
+  function label() { btn.textContent = isDark() ? 'Svetlý režim' : 'Tmavý režim'; }
+  if (stored === 'dark' || stored === 'light') root.setAttribute('data-theme', stored);
+  label();
+  media.addEventListener('change', label);
+  btn.addEventListener('click', function () {
+    var next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (e) {}
+    label();
+  });
+})();
+</script>
+</body>
+</html>
