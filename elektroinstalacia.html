@@ -75,13 +75,13 @@ button{font:inherit;color:inherit}
 body { background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; }
 .page { max-width:1060px; margin:0 auto; padding:48px 24px 96px; display:flex; flex-direction:column; gap:56px; counter-reset:sec; }
 
-.theme-toggle{position:fixed;top:16px;right:16px;z-index:10;display:inline-flex;align-items:center;gap:7px;
+.theme-toggle{position:fixed;top:16px;right:16px;z-index:10;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
   padding:7px 12px;background:var(--surface);color:var(--ink-2);border:1px solid var(--rule-strong);
   border-radius:2px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
   cursor:pointer;transition:border-color .15s ease,color .15s ease}
 .theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
 @media print{.theme-toggle{display:none}}
-@media (max-width:640px){.theme-toggle{position:static;align-self:flex-end;margin:16px 16px 0}}
+
 
 .masthead { display:flex; flex-direction:column; gap:20px; padding-bottom:28px; border-bottom:2px solid var(--ink); }
 .eyebrow { font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); }
@@ -104,7 +104,18 @@ ul.notes li::marker { color:var(--accent); }
 strong { font-weight:650; }
 code, .m { font-family:var(--mono); font-size:.9em; }
 
-.plan-wrap { background:var(--surface); border:1px solid var(--rule); border-radius:2px; padding:8px; overflow-x:auto; }
+.plan-wrap { background:var(--surface); border:1px solid var(--rule); border-radius:2px; padding:8px; overflow-x:auto; overscroll-behavior-x:contain; }
+.tw, .plan-wrap {
+  background-image:
+    linear-gradient(to right, var(--surface) 34%, rgba(255,255,255,0)),
+    linear-gradient(to left, var(--surface) 34%, rgba(255,255,255,0)),
+    radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.13), rgba(0,0,0,0)),
+    radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.13), rgba(0,0,0,0));
+  background-position: 0 0, 100% 0, 0 0, 100% 0;
+  background-repeat: no-repeat;
+  background-size: 44px 100%, 44px 100%, 15px 100%, 15px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
 .plan-wrap svg { display:block; width:100%; min-width:560px; height:auto; }
 .w-fill { fill:var(--surface-2); }
 .w-out { fill:none; stroke:var(--ink); stroke-width:4; stroke-linejoin:round; }
@@ -152,7 +163,7 @@ code, .m { font-family:var(--mono); font-size:.9em; }
 .leg { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--ink-2); }
 .leg svg { flex:none; margin-top:1px; }
 
-.tw { overflow-x:auto; border:1px solid var(--rule); border-radius:2px; background:var(--surface); }
+.tw { overflow-x:auto; overscroll-behavior-x:contain; border:1px solid var(--rule); border-radius:2px; background:var(--surface); }
 table { border-collapse:collapse; width:100%; font-size:14px; min-width:520px; }
 caption { text-align:left; font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); padding-bottom:8px; }
 th, td { text-align:left; padding:9px 14px; border-bottom:1px solid var(--rule); vertical-align:top; }
@@ -187,7 +198,30 @@ td.n, th.n { font-family:var(--mono); font-variant-numeric:tabular-nums; white-s
 footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; color:var(--ink-3); max-width:70ch; display:flex; flex-direction:column; gap:8px; }
 
 @media print { body{background:#fff} .page{padding:0;gap:32px} section{break-inside:avoid} }
-@media (max-width:640px){ .page{padding:32px 16px 64px} .fact{padding-right:20px;margin-right:20px} }
+@media (max-width:760px) {
+  .page { padding:26px 14px 72px; gap:40px; }
+  section { gap:16px; }
+  section > h2 { font-size:23px; gap:10px; }
+  .masthead { gap:16px; padding-bottom:22px; }
+  .masthead h1 { font-size:clamp(28px,8.5vw,40px); }
+  .standfirst { font-size:16px; }
+  .facts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px 18px; }
+  .fact { padding:0 0 0 12px; margin:0; border-right:none; border-left:2px solid var(--rule); }
+  .fact dd { font-size:21px; }
+  table { font-size:13px; min-width:460px; }
+  th, td { padding:8px 10px; }
+  .plan-wrap svg { min-width:520px; }
+  .plan-wrap { padding:6px; }
+  .callout { padding:14px 16px; }
+  ul.notes, .check li { font-size:14.5px; }
+  .theme-toggle { top:auto; bottom:14px; right:14px; padding:9px 14px;
+    box-shadow:0 2px 12px rgba(0,0,0,.22); background:var(--surface); }
+}
+@media (max-width:400px) {
+  .facts { grid-template-columns:1fr; }
+  table { min-width:420px; }
+  .plan-wrap svg { min-width:470px; }
+}
 </style>
 </head>
 <body>
@@ -332,7 +366,7 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
     <div class="leg"><svg width="24" height="15" viewBox="0 0 24 15"><g class="gry"><rect class="face" x="1" y="1" width="22" height="13" rx="3"/></g></svg><div>Trvalý vývod, mimo Shelly</div></div>
     <div class="leg"><svg width="32" height="18" viewBox="0 0 32 18"><g class="rk"><rect class="face" x="1" y="1" width="30" height="16" rx="3"/></g></svg><div>Rozvodná krabica svetiel</div></div>
   </div>
-  <p class="m" style="font-size:13px;color:var(--ink-3)">Nákres je schematický, vychádza z ručnej skice. Presné polohy treba zamerať na stavbe.</p>
+  <p style="font-size:13px;color:var(--ink-3)">Nákres je schematický, vychádza z ručnej skice. Presné polohy treba zamerať na stavbe.</p>
 </section>
 
 <section>
@@ -484,7 +518,7 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
     <p>Obývačka, detská aj spálňa majú <strong>všetky zásuvky na jednom okruhu</strong>. Deliť ich nemá zmysel — pri jednofázovej prípojke to nepridá ani watt kapacity a len minie moduly v rozvádzači. Delené sú len tie okruhy, kde na tom naozaj záleží: kuchynská linka, kde sa stretne kanvica s hriankovačom, a spotrebiče, ktoré majú vlastný okruh každý zvlášť.</p>
     <p>Strop je <strong>10 zásuvkových vývodov na jeden okruh</strong> podľa STN 33 2130. Najhustejšia je spálňa s piatimi vývodmi, takže rezerva je všade dvojnásobná — elektrikár nech si to overí voči aktuálnemu vydaniu normy.</p>
   </div>
-  <p class="m" style="font-size:13px;color:var(--ink-3)">Polohy mimo kuchyne sú schematické. Presné výšky a odstupy upresniť podľa rozmiestnenia nábytku pred sekaním drážok.</p>
+  <p style="font-size:13px;color:var(--ink-3)">Polohy mimo kuchyne sú schematické. Presné výšky a odstupy upresniť podľa rozmiestnenia nábytku pred sekaním drážok.</p>
 </section>
 
 <section>
@@ -696,7 +730,7 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
   <h3>Rozloženie v rozvádzači</h3>
   <p>Kľúč k celému rozloženiu: <strong>každý rad je jedna chráničová skupina.</strong> Chránič je vždy prvý zľava a jeho okruhy nasledujú hneď za ním, takže sa dá jedným kusom hrebeňovej lišty prepojiť celý rad a nič sa nekríži.</p>
   <div class="plan-wrap">
-    <svg viewBox="0 0 680 400" role="img" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="64 34 518 368" role="img" xmlns="http://www.w3.org/2000/svg">
       <title>Rozloženie prístrojov v bytovom rozvádzači 4 rady po 12 modulov</title>
       <desc>Štyri rady po dvanásť modulov. Prvý rad obsahuje hlavný vypínač, prepäťovú ochranu a RCBO chladničky. Druhý rad chránič RCD 1 a kuchynské okruhy Z1, Z2, Z3, Z5 a Z6. Tretí rad chránič RCD 2 a okruhy Z7, Z8, Z9, Z13 a Z14, plus rezervované miesto pre monitorovacie relé prúdu. Štvrtý rad chránič RCD 3 a okruhy Z10, Z11, Z12 a svetelné okruhy S1 a S2. V každom rade zostávajú voľné moduly ako rezerva.</desc>
 
@@ -953,7 +987,7 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
       </tbody>
     </table>
   </div>
-  <p class="m" style="font-size:13px;color:var(--ink-3)">Metráž káblov doplniť po zameraní trás na stavbe.</p>
+  <p style="font-size:13px;color:var(--ink-3)">Metráž káblov doplniť po zameraní trás na stavbe.</p>
 </section>
 
 <section>
