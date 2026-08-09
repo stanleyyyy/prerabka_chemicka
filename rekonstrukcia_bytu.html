@@ -61,8 +61,9 @@ button.b.rst:hover{background:#fef2f2}
 .cstbl th{padding:7px 10px;text-align:left;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;background:#f8fafc}
 .cstbl td{padding:6px 10px;border-bottom:1px solid #f1f5f9;color:#1e293b}
 .cstbl tr:last-child td{font-weight:600;background:rgba(217,119,6,.06);border-bottom:none}
-.cstbl tr.cs-jump{cursor:pointer}
-.cstbl tr.cs-jump:hover td{background:rgba(37,99,235,.09)}
+.cstbl tr.cs-jump{cursor:pointer;-webkit-tap-highlight-color:rgba(37,99,235,.25)}
+.cstbl tr.cs-jump:active td{background:rgba(37,99,235,.16)}
+@media(hover:hover){.cstbl tr.cs-jump:hover td{background:rgba(37,99,235,.09)}}
 .cstbl tr.cs-jump td:first-child::after{content:" ↧";color:#93c5fd;font-size:11px}
 .cdot{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:7px;vertical-align:middle}
 /* Categories */
@@ -346,11 +347,11 @@ const INIT=[
     {n:"Posteľ KOYLIUN béžová 160×200 cm",t:"Čalúnená, 2 zásuvky, lamelový rošt, orech",mj:"ks",qty:1,up:459,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/postel-koyliun-bezova-414507800",st:"Určené",note:"akciová club cena, pôv. 859 €"}
   ]},
   {name:"SVIETIDLÁ",items:[
-    {n:"Brilagi ZENNA LED 18W IP44 biela",t:"Kúpeľňové stropné, PIR",mj:"ks",qty:1,up:30,sup:"svet-svietidiel.sk",url:"https://www.svet-svietidiel.sk/brilagi-led-zenna-kupelnove-stropne-svietidlo-so-senzorom-led-18-w-230-v-priemer-29-5-cm-ip44-biela/",st:"Určené",note:""},
-    {n:"Brilagi SELE 6×GU10/30W biela",t:"Bodové, 6 spotov",mj:"ks",qty:1,up:104.90,sup:"svet-svietidiel.sk",url:"https://www.svet-svietidiel.sk/brilagi-bodove-svietidlo-sele-modern-6xgu10-30w-230v-biela-1/",st:"Určené",note:""},
-    {n:"Brilagi SLIMFRAME 58W 60×60 biela",t:"Stropný LED panel",mj:"ks",qty:1,up:66.90,sup:"svet-svietidiel.sk",url:"https://www.svet-svietidiel.sk/brilagi-led-stropne-svietidlo-slimframe-led-58w-230v-60x60-cm-biela-pp265434/",st:"Určené",note:""},
     {n:"Stropné LED SPICA biela 18W IP44",t:"⌀27 cm",mj:"ks",qty:2,up:8.99,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/stropne-led-svietidlo-spica-biela-28559600",st:"Určené",note:""},
-    {n:"Stropné LED svietidlo JOKO biela",t:"",mj:"ks",qty:1,up:34.90,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/stropne-led-svietidlo-joko-biela-28751800",st:"Určené",note:""}
+    {n:"Stropné LED svietidlo JOKO biela",t:"",mj:"ks",qty:1,up:34.90,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/stropne-led-svietidlo-joko-biela-28751800",st:"Určené",note:""},
+    {n:"LED kúpeľňové stropné 24W IP44 čierne 4000K",t:"3 ks × 28,90 €",mj:"ks",qty:3,up:28.90,sup:"svet-svietidiel.sk",url:"https://www.svet-svietidiel.sk/led-kupelnove-stropne-svietidlo-led-24w-230v-4000k-ip44-cierna/",st:"Zaplatené",note:"objednané a zaplatené"},
+    {n:"PIR senzor pohybu podhľadový 360° 300W biely",t:"",mj:"ks",qty:1,up:14.90,sup:"svet-svietidiel.sk",url:"https://www.svet-svietidiel.sk/senzor-pohybu-podhladovy-pir-360-300w-230v-biela/",st:"Zaplatené",note:"objednané a zaplatené"},
+    {n:"Vypínače + relé Shelly",t:"vypínače a relé Shelly",mj:"kpl",qty:1,up:100,sup:"",url:"",st:"Zaplatené",note:"objednané a zaplatené"}
   ]},
   {name:"MAĽBY A POVRCHOVÉ ÚPRAVY",items:[
     {n:"Stierkovanie stien (2 vrstvy)",t:"Modul Company – finálna CP",mj:"m²",qty:240,up:15,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP: 15 €/m² (bolo 12)",rooms:{detska:35,spalna:39}},
@@ -378,7 +379,7 @@ document.addEventListener('keydown',e=>{
 
 /* ── INIT / SAVE ────────────────────────────────────────── */
 function init(){
-  try{const s=localStorage.getItem('rkBytu9');if(s)D=JSON.parse(s);}catch(e){}
+  try{const s=localStorage.getItem('rkBytu11');if(s)D=JSON.parse(s);}catch(e){}
   try{const rs=localStorage.getItem('rkRooms');if(rs)roomOn={...roomOn,...JSON.parse(rs)};}catch(e){}
   try{const as=localStorage.getItem('rkAlts');if(as)altOn={...altOn,...JSON.parse(as)};}catch(e){}
   if(!D)D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
@@ -393,11 +394,11 @@ function applyRooms(){
   D.forEach(c=>c.items.forEach(it=>{if(map[it.n])it.rooms=map[it.n];else delete it.rooms;}));
 }
 function uid(){return Math.random().toString(36).slice(2);}
-function _sv(){try{localStorage.setItem('rkBytu9',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
+function _sv(){try{localStorage.setItem('rkBytu11',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
 function save(){pushHist();_sv();}
 function resetAll(){
   if(!confirm('Zmazať uložené dáta v prehliadači a načítať čerstvú verziu?\n\n(Stav položiek ako Zaplatené/Objednané sa stratí. Ak si chceš zmeny zachovať, najprv daj ⬇ JSON.)'))return;
-  try{localStorage.removeItem('rkBytu9');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
+  try{localStorage.removeItem('rkBytu11');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
   D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
   roomOn={detska:true,spalna:true};altOn={};
   ek=null;iec=null;newItem=null;coll={};hist=[];histIdx=-1;
@@ -510,9 +511,16 @@ function toggleAlt(id,on){
 function togCS(){csOpen=!csOpen;document.getElementById('cs-body').style.display=csOpen?'block':'none';document.getElementById('cs-tog').textContent=csOpen?'▴':'▾';if(csOpen)renderCS();}
 function goCat(ci){
   if(coll[ci]){coll[ci]=false;renderCats();}
-  const el=document.getElementById('cat-'+ci);if(!el)return;
-  el.scrollIntoView({behavior:'smooth',block:'start'});
-  el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
+  const doScroll=()=>{
+    const el=document.getElementById('cat-'+ci);if(!el)return;
+    const tb=document.querySelector('.topbar');
+    const off=(tb?tb.offsetHeight:48)+10;
+    const y=el.getBoundingClientRect().top+(window.pageYOffset||document.documentElement.scrollTop||0)-off;
+    window.scrollTo({top:y<0?0:y,behavior:'smooth'});
+    el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
+  };
+  // po prípadnom rozbalení nechaj DOM prekresliť, potom skroluj
+  requestAnimationFrame(()=>requestAnimationFrame(doScroll));
 }
 function renderCS(){
   const g=grand();
