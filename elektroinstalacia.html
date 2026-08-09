@@ -197,6 +197,20 @@ td.n, th.n { font-family:var(--mono); font-variant-numeric:tabular-nums; white-s
 
 footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; color:var(--ink-3); max-width:70ch; display:flex; flex-direction:column; gap:8px; }
 
+/* --- rezim editacie --- */
+.ed-bar{position:fixed;top:0;left:0;right:0;z-index:60;display:none;gap:10px;align-items:center;flex-wrap:wrap;
+  padding:10px 14px;background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:11px;
+  letter-spacing:.08em;text-transform:uppercase;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+body.editing .ed-bar{display:flex}
+body.editing{padding-top:44px}
+.ed-bar button{padding:6px 12px;border:1px solid var(--paper);background:transparent;color:var(--paper);
+  border-radius:2px;cursor:pointer;font:inherit}
+.ed-bar button:hover{background:var(--paper);color:var(--ink)}
+.ed-bar .ed-info{opacity:.7;text-transform:none;letter-spacing:0;font-size:11.5px}
+body.editing [data-mv]{cursor:move;touch-action:none}
+body.editing [data-mv]:hover{outline:1px dashed var(--accent);outline-offset:2px}
+body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offset:2px}
+@media print{.ed-bar{display:none!important}body.editing{padding-top:0}}
 @media print { body{background:#fff} .page{padding:0;gap:32px} section{break-inside:avoid} }
 @media (max-width:760px) {
   .page { padding:26px 14px 72px; gap:40px; }
@@ -235,7 +249,7 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
   <p class="standfirst">Osvetlenie riadené modulmi Shelly v krabiciach pod vypínačmi, zásuvkové okruhy so samostatnými vývodmi pre spotrebiče, nový rozvádzač pripravený na neskoršie navýšenie na tri fázy.</p>
   <dl class="facts">
     <div class="fact"><dt>Prípojka</dt><dd>1×32 A <small>230 V, jedna fáza</small></dd></div>
-    <div class="fact"><dt>Zásuvkové okruhy</dt><dd>14</dd></div>
+    <div class="fact"><dt>Zásuvkové okruhy</dt><dd>15</dd></div>
     <div class="fact"><dt>Svetelné okruhy</dt><dd>7 <small>+ 2 ventilátory</small></dd></div>
     <div class="fact"><dt>Shelly moduly</dt><dd>6</dd></div>
     <div class="fact"><dt>Dátové porty</dt><dd>8 <small>CAT6, hviezda</small></dd></div>
@@ -299,62 +313,63 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
   <div class="plan-wrap">
     <svg viewBox="24 8 632 486" role="img" xmlns="http://www.w3.org/2000/svg">
       <title>Pôdorys bytu s rozmiestnením svietidiel, ventilátorov, vypínačov K1 až K7, stropného PIR a rozvodnej krabice</title>
-      <desc>Byt so vstupom v spodnej stene predsiene. Kúpeľňa s WC vľavo hore, predsieň pod ňou s dvomi paralelne spojenými svietidlami, stropným PIR a bytovým rozvádzačom pri vchode, otvorená kuchyňa s jedálňou a obývačkou vpravo, detská izba a spálňa v spodnej časti, obe so svetlom aj ventilátorom.</desc>
+      <desc>Byt so vstupom v spodnej stene predsiene. Kúpeľňa s WC vľavo hore, predsieň pod ňou s dvomi paralelne spojenými svietidlami, stropným PIR bytovým rozvádzačom pri vchode a výklenkom vedľa kúpeľne, otvorená kuchyňa s jedálňou a obývačkou vpravo, detská izba a spálňa v spodnej časti, obe so svetlom aj ventilátorom.</desc>
       <polygon class="w-fill" points="40,60 640,60 640,476 129,476 129,259 40,259"/>
       <path class="w-out" d="M40,60 L640,60 L640,476 L129,476 L129,259 L100,259 M60,259 L40,259 L40,60"/>
       <path class="w-thin" d="M248,60 L248,23 L432,23 L432,60"/>
-      <path class="w-in" d="M156,60 L156,176"/>
-      <path class="w-in" d="M40,176 L96,176 M140,176 L156,176"/>
+      <path class="w-in" d="M188,60 L188,176"/>
+      <path class="w-in" d="M40,176 L96,176 M140,176 L188,176"/>
+      <path class="w-in" d="M188,176 L188,210 L156,210"/>
+      <text class="rm-s" data-mv="s1-1" data-lbl="Výklenok" x="138" y="198">Výklenok</text>
       <path class="w-in" d="M129,259 L187,259 M236,259 L395,259 M444,259 L640,259"/>
       <path class="w-in" d="M322,259 L322,476"/>
       <rect class="win" x="469" y="56" width="85" height="8"/>
       <rect class="win" x="175" y="472" width="85" height="8"/>
       <rect class="win" x="432" y="472" width="110" height="8"/>
-      <text class="rm-s" x="80" y="278" text-anchor="middle">vchod</text>
+      <text class="rm-s" data-mv="s1-2" data-lbl="vchod" x="56" y="284" text-anchor="middle">vchod</text>
 
-      <g class="light"><circle class="face" cx="110" cy="95" r="10"/><text class="num" x="110" y="99" text-anchor="middle">1</text></g>
-      <g class="gry"><rect class="face" x="44" y="98" width="22" height="13" rx="3"/><text class="nums" x="55" y="107.5" text-anchor="middle">1T</text></g>
-      <text class="rm-s" x="44" y="90">zrkadlo</text>
-      <text class="rm" x="98" y="132" text-anchor="middle">Kúpeľňa + WC</text>
-      <g class="sw"><rect class="face" x="66" y="146" width="22" height="22" rx="4"/><rect class="btn" x="70" y="150" width="14" height="14" rx="2"/></g>
-      <text class="kcode" x="94" y="162">K1</text>
+      <g class="light" data-mv="s1-3" data-lbl="1"><circle class="face" cx="114" cy="119" r="10"/><text class="num" x="114" y="123" text-anchor="middle">1</text></g>
+      <g class="gry" data-mv="s1-4" data-lbl="1T"><rect class="face" x="44" y="126" width="22" height="13" rx="3"/><text class="nums" x="55" y="135.5" text-anchor="middle">1T</text></g>
+      <text class="rm-s" data-mv="s1-5" data-lbl="zrkadlo" x="46" y="120">zrkadlo</text>
+      <text class="rm" data-mv="s1-6" data-lbl="Kúpeľňa + WC" x="108" y="84" text-anchor="middle">Kúpeľňa + WC</text>
+      <g class="sw" data-mv="s1-7" data-lbl="prvok"><rect class="face" x="64" y="150" width="22" height="22" rx="4"/><rect class="btn" x="68" y="154" width="14" height="14" rx="2"/></g>
+      <text class="kcode" data-mv="s1-8" data-lbl="K1" x="88" y="166">K1</text>
 
-      <g class="light"><circle class="face" cx="58" cy="190" r="10"/><text class="num" x="58" y="194" text-anchor="middle">2</text></g>
-      <g class="light"><circle class="face" cx="106" cy="190" r="10"/><text class="num" x="106" y="194" text-anchor="middle">2</text></g>
-      <g class="sensor"><rect class="face" x="126" y="183" width="28" height="14" rx="4"/><text class="num" x="140" y="194" text-anchor="middle">PIR</text></g>
-      <g class="sw"><rect class="face" x="104" y="212" width="22" height="22" rx="4"/><rect class="btn" x="108" y="216" width="14" height="14" rx="2"/></g>
-      <text class="kcode" x="130" y="228">K2</text>
-      <g class="rk"><rect class="face" x="134" y="212" width="38" height="18" rx="3"/><text class="num" x="153" y="225" text-anchor="middle">RZ</text></g>
-      <text class="rm" x="186" y="251" text-anchor="middle">Predsieň</text>
+      <g class="light" data-mv="s1-9" data-lbl="2"><circle class="face" cx="80" cy="220" r="10"/><text class="num" x="80" y="224" text-anchor="middle">2</text></g>
+      <g class="light" data-mv="s1-10" data-lbl="2"><circle class="face" cx="160" cy="234" r="10"/><text class="num" x="160" y="238" text-anchor="middle">2</text></g>
+      <g class="sensor" data-mv="s1-11" data-lbl="PIR"><rect class="face" x="174" y="229" width="28" height="14" rx="4"/><text class="num" x="188" y="240" text-anchor="middle">PIR</text></g>
+      <g class="sw" data-mv="s1-12" data-lbl="prvok"><rect class="face" x="106" y="232" width="22" height="22" rx="4"/><rect class="btn" x="110" y="236" width="14" height="14" rx="2"/></g>
+      <text class="kcode" data-mv="s1-13" data-lbl="K2" x="130" y="248">K2</text>
+      <g class="rk" data-mv="s1-14" data-lbl="RZ"><rect class="face" x="84" y="268" width="38" height="18" rx="3"/><text class="num" x="103" y="281" text-anchor="middle">RZ</text></g>
+      <text class="rm" data-mv="s1-15" data-lbl="Predsieň" x="80" y="198" text-anchor="middle">Predsieň</text>
 
-      <g class="sw"><rect class="face" x="166" y="68" width="22" height="22" rx="4"/><rect class="btn" x="170" y="72" width="14" height="14" rx="2"/></g>
-      <text class="kcode" x="192" y="84">K4</text>
-      <g class="light"><rect class="bar" x="168" y="102" width="90" height="12" rx="6"/><text class="num" x="266" y="112">4</text></g>
-      <text class="rm-s" x="213" y="130" text-anchor="middle">kuchynská linka</text>
-      <text class="rm" x="213" y="156" text-anchor="middle">Kuchyňa</text>
+      <g class="sw" data-mv="s1-16" data-lbl="prvok"><rect class="face" x="196" y="68" width="22" height="22" rx="4"/><rect class="btn" x="200" y="72" width="14" height="14" rx="2"/></g>
+      <text class="kcode" data-mv="s1-17" data-lbl="K4" x="220" y="84">K4</text>
+      <g class="light" data-mv="s1-18" data-lbl="4"><rect class="bar" x="196" y="100" width="12" height="90" rx="6"/><text class="num" x="214" y="148">4</text></g>
+      <text class="rm-s" data-mv="s1-19" data-lbl="kuchynská linka" x="214" y="166">kuchynská linka</text>
+      <text class="rm" data-mv="s1-20" data-lbl="Kuchyňa" x="266" y="130" text-anchor="middle">Kuchyňa</text>
 
-      <g class="sw"><rect class="face loose" x="300" y="68" width="22" height="22" rx="4"/><rect class="btn" x="304" y="72" width="14" height="14" rx="2"/></g>
-      <text class="kcode" x="326" y="84">K5</text>
-      <g class="light"><rect class="bar" x="340" y="105" width="14" height="95" rx="6"/><text class="num" x="332" y="158" text-anchor="end">5</text></g>
-      <circle class="dot" cx="347" cy="116" r="2"/><circle class="dot" cx="347" cy="131" r="2"/><circle class="dot" cx="347" cy="146" r="2"/><circle class="dot" cx="347" cy="161" r="2"/><circle class="dot" cx="347" cy="176" r="2"/><circle class="dot" cx="347" cy="191" r="2"/>
-      <text class="rm" x="410" y="175" text-anchor="middle">Jedáleň</text>
+      <g class="sw" data-mv="s1-21" data-lbl="prvok"><rect class="face loose" x="300" y="68" width="22" height="22" rx="4"/><rect class="btn" x="304" y="72" width="14" height="14" rx="2"/></g>
+      <text class="kcode" data-mv="s1-22" data-lbl="K5" x="324" y="84">K5</text>
+      <g class="light" data-mv="s1-23" data-lbl="5"><rect class="bar" x="342" y="101" width="14" height="95" rx="6"/><text class="num" x="334" y="154" text-anchor="end">5</text><circle class="dot" cx="349" cy="112" r="2"/><circle class="dot" cx="349" cy="127" r="2"/><circle class="dot" cx="349" cy="142" r="2"/><circle class="dot" cx="349" cy="157" r="2"/><circle class="dot" cx="349" cy="172" r="2"/><circle class="dot" cx="349" cy="187" r="2"/></g>
+      <text class="rm" data-mv="s1-24" data-lbl="Jedáleň" x="394" y="157" text-anchor="middle">Jedáleň</text>
 
-      <g class="light"><circle class="face" cx="530" cy="130" r="10"/><text class="num" x="530" y="134" text-anchor="middle">3</text></g>
-      <text class="rm" x="530" y="175" text-anchor="middle">Obývačka</text>
-      <g class="sw"><rect class="face" x="250" y="215" width="22" height="22" rx="4"/><rect class="btn" x="254" y="219" width="6" height="14" rx="1.5"/><rect class="btn" x="262" y="219" width="6" height="14" rx="1.5"/></g>
-      <text class="kcode" x="278" y="231">K3</text>
+      <g class="light" data-mv="s1-25" data-lbl="3"><circle class="face" cx="528" cy="144" r="10"/><text class="num" x="528" y="148" text-anchor="middle">3</text></g>
+      <text class="rm" data-mv="s1-26" data-lbl="Obývačka" x="528" y="183" text-anchor="middle">Obývačka</text>
+      <g class="sw" data-mv="s1-27" data-lbl="prvok"><rect class="face" x="368" y="229" width="22" height="22" rx="4"/><rect class="btn" x="372" y="233" width="6" height="14" rx="1.5"/><rect class="btn" x="380" y="233" width="6" height="14" rx="1.5"/></g>
+      <text class="kcode" data-mv="s1-28" data-lbl="K3" x="350" y="245">K3</text>
 
-      <g class="sw"><rect class="face" x="245" y="268" width="22" height="22" rx="4"/><rect class="btn" x="249" y="272" width="6" height="14" rx="1.5"/><rect class="btn" x="257" y="272" width="6" height="14" rx="1.5"/></g>
-      <text class="kcode" x="271" y="284">K6</text>
-      <g class="light"><circle class="face" cx="200" cy="340" r="10"/><text class="num" x="200" y="344" text-anchor="middle">6</text></g>
-      <g class="fan"><circle class="face" cx="250" cy="340" r="10"/><text class="num" x="250" y="344" text-anchor="middle">V1</text></g>
-      <text class="rm" x="222" y="380" text-anchor="middle">Detská izba</text>
+      <g class="sw" data-mv="s1-29" data-lbl="prvok"><rect class="face" x="239" y="266" width="22" height="22" rx="4"/><rect class="btn" x="243" y="270" width="6" height="14" rx="1.5"/><rect class="btn" x="251" y="270" width="6" height="14" rx="1.5"/></g>
+      <text class="kcode" data-mv="s1-30" data-lbl="K6" x="263" y="282">K6</text>
+      <g class="light" data-mv="s1-31" data-lbl="6"><circle class="face" cx="222" cy="348" r="10"/><text class="num" x="222" y="352" text-anchor="middle">6</text></g>
+      <g class="fan" data-mv="s1-32" data-lbl="V1"><circle class="face" cx="252" cy="348" r="10"/><text class="num" x="252" y="352" text-anchor="middle">V1</text></g>
+      <text class="rm" data-mv="s1-33" data-lbl="Detská izba" x="230" y="390" text-anchor="middle">Detská izba</text>
 
-      <g class="sw"><rect class="face" x="455" y="268" width="22" height="22" rx="4"/><rect class="btn" x="459" y="272" width="6" height="14" rx="1.5"/><rect class="btn" x="467" y="272" width="6" height="14" rx="1.5"/></g>
-      <text class="kcode" x="481" y="284">K7</text>
-      <g class="light"><circle class="face" cx="450" cy="340" r="10"/><text class="num" x="450" y="344" text-anchor="middle">7</text></g>
-      <g class="fan"><circle class="face" cx="500" cy="340" r="10"/><text class="num" x="500" y="344" text-anchor="middle">V2</text></g>
-      <text class="rm" x="475" y="380" text-anchor="middle">Spálňa</text>
+      <g class="sw" data-mv="s1-34" data-lbl="prvok"><rect class="face" x="449" y="268" width="22" height="22" rx="4"/><rect class="btn" x="453" y="272" width="6" height="14" rx="1.5"/><rect class="btn" x="461" y="272" width="6" height="14" rx="1.5"/></g>
+      <text class="kcode" data-mv="s1-35" data-lbl="K7" x="473" y="284">K7</text>
+      <g class="light" data-mv="s1-36" data-lbl="7"><circle class="face" cx="476" cy="352" r="10"/><text class="num" x="476" y="356" text-anchor="middle">7</text></g>
+      <g class="fan" data-mv="s1-37" data-lbl="V2"><circle class="face" cx="506" cy="352" r="10"/><text class="num" x="506" y="356" text-anchor="middle">V2</text></g>
+      <text class="rm" data-mv="s1-38" data-lbl="Spálňa" x="483" y="390" text-anchor="middle">Spálňa</text>
     </svg>
   </div>
   <div class="legend">
@@ -417,76 +432,83 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
   <div class="plan-wrap">
     <svg viewBox="24 8 632 486" role="img" xmlns="http://www.w3.org/2000/svg">
       <title>Pôdorys bytu s rozmiestnením zásuvkových okruhov a dátových bodov</title>
-      <desc>Byt so vstupom v spodnej stene predsiene. V kúpeľni okruh Z9 pri zrkadle a na fén, plus Z7 práčka a Z8 sušička. V predsieni okruh Z13. V kuchyni vyhradené okruhy Z1 až Z6 pre spotrebiče a linku, klíma na Z14. V obývačke okruh Z10 na pravej stene a na TV stene medzi obývačkou a spálňou, tam aj dátový bod D1. V detskej okruh Z11 a na ľavej stene rozvodný bod P v jednej línii so zásuvkami, dátový bod D3 pri TV. V spálni okruh Z12 pri posteli, pri skrini a pri TV, s dátovým bodom D2.</desc>
+      <desc>Byt so vstupom v spodnej stene predsiene. V kúpeľni okruh Z9 pri zrkadle a na fén, plus Z7 práčka a Z8 sušička. Vo výklenku vedľa kúpeľne, ktorý sa otvára do predsiene, sú oba vývody okruhu Z13 — jeden vnútri a jeden na čelnej stene zo strany chodby. Na balkóne existujúca vonkajšia zásuvka na okruhu Z15. V kuchyni vyhradené okruhy Z1 až Z6 pre spotrebiče a linku, klíma na Z14. V obývačke okruh Z10 na pravej stene a na TV stene medzi obývačkou a spálňou, tam aj dátový bod D1. V detskej okruh Z11 a na ľavej stene rozvodný bod P v jednej línii so zásuvkami, dátový bod D3 pri TV. V spálni okruh Z12 pri posteli, pri skrini a pri TV, s dátovým bodom D2.</desc>
       <polygon class="w-fill" points="40,60 640,60 640,476 129,476 129,259 40,259"/>
       <path class="w-out" d="M40,60 L640,60 L640,476 L129,476 L129,259 L100,259 M60,259 L40,259 L40,60"/>
       <path class="w-thin" d="M248,60 L248,23 L432,23 L432,60"/>
-      <path class="w-in" d="M156,60 L156,176"/>
-      <path class="w-in" d="M40,176 L96,176 M140,176 L156,176"/>
+      <path class="w-in" d="M188,60 L188,176"/>
+      <path class="w-in" d="M40,176 L96,176 M140,176 L188,176"/>
+      <path class="w-in" d="M188,176 L188,210 L156,210"/>
+      <text class="rm-s" data-mv="s2-1" data-lbl="Výklenok" x="114" y="198">Výklenok</text>
       <path class="w-in" d="M129,259 L187,259 M236,259 L395,259 M444,259 L640,259"/>
       <path class="w-in" d="M322,259 L322,476"/>
       <rect class="win" x="469" y="56" width="85" height="8"/>
       <rect class="win" x="175" y="472" width="85" height="8"/>
       <rect class="win" x="432" y="472" width="110" height="8"/>
-      <text class="rm-s" x="80" y="278" text-anchor="middle">vchod</text>
+      <text class="rm-s" data-mv="s2-2" data-lbl="vchod" x="80" y="278" text-anchor="middle">vchod</text>
+      <g class="app" data-mv="s2-3" data-lbl="15"><rect class="face" x="260" y="37" width="20" height="13" rx="3"/><text class="nums" x="270" y="46.5" text-anchor="middle">15</text></g>
+      <text class="rm-s" data-mv="s2-4" data-lbl="vonkajšia zásuvka na bal" x="286" y="49">vonkajšia zásuvka na balkóne</text>
 
-      <g class="soc"><rect class="face" x="42" y="110" width="22" height="13" rx="3"/><text class="nums" x="53" y="119.5" text-anchor="middle">9</text></g>
-      <text class="rm-s" x="68" y="120">skrinka</text>
-      <g class="soc"><rect class="face" x="42" y="149" width="22" height="13" rx="3"/><text class="nums" x="53" y="158.5" text-anchor="middle">9</text></g>
-      <text class="rm-s" x="68" y="159">fén</text>
-      <g class="app"><rect class="face" x="131" y="131" width="16" height="13" rx="3"/><text class="nums" x="139" y="140.5" text-anchor="middle">7</text></g>
-      <g class="app"><rect class="face" x="131" y="149" width="16" height="13" rx="3"/><text class="nums" x="139" y="158.5" text-anchor="middle">8</text></g>
-      <text class="rm-s" x="127" y="141" text-anchor="end">práčka</text>
-      <text class="rm-s" x="127" y="159" text-anchor="end">sušička</text>
-      <text class="rm" x="100" y="80" text-anchor="middle">Kúpeľňa + WC</text>
+      <g class="soc" data-mv="s2-5" data-lbl="9"><rect class="face" x="42" y="124" width="22" height="13" rx="3"/><text class="nums" x="53" y="133.5" text-anchor="middle">9</text></g>
+      <text class="rm-s" data-mv="s2-6" data-lbl="skrinka" x="68" y="160">skrinka</text>
+      <g class="soc" data-mv="s2-7" data-lbl="9"><rect class="face" x="42" y="149" width="22" height="13" rx="3"/><text class="nums" x="53" y="158.5" text-anchor="middle">9</text></g>
+      <text class="rm-s" data-mv="s2-8" data-lbl="fén" x="68" y="135">fén</text>
+      <g class="app" data-mv="s2-9" data-lbl="7"><rect class="face" x="166" y="131" width="16" height="13" rx="3"/><text class="nums" x="174" y="140.5" text-anchor="middle">7</text></g>
+      <g class="app" data-mv="s2-10" data-lbl="8"><rect class="face" x="166" y="149" width="16" height="13" rx="3"/><text class="nums" x="174" y="158.5" text-anchor="middle">8</text></g>
+      <text class="rm-s" data-mv="s2-11" data-lbl="práčka" x="162" y="141" text-anchor="end">práčka</text>
+      <text class="rm-s" data-mv="s2-12" data-lbl="sušička" x="162" y="159" text-anchor="end">sušička</text>
+      <text class="rm" data-mv="s2-13" data-lbl="Kúpeľňa + WC" x="114" y="80" text-anchor="middle">Kúpeľňa + WC</text>
 
-      <g class="soc"><rect class="face" x="52" y="190" width="16" height="13" rx="3"/><text class="nums" x="60" y="199.5" text-anchor="middle">13</text></g>
-            <g class="soc"><rect class="face" x="182" y="190" width="16" height="13" rx="3"/><text class="nums" x="190" y="199.5" text-anchor="middle">13</text></g>
-      <text class="rm" x="110" y="240" text-anchor="middle">Predsieň</text>
+            <g class="soc" data-mv="s2-14" data-lbl="13"><rect class="face" x="164" y="187" width="16" height="13" rx="3"/><text class="nums" x="172" y="196.5" text-anchor="middle">13</text></g>
+      <g class="soc" data-mv="s2-15" data-lbl="13"><rect class="face" x="164" y="216" width="16" height="13" rx="3"/><text class="nums" x="172" y="225.5" text-anchor="middle">13</text></g>
+      <text class="rm-s" data-mv="s2-16" data-lbl="z chodby" x="186" y="226">z chodby</text>
+      <text class="rm" data-mv="s2-17" data-lbl="Predsieň" x="98" y="232" text-anchor="middle">Predsieň</text>
 
-      <g class="app"><rect class="face" x="169" y="66" width="18" height="13" rx="3"/><text class="nums" x="178" y="75.5" text-anchor="middle">1</text></g>
-      <g class="app"><rect class="face" x="191" y="66" width="18" height="13" rx="3"/><text class="nums" x="200" y="75.5" text-anchor="middle">2</text></g>
-      <g class="app"><rect class="face" x="213" y="66" width="18" height="13" rx="3"/><text class="nums" x="222" y="75.5" text-anchor="middle">4</text></g>
-      <g class="app"><rect class="face" x="235" y="66" width="18" height="13" rx="3"/><text class="nums" x="244" y="75.5" text-anchor="middle">6</text></g>
-      <g class="app"><rect class="face" x="257" y="66" width="18" height="13" rx="3"/><text class="nums" x="266" y="75.5" text-anchor="middle">3</text></g>
-      <g class="soc"><rect class="face" x="176" y="88" width="20" height="13" rx="3"/><text class="nums" x="186" y="97.5" text-anchor="middle">5</text></g>
-      <text class="rm" x="225" y="125" text-anchor="middle">Kuchyňa</text>
+      <g class="app" data-mv="s2-18" data-lbl="1"><rect class="face" x="196" y="88" width="18" height="13" rx="3"/><text class="nums" x="205" y="97.5" text-anchor="middle">1</text></g>
+      <g class="soc" data-mv="s2-19" data-lbl="5"><rect class="face" x="196" y="112" width="20" height="13" rx="3"/><text class="nums" x="206" y="121.5" text-anchor="middle">5</text></g>
+      <g class="app" data-mv="s2-20" data-lbl="2"><rect class="face" x="196" y="138" width="18" height="13" rx="3"/><text class="nums" x="205" y="147.5" text-anchor="middle">2</text></g>
+      <g class="app" data-mv="s2-21" data-lbl="6"><rect class="face" x="196" y="160" width="18" height="13" rx="3"/><text class="nums" x="205" y="169.5" text-anchor="middle">6</text></g>
+      <g class="app" data-mv="s2-22" data-lbl="4"><rect class="face" x="196" y="182" width="18" height="13" rx="3"/><text class="nums" x="205" y="191.5" text-anchor="middle">4</text></g>
+      <text class="rm-s" data-mv="s2-23" data-lbl="stena linky" x="220" y="98">stena linky</text>
+      <g class="app" data-mv="s2-24" data-lbl="3"><rect class="face" x="250" y="66" width="18" height="13" rx="3"/><text class="nums" x="259" y="75.5" text-anchor="middle">3</text></g>
+      <g class="soc" data-mv="s2-25" data-lbl="5"><rect class="face" x="288" y="66" width="20" height="13" rx="3"/><text class="nums" x="298" y="75.5" text-anchor="middle">5</text></g>
+      <text class="rm" data-mv="s2-26" data-lbl="Kuchyňa" x="276" y="168" text-anchor="middle">Kuchyňa</text>
 
-      <g class="app"><rect class="face" x="470" y="66" width="20" height="13" rx="3"/><text class="nums" x="480" y="75.5" text-anchor="middle">14</text></g>
-      <text class="rm-s" x="480" y="94" text-anchor="middle">klíma</text>
-      <text class="rm" x="400" y="145" text-anchor="middle">Jedáleň</text>
+      <g class="app" data-mv="s2-27" data-lbl="14"><rect class="face" x="375" y="66" width="20" height="13" rx="3"/><text class="nums" x="385" y="75.5" text-anchor="middle">14</text></g>
+      <text class="rm-s" data-mv="s2-28" data-lbl="klíma" x="385" y="94" text-anchor="middle">klíma</text>
+      <text class="rm" data-mv="s2-29" data-lbl="Jedáleň" x="384" y="169" text-anchor="middle">Jedáleň</text>
 
-      <g class="soc"><rect class="face" x="615" y="114" width="22" height="13" rx="3"/><text class="nums" x="626" y="123.5" text-anchor="middle">10</text></g>
-      <g class="soc"><rect class="face" x="615" y="169" width="22" height="13" rx="3"/><text class="nums" x="626" y="178.5" text-anchor="middle">10</text></g>
-      <text class="rm-s" x="600" y="145" text-anchor="end">lampa</text>
-      <g class="dat"><rect class="face" x="483" y="240" width="18" height="13" rx="3"/><text class="nums" x="492" y="249.5" text-anchor="middle">D1</text></g>
-      <g class="soc"><rect class="face" x="511" y="240" width="22" height="13" rx="3"/><text class="nums" x="522" y="249.5" text-anchor="middle">10</text></g>
-      <g class="soc"><rect class="face" x="545" y="240" width="22" height="13" rx="3"/><text class="nums" x="556" y="249.5" text-anchor="middle">10</text></g>
-      <text class="rm-s" x="522" y="232" text-anchor="middle">TV stena</text>
-      <text class="rm" x="560" y="205" text-anchor="middle">Obývačka</text>
+      <g class="soc" data-mv="s2-30" data-lbl="10"><rect class="face" x="615" y="114" width="22" height="13" rx="3"/><text class="nums" x="626" y="123.5" text-anchor="middle">10</text></g>
+      <g class="soc" data-mv="s2-31" data-lbl="10"><rect class="face" x="615" y="169" width="22" height="13" rx="3"/><text class="nums" x="626" y="178.5" text-anchor="middle">10</text></g>
+      <text class="rm-s" data-mv="s2-32" data-lbl="lampa" x="634" y="159" text-anchor="end">lampa</text>
+      <g class="dat" data-mv="s2-33" data-lbl="D1"><rect class="face" x="543" y="238" width="18" height="13" rx="3"/><text class="nums" x="552" y="247.5" text-anchor="middle">D1</text></g>
+      <g class="soc" data-mv="s2-34" data-lbl="10"><rect class="face" x="469" y="236" width="22" height="13" rx="3"/><text class="nums" x="480" y="245.5" text-anchor="middle">10</text></g>
+      <g class="soc" data-mv="s2-35" data-lbl="10"><rect class="face" x="569" y="238" width="22" height="13" rx="3"/><text class="nums" x="580" y="247.5" text-anchor="middle">10</text></g>
+      <text class="rm-s" data-mv="s2-36" data-lbl="TV stena" x="566" y="230" text-anchor="middle">TV stena</text>
+      <text class="rm" data-mv="s2-37" data-lbl="Obývačka" x="524" y="167" text-anchor="middle">Obývačka</text>
 
-      <g class="soc"><rect class="face" x="241" y="266" width="22" height="13" rx="3"/><text class="nums" x="252" y="275.5" text-anchor="middle">11</text></g>
-      <text class="rm-s" x="252" y="291" text-anchor="middle">pri dverách</text>
-      <g class="dat"><rect class="face" x="133" y="296" width="22" height="13" rx="3"/><text class="nums" x="144" y="305.5" text-anchor="middle">P</text></g>
-      <text class="rm-s" x="160" y="306">dátový rozvod</text>
-      <g class="soc"><rect class="face" x="135" y="314" width="22" height="13" rx="3"/><text class="nums" x="146" y="323.5" text-anchor="middle">11</text></g>
-      <g class="soc"><rect class="face" x="135" y="366" width="22" height="13" rx="3"/><text class="nums" x="146" y="375.5" text-anchor="middle">11</text></g>
-      <g class="soc"><rect class="face" x="135" y="400" width="22" height="13" rx="3"/><text class="nums" x="146" y="409.5" text-anchor="middle">11</text></g>
-      <g class="dat"><rect class="face" x="137" y="424" width="18" height="13" rx="3"/><text class="nums" x="146" y="433.5" text-anchor="middle">D3</text></g>
-      <text class="rm-s" x="163" y="434" text-anchor="start">TV</text>
-      <g class="soc"><rect class="face" x="295" y="354" width="22" height="13" rx="3"/><text class="nums" x="306" y="363.5" text-anchor="middle">11</text></g>
-      <text class="rm" x="235" y="455" text-anchor="middle">Detská izba</text>
+      <g class="soc" data-mv="s2-38" data-lbl="11"><rect class="face" x="161" y="264" width="22" height="13" rx="3"/><text class="nums" x="172" y="273.5" text-anchor="middle">11</text></g>
+      <text class="rm-s" data-mv="s2-39" data-lbl="pri dverách" x="214" y="275" text-anchor="middle">pri dverách</text>
+      <g class="dat" data-mv="s2-40" data-lbl="P"><rect class="face" x="137" y="296" width="22" height="13" rx="3"/><text class="nums" x="148" y="305.5" text-anchor="middle">P</text></g>
+      <text class="rm-s" data-mv="s2-41" data-lbl="dátový rozvod" x="164" y="306">dátový rozvod</text>
+      <g class="soc" data-mv="s2-42" data-lbl="11"><rect class="face" x="137" y="316" width="22" height="13" rx="3"/><text class="nums" x="148" y="325.5" text-anchor="middle">11</text></g>
+      <g class="soc" data-mv="s2-43" data-lbl="11"><rect class="face" x="135" y="360" width="22" height="13" rx="3"/><text class="nums" x="146" y="369.5" text-anchor="middle">11</text></g>
+      <g class="soc" data-mv="s2-44" data-lbl="11"><rect class="face" x="135" y="420" width="22" height="13" rx="3"/><text class="nums" x="146" y="429.5" text-anchor="middle">11</text></g>
+      <g class="dat" data-mv="s2-45" data-lbl="D3"><rect class="face" x="137" y="442" width="18" height="13" rx="3"/><text class="nums" x="146" y="451.5" text-anchor="middle">D3</text></g>
+      <text class="rm-s" data-mv="s2-46" data-lbl="TV" x="161" y="454" text-anchor="start">TV</text>
+      <g class="soc" data-mv="s2-47" data-lbl="11"><rect class="face" x="293" y="446" width="22" height="13" rx="3"/><text class="nums" x="304" y="455.5" text-anchor="middle">11</text></g>
+      <text class="rm" data-mv="s2-48" data-lbl="Detská izba" x="229" y="367" text-anchor="middle">Detská izba</text>
 
-      <g class="soc"><rect class="face" x="469" y="266" width="22" height="13" rx="3"/><text class="nums" x="480" y="275.5" text-anchor="middle">12</text></g>
-      <g class="soc"><rect class="face" x="549" y="266" width="22" height="13" rx="3"/><text class="nums" x="560" y="275.5" text-anchor="middle">12</text></g>
-      <text class="rm-s" x="520" y="291" text-anchor="middle">posteľ</text>
-      <g class="soc"><rect class="face" x="327" y="314" width="22" height="13" rx="3"/><text class="nums" x="338" y="323.5" text-anchor="middle">12</text></g>
-      <g class="soc"><rect class="face" x="327" y="374" width="22" height="13" rx="3"/><text class="nums" x="338" y="383.5" text-anchor="middle">12</text></g>
-      <text class="rm-s" x="355" y="352" text-anchor="start">skriňa</text>
-      <g class="soc"><rect class="face" x="559" y="456" width="22" height="13" rx="3"/><text class="nums" x="570" y="465.5" text-anchor="middle">12</text></g>
-      <g class="dat"><rect class="face" x="596" y="456" width="18" height="13" rx="3"/><text class="nums" x="605" y="465.5" text-anchor="middle">D2</text></g>
-      <text class="rm-s" x="585" y="446" text-anchor="middle">TV</text>
-      <text class="rm" x="460" y="390" text-anchor="middle">Spálňa</text>
+      <g class="soc" data-mv="s2-49" data-lbl="12"><rect class="face" x="453" y="268" width="22" height="13" rx="3"/><text class="nums" x="464" y="277.5" text-anchor="middle">12</text></g>
+      <g class="soc" data-mv="s2-50" data-lbl="12"><rect class="face" x="609" y="268" width="22" height="13" rx="3"/><text class="nums" x="620" y="277.5" text-anchor="middle">12</text></g>
+      <text class="rm-s" data-mv="s2-51" data-lbl="posteľ" x="544" y="313" text-anchor="middle">posteľ</text>
+      <g class="soc" data-mv="s2-52" data-lbl="12"><rect class="face" x="327" y="310" width="22" height="13" rx="3"/><text class="nums" x="338" y="319.5" text-anchor="middle">12</text></g>
+      <g class="soc" data-mv="s2-53" data-lbl="12"><rect class="face" x="327" y="446" width="22" height="13" rx="3"/><text class="nums" x="338" y="455.5" text-anchor="middle">12</text></g>
+      <text class="rm-s" data-mv="s2-54" data-lbl="skriňa" x="329" y="372" text-anchor="start">skriňa</text>
+      <g class="soc" data-mv="s2-55" data-lbl="12"><rect class="face" x="593" y="456" width="22" height="13" rx="3"/><text class="nums" x="604" y="465.5" text-anchor="middle">12</text></g>
+      <g class="dat" data-mv="s2-56" data-lbl="D2"><rect class="face" x="568" y="456" width="18" height="13" rx="3"/><text class="nums" x="577" y="465.5" text-anchor="middle">D2</text></g>
+      <text class="rm-s" data-mv="s2-57" data-lbl="TV" x="589" y="446" text-anchor="middle">TV</text>
+      <text class="rm" data-mv="s2-58" data-lbl="Spálňa" x="478" y="374" text-anchor="middle">Spálňa</text>
     </svg>
   </div>
   <div class="legend">
@@ -503,10 +525,11 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
       <tbody>
         <tr><td>Kúpeľňa + WC</td><td class="n">Z9</td><td class="n">2</td><td>dvojzásuvka na <strong>ľavej stene dole</strong> (fén) + dvojzásuvka <strong>v skrinke</strong></td></tr>
         <tr><td>Kúpeľňa — spotrebiče</td><td class="n">Z7, Z8</td><td class="n">2</td><td>práčka a sušička na <strong>pravej stene dole</strong>, smerom k dverám</td></tr>
-        <tr><td>Predsieň, chodba</td><td class="n">Z13</td><td class="n">2</td><td>jedna pri vchode, jedna v chodbe</td></tr>
+        <tr><td>Výklenok vedľa kúpeľne</td><td class="n">Z13</td><td class="n">2</td><td>jedna <strong>vnútri výklenku</strong>, jedna na jeho <strong>čelnej stene zo strany chodby</strong></td></tr>
         <tr><td>Kuchyňa — linka</td><td class="n">Z5</td><td class="n">3</td><td>2 nad skrinkou 3, 2 nad skrinkou 5, 2 nad skrinkou 8</td></tr>
         <tr><td>Kuchyňa — spotrebiče</td><td class="n">Z1 – Z4, Z6</td><td class="n">5</td><td>doska, rúra, mikrovlnka, umývačka, chladnička</td></tr>
         <tr><td>Jedáleň</td><td class="n">Z14</td><td class="n">1</td><td>klíma, ~2 300 mm</td></tr>
+        <tr><td>Balkón</td><td class="n">Z15</td><td class="n">1</td><td>existujúca vonkajšia zásuvka</td></tr>
         <tr><td>Obývačka</td><td class="n">Z10</td><td class="n">4</td><td>2 na pravej stene (lampa), 2 na TV stene</td></tr>
         <tr><td>Detská izba</td><td class="n">Z11</td><td class="n">5</td><td>2 na ľavej stene (spodná s TV a dátami), 1 pri dverách, 1 na pravej stene, 1 pri rozvodnom bode</td></tr>
         <tr><td>Spálňa</td><td class="n">Z12</td><td class="n">5</td><td>2 pri posteli, 2 pri skrini, 1 pri TV</td></tr>
@@ -540,8 +563,9 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
         <tr><td class="n"><span class="tag k">Z10</span></td><td>Obývačka — <strong>všetky zásuvky</strong></td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 3</td><td>4 vývody</td></tr>
         <tr><td class="n"><span class="tag k">Z11</span></td><td>Detská izba — <strong>všetky zásuvky</strong></td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 3</td><td>5 vývodov</td></tr>
         <tr><td class="n"><span class="tag k">Z12</span></td><td>Spálňa — <strong>všetky zásuvky</strong></td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 3</td><td>5 vývodov</td></tr>
-        <tr><td class="n"><span class="tag k">Z13</span></td><td>Chodba, predsieň, vysávač</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 2</td><td>2 vývody</td></tr>
+        <tr><td class="n"><span class="tag k">Z13</span></td><td>Výklenok vedľa kúpeľne, vysávač</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 2</td><td>2 vývody</td></tr>
         <tr><td class="n"><span class="tag k">Z14</span></td><td>Klíma</td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n">RCD 2</td><td>samostatne, odporúčaný typ F</td></tr>
+        <tr><td class="n"><span class="tag k">Z15</span></td><td><strong>Vonkajšia zásuvka na balkóne</strong></td><td class="n">B16</td><td class="n">CYKY-J 3×2,5</td><td class="n"><strong>RCBO</strong></td><td>existujúca zásuvka, min. IP44</td></tr>
         <tr><td class="n"><span class="tag c">S1</span></td><td>Svetlá — kúpeľňa, predsieň, kuchyňa, jedáleň, obývačka</td><td class="n">B6</td><td class="n">CYKY-J 3×1,5</td><td class="n">RCD 3</td><td>—</td></tr>
         <tr><td class="n"><span class="tag c">S2</span></td><td>Svetlá — detská, spálňa, ventilátory</td><td class="n">B6</td><td class="n">CYKY-J 3×1,5</td><td class="n">RCD 3</td><td>—</td></tr>
       </tbody>
@@ -567,51 +591,51 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
       <path class="gd" d="M209.5,235.4 L586,235.4"/>
       <path class="gd" d="M209.5,213.5 L586,213.5"/>
       <path class="gd" d="M209.5,169.8 L586,169.8"/>
-      <text class="rm-s" x="592" y="239">910</text>
-      <text class="rm-s" x="592" y="211">1100</text>
-      <text class="rm-s" x="592" y="173">1480</text>
+      <text class="rm-s" data-mv="s3-1" data-lbl="910" x="592" y="239">910</text>
+      <text class="rm-s" data-mv="s3-2" data-lbl="1100" x="592" y="211">1100</text>
+      <text class="rm-s" data-mv="s3-3" data-lbl="1480" x="592" y="173">1480</text>
 
       <line x1="200" y1="340" x2="590" y2="340" stroke="var(--ink)" stroke-width="3"/>
       <path d="M60,340 L60,60 L209.5,60 L209.5,340" fill="none" stroke="var(--ink-3)" stroke-width="2" stroke-dasharray="6 4"/>
-      <text class="rm-s" x="134" y="196" text-anchor="middle">priechod</text>
-      <text class="rm-s" x="134" y="212" text-anchor="middle">do chodby</text>
+      <text class="rm-s" data-mv="s3-4" data-lbl="priechod" x="134" y="196" text-anchor="middle">priechod</text>
+      <text class="rm-s" data-mv="s3-5" data-lbl="do chodby" x="134" y="212" text-anchor="middle">do chodby</text>
 
       <rect class="unit-a" x="209.5" y="89.3" width="69" height="241.5" rx="2"/>
-      <text class="rm-a" x="244" y="322" text-anchor="middle">1</text>
-      <text class="rm-a" x="244" y="180" text-anchor="middle">chladn.</text>
+      <text class="rm-a" data-mv="s3-6" data-lbl="1" x="244" y="322" text-anchor="middle">1</text>
+      <text class="rm-a" data-mv="s3-7" data-lbl="chladn." x="244" y="180" text-anchor="middle">chladn.</text>
       <rect class="unit-a" x="278.5" y="89.3" width="69" height="241.5" rx="2"/>
-      <text class="rm-a" x="313" y="322" text-anchor="middle">2</text>
-      <text class="rm-a" x="313" y="168" text-anchor="middle">rúra</text>
-      <text class="rm-a" x="313" y="182" text-anchor="middle">mikro</text>
+      <text class="rm-a" data-mv="s3-8" data-lbl="2" x="313" y="322" text-anchor="middle">2</text>
+      <text class="rm-a" data-mv="s3-9" data-lbl="rúra" x="313" y="168" text-anchor="middle">rúra</text>
+      <text class="rm-a" data-mv="s3-10" data-lbl="mikro" x="313" y="182" text-anchor="middle">mikro</text>
 
       <rect class="unit" x="347.5" y="238.6" width="46" height="92.2" rx="2"/>
-      <text class="rm-s" x="370" y="322" text-anchor="middle">3</text>
+      <text class="rm-s" data-mv="s3-11" data-lbl="3" x="370" y="322" text-anchor="middle">3</text>
       <rect class="unit-a" x="393.5" y="238.6" width="69" height="92.2" rx="2"/>
-      <text class="rm-a" x="428" y="322" text-anchor="middle">4</text>
-      <text class="rm-a" x="428" y="262" text-anchor="middle">doska</text>
+      <text class="rm-a" data-mv="s3-12" data-lbl="4" x="428" y="322" text-anchor="middle">4</text>
+      <text class="rm-a" data-mv="s3-13" data-lbl="doska" x="428" y="262" text-anchor="middle">doska</text>
       <rect class="unit" x="462.5" y="238.6" width="100.6" height="92.2" rx="2"/>
-      <text class="rm-s" x="512" y="322" text-anchor="middle">5</text>
+      <text class="rm-s" data-mv="s3-14" data-lbl="5" x="512" y="322" text-anchor="middle">5</text>
       <rect x="347.5" y="234.6" width="215.6" height="5" rx="1" fill="var(--ink)"/>
 
       <rect class="unit" x="351" y="54.8" width="45.9" height="115" rx="2"/>
-      <text class="rm-s" x="374" y="80" text-anchor="middle">11</text>
+      <text class="rm-s" data-mv="s3-15" data-lbl="11" x="374" y="80" text-anchor="middle">11</text>
       <rect class="unit-a" x="396.9" y="54.8" width="69" height="115" rx="2"/>
-      <text class="rm-a" x="431" y="80" text-anchor="middle">12</text>
-      <text class="rm-a" x="431" y="146" text-anchor="middle">digestor</text>
+      <text class="rm-a" data-mv="s3-16" data-lbl="12" x="431" y="80" text-anchor="middle">12</text>
+      <text class="rm-a" data-mv="s3-17" data-lbl="digestor" x="431" y="146" text-anchor="middle">digestor</text>
       <rect class="unit" x="465.9" y="54.8" width="46" height="115" rx="2"/>
-      <text class="rm-s" x="489" y="80" text-anchor="middle">13</text>
+      <text class="rm-s" data-mv="s3-18" data-lbl="13" x="489" y="80" text-anchor="middle">13</text>
       <rect class="unit" x="511.9" y="54.8" width="69" height="115" rx="2"/>
-      <text class="rm-s" x="546" y="80" text-anchor="middle">14</text>
+      <text class="rm-s" data-mv="s3-19" data-lbl="14" x="546" y="80" text-anchor="middle">14</text>
 
-      <g class="soc"><rect class="face" x="226" y="105" width="36" height="18" rx="4"/><text class="num" x="244" y="118" text-anchor="middle">Z4</text></g>
-      <g class="soc"><rect class="face" x="286" y="279" width="26" height="18" rx="4"/><text class="num" x="299" y="292" text-anchor="middle">Z2</text></g>
-      <g class="soc"><rect class="face" x="314" y="279" width="26" height="18" rx="4"/><text class="num" x="327" y="292" text-anchor="middle">Z6</text></g>
-      <g class="app"><rect class="face" x="352" y="279" width="36" height="18" rx="4"/><text class="num" x="370" y="292" text-anchor="middle">Z1</text></g>
-      <g class="soc"><rect class="face" x="352" y="204" width="40" height="19" rx="4"/><text class="num" x="372" y="217" text-anchor="middle">Z5</text></g>
-      <g class="soc"><rect class="face" x="492" y="204" width="40" height="19" rx="4"/><text class="num" x="512" y="217" text-anchor="middle">Z5</text></g>
-      <g class="soc"><rect class="face" x="413" y="100" width="36" height="18" rx="4"/><text class="num" x="431" y="113" text-anchor="middle">Z5</text></g>
+      <g class="soc" data-mv="s3-20" data-lbl="Z4"><rect class="face" x="226" y="105" width="36" height="18" rx="4"/><text class="num" x="244" y="118" text-anchor="middle">Z4</text></g>
+      <g class="soc" data-mv="s3-21" data-lbl="Z2"><rect class="face" x="286" y="279" width="26" height="18" rx="4"/><text class="num" x="299" y="292" text-anchor="middle">Z2</text></g>
+      <g class="soc" data-mv="s3-22" data-lbl="Z6"><rect class="face" x="314" y="279" width="26" height="18" rx="4"/><text class="num" x="327" y="292" text-anchor="middle">Z6</text></g>
+      <g class="app" data-mv="s3-23" data-lbl="Z1"><rect class="face" x="352" y="279" width="36" height="18" rx="4"/><text class="num" x="370" y="292" text-anchor="middle">Z1</text></g>
+      <g class="soc" data-mv="s3-24" data-lbl="Z5"><rect class="face" x="352" y="204" width="40" height="19" rx="4"/><text class="num" x="372" y="217" text-anchor="middle">Z5</text></g>
+      <g class="soc" data-mv="s3-25" data-lbl="Z5"><rect class="face" x="510" y="204" width="40" height="19" rx="4"/><text class="num" x="530" y="217" text-anchor="middle">Z5</text></g>
+      <g class="soc" data-mv="s3-26" data-lbl="Z5"><rect class="face" x="413" y="100" width="36" height="18" rx="4"/><text class="num" x="431" y="113" text-anchor="middle">Z5</text></g>
 
-      <text class="rm" x="60" y="368">Ľavá stena, 4 600 mm — čísla skriniek podľa IKEA výkresu</text>
+      <text class="rm" data-mv="s3-27" data-lbl="Ľavá stena, 4 600 mm — č" x="60" y="368">Ľavá stena, 4 600 mm — čísla skriniek podľa IKEA výkresu</text>
     </svg>
   </div>
 
@@ -639,37 +663,37 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
       <path class="gd" d="M60,213.5 L586,213.5"/>
       <path class="gd" d="M60,169.8 L586,169.8"/>
       <path class="gd" d="M60,75.5 L586,75.5"/>
-      <text class="rm-s" x="592" y="239">910</text>
-      <text class="rm-s" x="592" y="211">1100</text>
-      <text class="rm-s" x="592" y="173">1480</text>
-      <text class="rm-s" x="592" y="79">2300</text>
+      <text class="rm-s" data-mv="s4-1" data-lbl="910" x="592" y="239">910</text>
+      <text class="rm-s" data-mv="s4-2" data-lbl="1100" x="592" y="211">1100</text>
+      <text class="rm-s" data-mv="s4-3" data-lbl="1480" x="592" y="173">1480</text>
+      <text class="rm-s" data-mv="s4-4" data-lbl="2300" x="592" y="79">2300</text>
 
       <line x1="55" y1="340" x2="589" y2="340" stroke="var(--ink)" stroke-width="3"/>
       <path d="M589,340 L589,54.8" fill="none" stroke="var(--ink-3)" stroke-width="2" stroke-dasharray="6 4"/>
-      <text class="rm-s" x="470" y="300" text-anchor="middle">voľná stena — pokračuje do jedálne</text>
+      <text class="rm-s" data-mv="s4-5" data-lbl="voľná stena — pokračuje " x="470" y="300" text-anchor="middle">voľná stena — pokračuje do jedálne</text>
 
       <rect class="unit" x="60" y="238.6" width="100.6" height="92.2" rx="2"/>
-      <text class="rm-s" x="110" y="322" text-anchor="middle">5</text>
-      <text class="rm-s" x="110" y="290" text-anchor="middle">roh</text>
+      <text class="rm-s" data-mv="s4-6" data-lbl="5" x="110" y="322" text-anchor="middle">5</text>
+      <text class="rm-s" data-mv="s4-7" data-lbl="roh" x="110" y="290" text-anchor="middle">roh</text>
       <rect class="unit" x="160.6" y="238.6" width="69" height="92.2" rx="2"/>
-      <text class="rm-s" x="195" y="322" text-anchor="middle">6</text>
-      <text class="rm-s" x="195" y="290" text-anchor="middle">drez</text>
+      <text class="rm-s" data-mv="s4-8" data-lbl="6" x="195" y="322" text-anchor="middle">6</text>
+      <text class="rm-s" data-mv="s4-9" data-lbl="drez" x="195" y="290" text-anchor="middle">drez</text>
       <rect class="unit-a" x="229.6" y="238.6" width="51.8" height="92.2" rx="2"/>
-      <text class="rm-a" x="255" y="322" text-anchor="middle">7</text>
-      <text class="rm-a" x="255" y="264" text-anchor="middle">umýv.</text>
+      <text class="rm-a" data-mv="s4-10" data-lbl="7" x="255" y="322" text-anchor="middle">7</text>
+      <text class="rm-a" data-mv="s4-11" data-lbl="umýv." x="255" y="264" text-anchor="middle">umýv.</text>
       <rect class="unit" x="281.4" y="238.6" width="46" height="92.2" rx="2"/>
-      <text class="rm-s" x="304" y="322" text-anchor="middle">8</text>
+      <text class="rm-s" data-mv="s4-12" data-lbl="8" x="304" y="322" text-anchor="middle">8</text>
       <rect x="60" y="234.6" width="268.8" height="5" rx="1" fill="var(--ink)"/>
 
       <rect class="unit" x="60" y="54.8" width="100.6" height="115" rx="2"/>
-      <text class="rm-s" x="110" y="80" text-anchor="middle">13/14/15</text>
-      <text class="rm-s" x="110" y="96" text-anchor="middle">roh</text>
+      <text class="rm-s" data-mv="s4-13" data-lbl="13/14/15" x="110" y="80" text-anchor="middle">13/14/15</text>
+      <text class="rm-s" data-mv="s4-14" data-lbl="roh" x="110" y="96" text-anchor="middle">roh</text>
 
-      <g class="app"><rect class="face" x="289" y="279" width="30" height="18" rx="4"/><text class="num" x="304" y="292" text-anchor="middle">Z3</text></g>
-      <g class="soc"><rect class="face" x="284" y="204" width="40" height="19" rx="4"/><text class="num" x="304" y="217" text-anchor="middle">Z5</text></g>
-      <g class="app"><rect class="face" x="432" y="66" width="36" height="19" rx="4"/><text class="num" x="450" y="79" text-anchor="middle">Z14</text></g>
+      <g class="app" data-mv="s4-15" data-lbl="Z3"><rect class="face" x="289" y="279" width="30" height="18" rx="4"/><text class="num" x="304" y="292" text-anchor="middle">Z3</text></g>
+      <g class="soc" data-mv="s4-16" data-lbl="Z5"><rect class="face" x="284" y="204" width="40" height="19" rx="4"/><text class="num" x="304" y="217" text-anchor="middle">Z5</text></g>
+      <g class="app" data-mv="s4-17" data-lbl="Z14"><rect class="face" x="454" y="66" width="36" height="19" rx="4"/><text class="num" x="472" y="79" text-anchor="middle">Z14</text></g>
 
-      <text class="rm" x="60" y="368">Pravá stena, prvých 4 600 mm od rohu — čísla skriniek podľa IKEA výkresu</text>
+      <text class="rm" data-mv="s4-18" data-lbl="Pravá stena, prvých 4 60" x="60" y="368">Pravá stena, prvých 4 600 mm od rohu — čísla skriniek podľa IKEA výkresu</text>
     </svg>
   </div>
   <div class="tw">
@@ -698,7 +722,7 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
 
 <section>
   <h2>Rozvádzač</h2>
-  <p>Nový bytový rozvádzač pod omietku <strong>v predsieni, vpravo od vchodových dverí</strong>, <strong>minimálne 4 rady × 12 modulov</strong>. Návrh obsadí 16 ističov plus chrániče, hlavný vypínač a prepäťovú ochranu — zvyšok zostáva ako rezerva.</p>
+  <p>Nový bytový rozvádzač pod omietku <strong>v predsieni, vpravo od vchodových dverí</strong>, <strong>minimálne 4 rady × 12 modulov</strong>. Návrh obsadí 17 ističov plus chrániče, hlavný vypínač a prepäťovú ochranu — zvyšok zostáva ako rezerva.</p>
   <ul class="notes">
     <li><strong>Hlavný vypínač 3-pólový</strong>, prípojnice L1/L2/L3 premostené na jednu fázu. Pri navýšení sa most odstráni.</li>
     <li><strong>Okruhy rozdelené do troch skupín</strong> už teraz, tak ako by sedeli na fázach: skupina A kuchyňa a spotrebiče, B izby a obývačka, C kúpeľňa, chodba, klíma a svetlá.</li>
@@ -720,59 +744,62 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
         <tr><td class="n">RCD 2</td><td class="n">40 A / 30 mA, <strong>typ F</strong></td><td class="n">5</td><td>kúpeľňa a technika — Z7, Z8, Z9, Z13, Z14</td></tr>
         <tr><td class="n">RCD 3</td><td class="n">40 A / 30 mA, typ A</td><td class="n">5</td><td>izby a svetlá — Z10, Z11, Z12, S1, S2</td></tr>
         <tr><td class="n">RCBO</td><td class="n">B16 / 30 mA, typ A</td><td class="n">1</td><td>chladnička Z4</td></tr>
+        <tr><td class="n">RCBO</td><td class="n">B16 / 30 mA, typ A</td><td class="n">1</td><td>vonkajšia zásuvka Z15</td></tr>
       </tbody>
     </table>
   </div>
   <ul class="notes">
     <li><strong>Chladnička má vlastný RCBO</strong> práve preto, aby ju nezhodila porucha inde. Je to jediný spotrebič, ktorému výpadok počas dovolenky naozaj uškodí.</li>
+    <li><strong>Vonkajšia zásuvka má tiež vlastný RCBO.</strong> Je to najpravdepodobnejší zdroj zvodového prúdu v celej inštalácii — dážď, vlhkosť, predlžovačka na balkóne. Na spoločnom chrániči by mokrá zástrčka zhodila celú skupinu.</li>
     <li><strong>Typ F namiesto typu A</strong> tam, kde sú meniče: indukčná doska, práčka, sušička s tepelným čerpadlom a klíma. Tie produkujú vysokofrekvenčné zvodové prúdy, na ktoré typ A nemusí zareagovať a zároveň býva ich príčinou falošných výpadkov. Typ A je minimum, typ F je o pár desiatok eur drahší a odstraňuje najčastejšiu príčinu falošných výpadkov.</li>
     <li><strong>Zatiaľ dvojpólové chrániče</strong>, nie štvorpólové. Pri prechode na tri fázy sa vymenia — je to lacná výmena a teraz to ušetrí šesť modulov aj náklady.</li>
     <li>Chrániče sú istené hlavným ističom 32 A, preto stačí menovitý prúd 40 A.</li>
-    <li>Obsadenie rozvádzača je <strong>34 modulov zo 48</strong> — hlavný vypínač 3, prepäťová ochrana 4, RCBO 2, tri chrániče 6, ističe 15, rozbočovacie svorkovnice 2, rezervované miesto pre monitorovacie relé prúdu 2.</li>
+    <li>Obsadenie rozvádzača je <strong>36 modulov zo 48</strong> — hlavný vypínač 3, prepäťová ochrana 4, dva RCBO 4, tri chrániče 6, ističe 15, rozbočovacie svorkovnice 2, rezervované miesto pre monitorovacie relé prúdu 2.</li>
   </ul>
   <h3>Rozloženie v rozvádzači</h3>
   <p>Kľúč k celému rozloženiu: <strong>každý rad je jedna chráničová skupina.</strong> Chránič je vždy prvý zľava a jeho okruhy nasledujú hneď za ním, takže sa dá jedným kusom hrebeňovej lišty prepojiť celý rad a nič sa nekríži.</p>
   <div class="plan-wrap">
     <svg viewBox="64 34 518 368" role="img" xmlns="http://www.w3.org/2000/svg">
       <title>Rozloženie prístrojov v bytovom rozvádzači 4 rady po 12 modulov</title>
-      <desc>Štyri rady po dvanásť modulov. Prvý rad obsahuje hlavný vypínač, prepäťovú ochranu a RCBO chladničky. Druhý rad chránič RCD 1 a kuchynské okruhy Z1, Z2, Z3, Z5 a Z6. Tretí rad chránič RCD 2 a okruhy Z7, Z8, Z9, Z13 a Z14, plus rezervované miesto pre monitorovacie relé prúdu. Štvrtý rad chránič RCD 3, okruhy Z10, Z11, Z12, svetelné okruhy S1 a S2 a rozbočovacie svorkovnice fázy pre svetlá. V každom rade zostávajú voľné moduly ako rezerva.</desc>
+      <desc>Štyri rady po dvanásť modulov. Prvý rad obsahuje hlavný vypínač, prepäťovú ochranu a dva RCBO — pre chladničku a pre vonkajšiu zásuvku. Druhý rad chránič RCD 1 a kuchynské okruhy Z1, Z2, Z3, Z5 a Z6. Tretí rad chránič RCD 2 a okruhy Z7, Z8, Z9, Z13 a Z14, plus rezervované miesto pre monitorovacie relé prúdu. Štvrtý rad chránič RCD 3, okruhy Z10, Z11, Z12, svetelné okruhy S1 a S2 a rozbočovacie svorkovnice fázy pre svetlá. V každom rade zostávajú voľné moduly ako rezerva.</desc>
 
-      <text class="rm" x="80" y="52">Rad 1 — prívod</text>
-      <g class="gry"><rect class="face" x="80" y="60" width="120" height="56" rx="3"/><text class="mod" x="140" y="84" text-anchor="middle">HLAVNÝ VYPÍNAČ</text><text class="mods" x="140" y="100" text-anchor="middle">3-pól · 40 A</text></g>
-      <g class="gry"><rect class="face" x="200" y="60" width="160" height="56" rx="3"/><text class="mod" x="280" y="84" text-anchor="middle">PREPÄŤOVÁ OCHRANA</text><text class="mods" x="280" y="100" text-anchor="middle">typ 2</text></g>
-      <g class="app"><rect class="face" x="360" y="60" width="80" height="56" rx="3"/><text class="mod" x="400" y="80" text-anchor="middle">Z4 RCBO</text><text class="mods" x="400" y="96" text-anchor="middle">B16 · 30 mA · A</text><text class="mods" x="400" y="108" text-anchor="middle">chladnička</text></g>
-      <g class="free"><rect class="face" x="440" y="60" width="120" height="56" rx="3"/><text class="mods" x="500" y="94" text-anchor="middle">rezerva 3 moduly</text></g>
+      <text class="rm" data-mv="s5-1" data-lbl="Rad 1 — prívod" x="80" y="52">Rad 1 — prívod</text>
+      <g class="gry" data-mv="s5-2" data-lbl="HLAVNÝ VYPÍNAČ3-pól · 40"><rect class="face" x="80" y="60" width="120" height="56" rx="3"/><text class="mod" x="140" y="84" text-anchor="middle">HLAVNÝ VYPÍNAČ</text><text class="mods" x="140" y="100" text-anchor="middle">3-pól · 40 A</text></g>
+      <g class="gry" data-mv="s5-3" data-lbl="PREPÄŤOVÁ OCHRANAtyp 2"><rect class="face" x="200" y="60" width="160" height="56" rx="3"/><text class="mod" x="280" y="84" text-anchor="middle">PREPÄŤOVÁ OCHRANA</text><text class="mods" x="280" y="100" text-anchor="middle">typ 2</text></g>
+      <g class="app" data-mv="s5-4" data-lbl="Z4 RCBOB16 · 30 mA · Ach"><rect class="face" x="360" y="60" width="80" height="56" rx="3"/><text class="mod" x="400" y="80" text-anchor="middle">Z4 RCBO</text><text class="mods" x="400" y="96" text-anchor="middle">B16 · 30 mA · A</text><text class="mods" x="400" y="108" text-anchor="middle">chladnička</text></g>
+      <g class="app" data-mv="s5-5" data-lbl="Z15 RCBOB16 · 30 mA · Av"><rect class="face" x="440" y="60" width="80" height="56" rx="3"/><text class="mod" x="480" y="80" text-anchor="middle">Z15 RCBO</text><text class="mods" x="480" y="96" text-anchor="middle">B16 · 30 mA · A</text><text class="mods" x="480" y="108" text-anchor="middle">vonkajšia zás.</text></g>
+      <g class="free" data-mv="s5-6" data-lbl="rez."><rect class="face" x="520" y="60" width="40" height="56" rx="3"/><text class="mods" x="540" y="94" text-anchor="middle">rez.</text></g>
 
-      <text class="rm" x="80" y="136">Rad 2 — RCD 1 · kuchyňa</text>
+      <text class="rm" data-mv="s5-7" data-lbl="Rad 2 — RCD 1 · kuchyňa" x="80" y="136">Rad 2 — RCD 1 · kuchyňa</text>
       <g class="rcd"><rect class="face" x="80" y="144" width="80" height="56" rx="3"/><text class="mod" x="120" y="168" text-anchor="middle">RCD 1</text><text class="mods" x="120" y="184" text-anchor="middle">40A/30mA F</text></g>
-      <g class="app"><rect class="face" x="160" y="144" width="40" height="56" rx="3"/><text class="mod" x="180" y="168" text-anchor="middle">Z1</text><text class="mods" x="180" y="184" text-anchor="middle">B25</text></g>
-      <g class="app"><rect class="face" x="200" y="144" width="40" height="56" rx="3"/><text class="mod" x="220" y="168" text-anchor="middle">Z2</text><text class="mods" x="220" y="184" text-anchor="middle">B16</text></g>
-      <g class="app"><rect class="face" x="240" y="144" width="40" height="56" rx="3"/><text class="mod" x="260" y="168" text-anchor="middle">Z3</text><text class="mods" x="260" y="184" text-anchor="middle">B16</text></g>
-      <g class="soc"><rect class="face" x="280" y="144" width="40" height="56" rx="3"/><text class="mod" x="300" y="168" text-anchor="middle">Z5</text><text class="mods" x="300" y="184" text-anchor="middle">B16</text></g>
-      <g class="app"><rect class="face" x="320" y="144" width="40" height="56" rx="3"/><text class="mod" x="340" y="168" text-anchor="middle">Z6</text><text class="mods" x="340" y="184" text-anchor="middle">B16</text></g>
-      <g class="free"><rect class="face" x="360" y="144" width="200" height="56" rx="3"/><text class="mods" x="460" y="178" text-anchor="middle">rezerva 5 modulov</text></g>
+      <g class="app" data-mv="s5-8" data-lbl="Z1B25"><rect class="face" x="160" y="144" width="40" height="56" rx="3"/><text class="mod" x="180" y="168" text-anchor="middle">Z1</text><text class="mods" x="180" y="184" text-anchor="middle">B25</text></g>
+      <g class="app" data-mv="s5-9" data-lbl="Z2B16"><rect class="face" x="200" y="144" width="40" height="56" rx="3"/><text class="mod" x="220" y="168" text-anchor="middle">Z2</text><text class="mods" x="220" y="184" text-anchor="middle">B16</text></g>
+      <g class="app" data-mv="s5-10" data-lbl="Z3B16"><rect class="face" x="240" y="144" width="40" height="56" rx="3"/><text class="mod" x="260" y="168" text-anchor="middle">Z3</text><text class="mods" x="260" y="184" text-anchor="middle">B16</text></g>
+      <g class="soc" data-mv="s5-11" data-lbl="Z5B16"><rect class="face" x="280" y="144" width="40" height="56" rx="3"/><text class="mod" x="300" y="168" text-anchor="middle">Z5</text><text class="mods" x="300" y="184" text-anchor="middle">B16</text></g>
+      <g class="app" data-mv="s5-12" data-lbl="Z6B16"><rect class="face" x="320" y="144" width="40" height="56" rx="3"/><text class="mod" x="340" y="168" text-anchor="middle">Z6</text><text class="mods" x="340" y="184" text-anchor="middle">B16</text></g>
+      <g class="free" data-mv="s5-13" data-lbl="rezerva 5 modulov"><rect class="face" x="360" y="144" width="200" height="56" rx="3"/><text class="mods" x="460" y="178" text-anchor="middle">rezerva 5 modulov</text></g>
 
-      <text class="rm" x="80" y="220">Rad 3 — RCD 2 · kúpeľňa a technika</text>
+      <text class="rm" data-mv="s5-14" data-lbl="Rad 3 — RCD 2 · kúpeľňa " x="80" y="220">Rad 3 — RCD 2 · kúpeľňa a technika</text>
       <g class="rcd"><rect class="face" x="80" y="228" width="80" height="56" rx="3"/><text class="mod" x="120" y="252" text-anchor="middle">RCD 2</text><text class="mods" x="120" y="268" text-anchor="middle">40A/30mA F</text></g>
-      <g class="app"><rect class="face" x="160" y="228" width="40" height="56" rx="3"/><text class="mod" x="180" y="252" text-anchor="middle">Z7</text><text class="mods" x="180" y="268" text-anchor="middle">B16</text></g>
-      <g class="app"><rect class="face" x="200" y="228" width="40" height="56" rx="3"/><text class="mod" x="220" y="252" text-anchor="middle">Z8</text><text class="mods" x="220" y="268" text-anchor="middle">B16</text></g>
-      <g class="soc"><rect class="face" x="240" y="228" width="40" height="56" rx="3"/><text class="mod" x="260" y="252" text-anchor="middle">Z9</text><text class="mods" x="260" y="268" text-anchor="middle">B16</text></g>
-      <g class="soc"><rect class="face" x="280" y="228" width="40" height="56" rx="3"/><text class="mod" x="300" y="252" text-anchor="middle">Z13</text><text class="mods" x="300" y="268" text-anchor="middle">B16</text></g>
-      <g class="app"><rect class="face" x="320" y="228" width="40" height="56" rx="3"/><text class="mod" x="340" y="252" text-anchor="middle">Z14</text><text class="mods" x="340" y="268" text-anchor="middle">B16</text></g>
-      <g class="free"><rect class="face" x="360" y="228" width="80" height="56" rx="3"/><text class="mod" x="400" y="252" text-anchor="middle">relé prúdu</text><text class="mods" x="400" y="268" text-anchor="middle">rezerva</text></g>
-      <g class="free"><rect class="face" x="440" y="228" width="120" height="56" rx="3"/><text class="mods" x="500" y="262" text-anchor="middle">rezerva 3 moduly</text></g>
+      <g class="app" data-mv="s5-15" data-lbl="Z7B16"><rect class="face" x="160" y="228" width="40" height="56" rx="3"/><text class="mod" x="180" y="252" text-anchor="middle">Z7</text><text class="mods" x="180" y="268" text-anchor="middle">B16</text></g>
+      <g class="app" data-mv="s5-16" data-lbl="Z8B16"><rect class="face" x="200" y="228" width="40" height="56" rx="3"/><text class="mod" x="220" y="252" text-anchor="middle">Z8</text><text class="mods" x="220" y="268" text-anchor="middle">B16</text></g>
+      <g class="soc" data-mv="s5-17" data-lbl="Z9B16"><rect class="face" x="240" y="228" width="40" height="56" rx="3"/><text class="mod" x="260" y="252" text-anchor="middle">Z9</text><text class="mods" x="260" y="268" text-anchor="middle">B16</text></g>
+      <g class="soc" data-mv="s5-18" data-lbl="Z13B16"><rect class="face" x="280" y="228" width="40" height="56" rx="3"/><text class="mod" x="300" y="252" text-anchor="middle">Z13</text><text class="mods" x="300" y="268" text-anchor="middle">B16</text></g>
+      <g class="app" data-mv="s5-19" data-lbl="Z14B16"><rect class="face" x="320" y="228" width="40" height="56" rx="3"/><text class="mod" x="340" y="252" text-anchor="middle">Z14</text><text class="mods" x="340" y="268" text-anchor="middle">B16</text></g>
+      <g class="free" data-mv="s5-20" data-lbl="relé prúdurezerva"><rect class="face" x="360" y="228" width="80" height="56" rx="3"/><text class="mod" x="400" y="252" text-anchor="middle">relé prúdu</text><text class="mods" x="400" y="268" text-anchor="middle">rezerva</text></g>
+      <g class="free" data-mv="s5-21" data-lbl="rezerva 3 moduly"><rect class="face" x="440" y="228" width="120" height="56" rx="3"/><text class="mods" x="500" y="262" text-anchor="middle">rezerva 3 moduly</text></g>
 
-      <text class="rm" x="80" y="304">Rad 4 — RCD 3 · izby a svetlá</text>
+      <text class="rm" data-mv="s5-22" data-lbl="Rad 4 — RCD 3 · izby a s" x="80" y="304">Rad 4 — RCD 3 · izby a svetlá</text>
       <g class="rcd"><rect class="face" x="80" y="312" width="80" height="56" rx="3"/><text class="mod" x="120" y="336" text-anchor="middle">RCD 3</text><text class="mods" x="120" y="352" text-anchor="middle">40A/30mA A</text></g>
-      <g class="soc"><rect class="face" x="160" y="312" width="40" height="56" rx="3"/><text class="mod" x="180" y="336" text-anchor="middle">Z10</text><text class="mods" x="180" y="352" text-anchor="middle">B16</text></g>
-      <g class="soc"><rect class="face" x="200" y="312" width="40" height="56" rx="3"/><text class="mod" x="220" y="336" text-anchor="middle">Z11</text><text class="mods" x="220" y="352" text-anchor="middle">B16</text></g>
-      <g class="soc"><rect class="face" x="240" y="312" width="40" height="56" rx="3"/><text class="mod" x="260" y="336" text-anchor="middle">Z12</text><text class="mods" x="260" y="352" text-anchor="middle">B16</text></g>
-      <g class="light"><rect class="face" x="280" y="312" width="40" height="56" rx="3"/><text class="mod" x="300" y="336" text-anchor="middle">S1</text><text class="mods" x="300" y="352" text-anchor="middle">B6</text></g>
-      <g class="light"><rect class="face" x="320" y="312" width="40" height="56" rx="3"/><text class="mod" x="340" y="336" text-anchor="middle">S2</text><text class="mods" x="340" y="352" text-anchor="middle">B6</text></g>
-      <g class="gry"><rect class="face" x="360" y="312" width="80" height="56" rx="3"/><text class="mod" x="400" y="336" text-anchor="middle">SVORKOVNICE</text><text class="mods" x="400" y="352" text-anchor="middle">L · S1 + S2</text></g>
-      <g class="free"><rect class="face" x="440" y="312" width="120" height="56" rx="3"/><text class="mods" x="500" y="346" text-anchor="middle">rezerva 3 moduly</text></g>
+      <g class="soc" data-mv="s5-23" data-lbl="Z10B16"><rect class="face" x="160" y="312" width="40" height="56" rx="3"/><text class="mod" x="180" y="336" text-anchor="middle">Z10</text><text class="mods" x="180" y="352" text-anchor="middle">B16</text></g>
+      <g class="soc" data-mv="s5-24" data-lbl="Z11B16"><rect class="face" x="200" y="312" width="40" height="56" rx="3"/><text class="mod" x="220" y="336" text-anchor="middle">Z11</text><text class="mods" x="220" y="352" text-anchor="middle">B16</text></g>
+      <g class="soc" data-mv="s5-25" data-lbl="Z12B16"><rect class="face" x="240" y="312" width="40" height="56" rx="3"/><text class="mod" x="260" y="336" text-anchor="middle">Z12</text><text class="mods" x="260" y="352" text-anchor="middle">B16</text></g>
+      <g class="light" data-mv="s5-26" data-lbl="S1B6"><rect class="face" x="280" y="312" width="40" height="56" rx="3"/><text class="mod" x="300" y="336" text-anchor="middle">S1</text><text class="mods" x="300" y="352" text-anchor="middle">B6</text></g>
+      <g class="light" data-mv="s5-27" data-lbl="S2B6"><rect class="face" x="320" y="312" width="40" height="56" rx="3"/><text class="mod" x="340" y="336" text-anchor="middle">S2</text><text class="mods" x="340" y="352" text-anchor="middle">B6</text></g>
+      <g class="gry" data-mv="s5-28" data-lbl="SVORKOVNICEL · S1 + S2"><rect class="face" x="360" y="312" width="80" height="56" rx="3"/><text class="mod" x="400" y="336" text-anchor="middle">SVORKOVNICE</text><text class="mods" x="400" y="352" text-anchor="middle">L · S1 + S2</text></g>
+      <g class="free" data-mv="s5-29" data-lbl="rezerva 3 moduly"><rect class="face" x="440" y="312" width="120" height="56" rx="3"/><text class="mods" x="500" y="346" text-anchor="middle">rezerva 3 moduly</text></g>
 
-      <text class="rm-s" x="80" y="388">Každé políčko = 1 modul (17,5 mm). Obsadených 34 zo 48.</text>
+      <text class="rm-s" data-mv="s5-30" data-lbl="Každé políčko = 1 modul " x="80" y="388">Každé políčko = 1 modul (17,5 mm). Obsadených 36 zo 48.</text>
     </svg>
   </div>
   <div class="legend">
@@ -920,8 +947,9 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
         <tr><td class="n">Z10</td><td>RZ → obývačka, pravá stena → TV stena</td><td class="n">CYKY-J 3×2,5</td><td>4 vývody, os 300 mm; pri TV stene 400 mm</td></tr>
         <tr><td class="n">Z11</td><td>RZ → detská, ľavá stena → dvere → pravá stena</td><td class="n">CYKY-J 3×2,5</td><td>5 vývodov, os 300 mm</td></tr>
         <tr><td class="n">Z12</td><td>RZ → spálňa, stena pri obývačke → skriňa → TV</td><td class="n">CYKY-J 3×2,5</td><td>5 vývodov, os 300 mm</td></tr>
-        <tr><td class="n">Z13</td><td>RZ → predsieň, chodba</td><td class="n">CYKY-J 3×2,5</td><td>2 vývody</td></tr>
+        <tr><td class="n">Z13</td><td>RZ → výklenok vedľa kúpeľne</td><td class="n">CYKY-J 3×2,5</td><td>2 vývody — jeden vnútri, jeden na čelnej stene zo strany chodby</td></tr>
         <tr><td class="n">Z14</td><td>RZ → vnútorná jednotka klímy</td><td class="n">CYKY-J 3×2,5</td><td>zásuvka vo výške ~2 300 mm</td></tr>
+        <tr><td class="n">Z15</td><td>RZ → balkón, existujúca vonkajšia zásuvka</td><td class="n">CYKY-J 3×2,5</td><td>prestup obvodovou stenou utesniť</td></tr>
       </tbody>
     </table>
   </div>
@@ -971,7 +999,7 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
         <tr><td>Prepäťová ochrana typ 2</td><td class="n">1</td><td></td></tr>
         <tr><td>Prúdový chránič 2-pól 40 A / 30 mA, <strong>typ F</strong></td><td class="n">2</td><td>RCD 1 kuchyňa, RCD 2 kúpeľňa a technika</td></tr>
         <tr><td>Prúdový chránič 2-pól 40 A / 30 mA, typ A</td><td class="n">1</td><td>RCD 3 izby a svetlá</td></tr>
-        <tr><td>RCBO B16 / 30 mA, typ A</td><td class="n">1</td><td>chladnička Z4</td></tr>
+        <tr><td>RCBO B16 / 30 mA, typ A</td><td class="n">2</td><td>chladnička Z4, vonkajšia zásuvka Z15</td></tr>
         <tr><td>Istič B25</td><td class="n">1</td><td>Z1 varná doska</td></tr>
         <tr><td>Istič B16</td><td class="n">12</td><td>Z2, Z3, Z5, Z6 – Z14</td></tr>
         <tr><td>Istič B6</td><td class="n">2</td><td>S1, S2 svetlá</td></tr>
@@ -1046,6 +1074,9 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
     <li>Určiť polohu <strong>prepojovacej krabice za zrkadlom</strong> (vývod 1T) a overiť ju voči zónam — musí byť dostupná po demontáži zrkadla.</li>
     <li>Potvrdiť, v ktorej skrinke bude druhá dvojzásuvka Z9 a v akej výške.</li>
     <li>Overiť <strong>výšku osadenia rozvádzača</strong> — pri polohe tesne pod stropom sú ističe mimo dosahu.</li>
+    <li>Zamerať <strong>skutočné rozmery a polohu výklenku</strong> vedľa kúpeľne — v nákrese je zakreslený orientačne.</li>
+    <li>Rozhodnúť, či má <strong>výklenok vlastné svetlo</strong>. V návrhu ho zatiaľ nemá; ak áno, dá sa napojiť na okruh predsiene cez druhý kanál 2PM v krabici K2, ktorý je voľný.</li>
+    <li>Skontrolovať <strong>existujúcu vonkajšiu zásuvku</strong> — krytie min. IP44, stav tesnení a či sa dá pôvodný prívod odpojiť a nahradiť novým z rozvádzača.</li>
     <li>Overiť <strong>dosah kábla mikrovlnky</strong> (1 350 mm) k zásuvke v spodnom priestore skrinky 2.</li>
     <li>Doplniť model a príkon <strong>klímy</strong> do bilancie. Príkon <strong>umývačky FRÖSLUNDA</strong> IKEA neuvádza — odčítať z typového štítku.</li>
     <li>Overiť príkon <strong>sušičky</strong> na typovom štítku — pri kondenzačnej namiesto tepelného čerpadla sa bilancia mení.</li>
@@ -1056,11 +1087,140 @@ footer { border-top:1px solid var(--rule); padding-top:20px; font-size:13px; col
 </section>
 
 <footer>
-  <div>Návrh elektroinštalácie bytu — 7 svetelných okruhov, 2 ventilátory, 14 zásuvkových okruhov, 8 dátových portov, 6 modulov Shelly.</div>
+  <div>Návrh elektroinštalácie bytu — 7 svetelných okruhov, 2 ventilátory, 15 zásuvkových okruhov, 8 dátových portov, 6 modulov Shelly.</div>
   <div>Dokument slúži ako podklad pre elektrikára, nenahrádza projektovú dokumentáciu ani revíznu správu.</div>
+  <div>Polohy značiek v nákresoch sa dajú upraviť pridaním <code>?edit=1</code> na koniec adresy stránky. Zmeny sa dajú uložiť do súboru a neskôr znovu načítať.</div>
 </footer>
 
 </div>
+
+<div class="ed-bar" id="edBar">
+  <strong>Režim editácie</strong>
+  <span class="ed-info" id="edInfo">ťahaním posuňte prvok · Shift = bez mriežky · šípky = 1 jednotka</span>
+  <button type="button" id="edSave">Uložiť pozície</button>
+  <button type="button" id="edLoadBtn">Načítať pozície</button>
+  <input type="file" id="edLoad" accept="application/json,.json" hidden>
+  <button type="button" id="edReset">Vrátiť všetko</button>
+  <button type="button" id="edOff">Zavrieť</button>
+</div>
+<script>
+(function () {
+  var KEY = 'elektro-pozicie-v3';
+  var off = {};
+  try { off = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { off = {}; }
+
+  var nodes = [].slice.call(document.querySelectorAll('[data-mv]'));
+  function apply(el) {
+    var o = off[el.getAttribute('data-mv')];
+    if (o) el.setAttribute('transform', 'translate(' + o[0] + ',' + o[1] + ')');
+    else el.removeAttribute('transform');
+  }
+  nodes.forEach(apply);
+
+  if (!/[?&]edit=1/.test(location.search)) return;
+
+  document.body.classList.add('editing');
+  var info = document.getElementById('edInfo');
+  var active = null, start = null, base = null, ctm = null;
+
+  function svgPoint(el, ev) {
+    var svg = el.ownerSVGElement, pt = svg.createSVGPoint();
+    pt.x = ev.clientX; pt.y = ev.clientY;
+    return pt.matrixTransform(ctm.inverse());
+  }
+  function setActive(el) {
+    nodes.forEach(function (n) { n.classList.remove('ed-active'); });
+    if (el) { el.classList.add('ed-active'); active = el;
+      info.textContent = el.getAttribute('data-lbl') + '  →  ' + (off[el.getAttribute('data-mv')] || [0, 0]).join(', '); }
+  }
+  nodes.forEach(function (el) {
+    el.addEventListener('pointerdown', function (ev) {
+      ev.preventDefault(); ev.stopPropagation();
+      ctm = el.ownerSVGElement.getScreenCTM();
+      setActive(el);
+      base = (off[el.getAttribute('data-mv')] || [0, 0]).slice();
+      start = svgPoint(el, ev);
+      el.setPointerCapture(ev.pointerId);
+    });
+    el.addEventListener('pointermove', function (ev) {
+      if (active !== el || !start) return;
+      var p = svgPoint(el, ev);
+      var dx = base[0] + (p.x - start.x), dy = base[1] + (p.y - start.y);
+      if (!ev.shiftKey) { dx = Math.round(dx / 2) * 2; dy = Math.round(dy / 2) * 2; }
+      off[el.getAttribute('data-mv')] = [Math.round(dx * 10) / 10, Math.round(dy * 10) / 10];
+      apply(el);
+      info.textContent = el.getAttribute('data-lbl') + '  →  ' + off[el.getAttribute('data-mv')].join(', ');
+    });
+    el.addEventListener('pointerup', function (ev) {
+      start = null; el.releasePointerCapture(ev.pointerId);
+      try { localStorage.setItem(KEY, JSON.stringify(off)); } catch (e) {}
+    });
+  });
+
+  document.addEventListener('keydown', function (ev) {
+    if (!active || ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(ev.key) < 0) return;
+    ev.preventDefault();
+    var id = active.getAttribute('data-mv'), o = off[id] || [0, 0], s = ev.shiftKey ? 10 : 1;
+    if (ev.key === 'ArrowLeft') o[0] -= s; if (ev.key === 'ArrowRight') o[0] += s;
+    if (ev.key === 'ArrowUp') o[1] -= s; if (ev.key === 'ArrowDown') o[1] += s;
+    off[id] = o; apply(active);
+    info.textContent = active.getAttribute('data-lbl') + '  →  ' + o.join(', ');
+    try { localStorage.setItem(KEY, JSON.stringify(off)); } catch (e) {}
+  });
+
+  document.getElementById('edSave').addEventListener('click', function () {
+    var data = {};
+    Object.keys(off).forEach(function (k) { if (off[k][0] || off[k][1]) data[k] = off[k]; });
+    var out = {};
+    nodes.forEach(function (n) { var k = n.getAttribute('data-mv');
+      if (data[k]) out[k] = { posun: data[k], prvok: n.getAttribute('data-lbl') }; });
+    var txt = JSON.stringify(out, null, 2);
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([txt], { type: 'application/json' }));
+    a.download = 'pozicie.json'; a.click();
+    if (navigator.clipboard) navigator.clipboard.writeText(txt);
+    info.textContent = 'Uložené: ' + Object.keys(out).length + ' posunutých prvkov (súbor + schránka)';
+  });
+  document.getElementById('edLoadBtn').addEventListener('click', function () {
+    document.getElementById('edLoad').click();
+  });
+  document.getElementById('edLoad').addEventListener('change', function (ev) {
+    var f = ev.target.files && ev.target.files[0];
+    if (!f) return;
+    var r = new FileReader();
+    r.onload = function () {
+      try {
+        var data = JSON.parse(r.result), n = 0, nezname = 0;
+        var fresh = {};
+        Object.keys(data).forEach(function (k) {
+          var v = data[k], d = Array.isArray(v) ? v : v.posun;
+          if (!d || d.length !== 2) return;
+          if (!document.querySelector('[data-mv="' + k + '"]')) { nezname++; return; }
+          fresh[k] = [+d[0], +d[1]]; n++;
+        });
+        off = fresh;
+        nodes.forEach(apply);
+        setActive(null);
+        try { localStorage.setItem(KEY, JSON.stringify(off)); } catch (e) {}
+        info.textContent = 'Načítaných ' + n + ' pozícií' + (nezname ? ', ' + nezname + ' neznámych preskočených' : '');
+      } catch (e) {
+        info.textContent = 'Súbor sa nepodarilo prečítať — nie je to platný JSON';
+      }
+      ev.target.value = '';
+    };
+    r.readAsText(f);
+  });
+
+  document.getElementById('edReset').addEventListener('click', function () {
+    off = {}; try { localStorage.removeItem(KEY); } catch (e) {}
+    nodes.forEach(apply); setActive(null);
+    info.textContent = 'Všetky posuny vrátené do pôvodného stavu';
+  });
+  document.getElementById('edOff').addEventListener('click', function () {
+    location.href = location.pathname;
+  });
+})();
+</script>
 
 <script>
 (function () {
