@@ -252,7 +252,7 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
     <div class="fact"><dt>Zásuvkové okruhy</dt><dd>15</dd></div>
     <div class="fact"><dt>Svetelné okruhy</dt><dd>7 <small>+ 2 ventilátory</small></dd></div>
     <div class="fact"><dt>Shelly moduly</dt><dd>6</dd></div>
-    <div class="fact"><dt>Dátové porty</dt><dd>8 <small>CAT6, hviezda</small></dd></div>
+    <div class="fact"><dt>Dátové trasy</dt><dd>4 <small>CAT6, hviezda</small></dd></div>
   </dl>
 </header>
 
@@ -403,7 +403,7 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
       </tbody>
     </table>
   </div>
-  <p>Svetlá sú rozdelené na dva istené okruhy. <strong>S1</strong> pokrýva kúpeľňu, predsieň, kuchyňu, jedáleň a obývačku, čiže vypínače K1 až K4. <strong>S2</strong> pokrýva detskú a spálňu vrátane oboch ventilátorov, čiže K6 a K7. Rozdelenie je zámerné — jeden vyhodený istič nezhasne celý byt.</p>
+  <p>Svetlá sú rozdelené na dva istené okruhy. <strong>S1</strong> pokrýva kúpeľňu, predsieň, kuchyňu, jedáleň a obývačku, čiže vypínače K1 až K5. <strong>S2</strong> pokrýva detskú a spálňu vrátane oboch ventilátorov, čiže K6 a K7. Rozdelenie je zámerné — jeden vyhodený istič nezhasne celý byt.</p>
   <p>Číslovanie je zarovnané: <strong><span class="m">K&lt;n&gt;</span> ovláda okruh <span class="m">&lt;n&gt;</span></strong>. Ventilátory majú vlastnú radu V1, V2, aby to zarovnanie nerozbili — na dvojtlačidlových vypínačoch je pravé tlačidlo vždy ventilátor.</p>
 
   <div class="callout">
@@ -526,7 +526,7 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
         <tr><td>Kúpeľňa + WC</td><td class="n">Z9</td><td class="n">2</td><td>dvojzásuvka na <strong>ľavej stene dole</strong> (fén) + dvojzásuvka <strong>v skrinke</strong></td></tr>
         <tr><td>Kúpeľňa — spotrebiče</td><td class="n">Z7, Z8</td><td class="n">2</td><td>práčka a sušička na <strong>pravej stene dole</strong>, smerom k dverám</td></tr>
         <tr><td>Výklenok vedľa kúpeľne</td><td class="n">Z13</td><td class="n">2</td><td>jedna <strong>vnútri výklenku</strong>, jedna na jeho <strong>čelnej stene zo strany chodby</strong></td></tr>
-        <tr><td>Kuchyňa — linka</td><td class="n">Z5</td><td class="n">3</td><td>2 nad skrinkou 3, 2 nad skrinkou 5, 2 nad skrinkou 8</td></tr>
+        <tr><td>Kuchyňa — linka</td><td class="n">Z5</td><td class="n">6</td><td>2 nad skrinkou 3, 2 nad skrinkou 5, 2 nad skrinkou 8</td></tr>
         <tr><td>Kuchyňa — spotrebiče</td><td class="n">Z1 – Z4, Z6</td><td class="n">5</td><td>doska, rúra, mikrovlnka, umývačka, chladnička</td></tr>
         <tr><td>Jedáleň</td><td class="n">Z14</td><td class="n">1</td><td>klíma, ~2 300 mm</td></tr>
         <tr><td>Balkón</td><td class="n">Z15</td><td class="n">1</td><td>existujúca vonkajšia zásuvka</td></tr>
@@ -539,8 +539,8 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
 
   <div class="callout">
     <h3>Prečo má každá izba jeden okruh</h3>
-    <p>Obývačka, detská aj spálňa majú <strong>všetky zásuvky na jednom okruhu</strong>. Deliť ich nemá zmysel — pri jednofázovej prípojke to nepridá ani watt kapacity a len minie moduly v rozvádzači. Delené sú len tie okruhy, kde na tom naozaj záleží: kuchynská linka, kde sa stretne kanvica s hriankovačom, a spotrebiče, ktoré majú vlastný okruh každý zvlášť.</p>
-    <p>Strop je <strong>10 zásuvkových vývodov na jeden okruh</strong> podľa STN 33 2130. Najhustejšia je spálňa s piatimi vývodmi, takže rezerva je všade dvojnásobná — elektrikár nech si to overí voči aktuálnemu vydaniu normy.</p>
+    <p>Obývačka, detská aj spálňa majú <strong>všetky zásuvky na jednom okruhu</strong>. Deliť ich nemá zmysel — pri jednofázovej prípojke to nepridá ani watt kapacity a len minie moduly v rozvádzači. Samostatný okruh dostali len vstavané spotrebiče, kde je to nutné, a vonkajšia zásuvka.</p>
+    <p>Strop je <strong>10 zásuvkových vývodov na jeden okruh</strong> podľa STN 33 2130. Najhustejší je okruh Z5 so šiestimi zásuvkami linky a digestorom, čiže siedmimi vývodmi — elektrikár nech si to overí voči aktuálnemu vydaniu normy.</p>
   </div>
   <p style="font-size:13px;color:var(--ink-3)">Polohy mimo kuchyne sú schematické. Presné výšky a odstupy upresniť podľa rozmiestnenia nábytku pred sekaním drážok.</p>
 </section>
@@ -722,10 +722,10 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
 
 <section>
   <h2>Rozvádzač</h2>
-  <p>Nový bytový rozvádzač pod omietku <strong>v predsieni, vpravo od vchodových dverí</strong>, <strong>minimálne 4 rady × 12 modulov</strong>. Návrh obsadí 17 ističov plus chrániče, hlavný vypínač a prepäťovú ochranu — zvyšok zostáva ako rezerva.</p>
+  <p>Nový bytový rozvádzač pod omietku <strong>v predsieni, vpravo od vchodových dverí</strong>, <strong>minimálne 4 rady × 12 modulov</strong>. Návrh obsadí 15 ističov, dva RCBO, tri chrániče, hlavný vypínač a prepäťovú ochranu — zvyšok zostáva ako rezerva.</p>
   <ul class="notes">
     <li><strong>Hlavný vypínač 3-pólový</strong>, prípojnice L1/L2/L3 premostené na jednu fázu. Pri navýšení sa most odstráni.</li>
-    <li><strong>Okruhy rozdelené do troch skupín</strong> už teraz, tak ako by sedeli na fázach: skupina A kuchyňa a spotrebiče, B izby a obývačka, C kúpeľňa, chodba, klíma a svetlá.</li>
+    <li><strong>Okruhy rozdelené do troch skupín</strong> už teraz, tak ako by sedeli na fázach: skupina A kuchyňa (RCD 1), B kúpeľňa a technika (RCD 2), C izby a svetlá (RCD 3).</li>
     <li><strong>Prúdové chrániče 30 mA</strong> na všetko — rozdelenie do troch skupín je v tabuľke nižšie.</li>
     <li><strong>Prepäťová ochrana typ 2.</strong> V inštalácii je 6 modulov Shelly, router, dve TV a indukčná doska — jednorazová prepäťová špička ich zničí naraz.</li>
     <li><strong>Prívod od elektromera: CYKY-J 5×10.</strong> Pre 32 A na jednej fáze by stačilo 3×6, ale päťžilová desiatka stojí o pár desiatok eur viac a je to kábel, ktorý sa neskôr prekladá najhoršie.</li>
@@ -815,7 +815,7 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
       <thead><tr><th>Diel</th><th class="n">Ks</th><th>Načo</th></tr></thead>
       <tbody>
         <tr><td>Rozbočovacia svorkovnica L, 1 vstup / 4–6 výstupov</td><td class="n">2</td><td>rozvetvenie fázy okruhov S1 a S2 na jednotlivé svetelné vetvy</td></tr>
-        <tr><td>Nulová svorkovnica N — vstupná</td><td class="n">1</td><td>pred chráničmi; napája RCD 1, RCD 2, RCD 3 a RCBO</td></tr>
+        <tr><td>Nulová svorkovnica N — vstupná</td><td class="n">1</td><td>pred chráničmi; napája RCD 1, RCD 2, RCD 3 a oba RCBO</td></tr>
         <tr><td><strong>Nulová svorkovnica N — za chráničom</strong></td><td class="n">3</td><td><strong>oddelene pre každý chránič</strong>, nesmú sa prepojiť</td></tr>
         <tr><td>Ochranná svorkovnica PE</td><td class="n">1</td><td>spoločná pre celú inštaláciu</td></tr>
         <tr><td>Hrebeňová lišta 1-pólová</td><td class="n">3</td><td>rady 2, 3 a 4 — vždy od výstupu chrániča doprava</td></tr>
@@ -830,11 +830,11 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
 
   <h3>Čo pri montáži rozhoduje</h3>
   <ul class="notes">
-    <li><strong>Každý chránič musí mať vlastnú nulovú svorkovnicu.</strong> Toto je najčastejšia chyba v rozvádzačoch s viacerými chráničmi — ak sa nuly zmiešajú, chrániče budú vypadávať náhodne a nikto nezistí prečo. Tri chrániče znamenajú <strong>tri oddelené N svorkovnice</strong> plus jednu pre RCBO. Ochranná PE svorkovnica je naopak jedna spoločná.</li>
+    <li><strong>Každý chránič musí mať vlastnú nulovú svorkovnicu.</strong> Toto je najčastejšia chyba v rozvádzačoch s viacerými chráničmi — ak sa nuly zmiešajú, chrániče budú vypadávať náhodne a nikto nezistí prečo. Tri chrániče znamenajú <strong>tri oddelené N svorkovnice</strong> plus po jednej pre každý RCBO. Ochranná PE svorkovnica je naopak jedna spoločná.</li>
     <li><strong>Hrebeňová lišta samostatne pre každý rad</strong>, vždy od výstupu chrániča doprava. Nikdy neprepájať lištu medzi radmi, prepojili by sa tým dva chrániče.</li>
     <li><strong>Prepäťová ochrana čo najbližšie k prívodu</strong> a s čo najkratšími vodičmi — celková dĺžka pripojenia L, N a PE má byť pod 0,5 m, inak jej účinnosť výrazne klesne. Zálohové istenie jej zabezpečí hlavný istič 32 A.</li>
     <li><strong>Hlavný vypínač 3-pólový</strong>, prípojnice L1, L2, L3 zatiaľ premostené na jednu fázu. Pri navýšení sa most odstráni, chrániče vymenia za štvorpólové a okruhy sa rozdelia po radoch — rad 2 kuchyňa na jednu fázu, rad 3 na druhú, rad 4 na tretiu. Preto sú okruhy rozdelené presne takto.</li>
-    <li><strong>RCBO chladničky je v prvom rade zámerne</strong>, mimo chráničových skupín. Vizuálne aj elektricky patrí k prívodu, nie k žiadnej skupine.</li>
+    <li><strong>Oba RCBO sú v prvom rade zámerne</strong>, mimo chráničových skupín. Vizuálne aj elektricky patria k prívodu, nie k žiadnej skupine.</li>
     <li>Vnútorné prepojenie: prívod do hlavného vypínača 10 mm², z neho na chrániče 6 mm², z chráničov hrebeňové lišty.</li>
     <li><strong>Popísať každý istič</strong> označením okruhu a miestnosťou, nie len číslom. Samotné číslo je po rokoch nedostatočné.</li>
   </ul>
@@ -969,7 +969,7 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
     <li>Keď nevychádza počet žíl, ide sa o <strong>kábel s viac žilami</strong>. Nikdy sa neprefarbuje modrá ani zelenožltá.</li>
     <li>Signálové vodiče od tlačidiel a od PIR sú <strong>na fázovom potenciáli</strong>. Všetko je CYKY-J, žiadny slaboprúdový kábel.</li>
     <li>Nezapojené rezervné žily zaizolovať na oboch koncoch a označiť, nie odstrihnúť.</li>
-    <li>Každý kábel popísať na <strong>oboch koncoch</strong>: <span class="m">RZ-Z5</span>, <span class="m">K3-JEDALEN</span>, <span class="m">K2-PIR</span>. Pri 16 okruhoch a 6 moduloch sa to bez popisu spätne nerozlúšti.</li>
+    <li>Každý kábel popísať na <strong>oboch koncoch</strong>: <span class="m">RZ-Z5</span>, <span class="m">K3-JEDALEN</span>, <span class="m">K2-PIR</span>. Pri 17 okruhoch a 6 moduloch sa to bez popisu spätne nerozlúšti.</li>
   </ul>
 </section>
 
@@ -1027,7 +1027,7 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
   <ul class="notes">
     <li><strong>Dvojzásuvky všade, kde to dáva zmysel</strong> — v izbách, predsieni a kúpeľni. Jedna krabica, jeden vývod, dva prístroje.</li>
     <li><strong>Na linke nie dvojzásuvky, ale dve samostatné jednozásuvky vedľa seba</strong> v dvojrámiku, horizontálne. Do dvojzásuvky sa dva hranaté adaptéry často nezmestia vedľa seba, pri dvoch samostatných to nie je problém.</li>
-    <li><strong>Dvojzásuvka je 16 A dokopy, nie 2× 16 A.</strong> Aj preto sú zásuvky linky rozdelené na dva okruhy — kanvica a hriankovač si tak neprekážajú.</li>
+    <li><strong>Dvojzásuvka je 16 A dokopy, nie 2× 16 A.</strong> Pri dvoch samostatných zásuvkách má každá vlastných 16 A, hoci obe visia na tom istom okruhu Z5.</li>
     <li>Práčka so sušičkou a rúra s mikrovlnkou majú <strong>samostatné okruhy</strong>, takže musia byť v dvoch krabiciach. Spoločný dvojrámik je len estetika, elektricky sú oddelené.</li>
     <li>Počty vychádzajú z tohto návrhu. Pred objednaním ich prekontrolovať proti finálnemu rozmiestneniu nábytku.</li>
   </ul>
@@ -1040,7 +1040,7 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
         <tr><td>Prístrojová krabica hlboká</td><td class="n">3</td><td>K1, K4, K5 — vypínače</td></tr>
         <tr><td>CYKY-J 5×10</td><td class="n">—</td><td>prívod od elektromera</td></tr>
         <tr><td>CYKY-J 3×6</td><td class="n">—</td><td>Z1 varná doska</td></tr>
-        <tr><td>CYKY-J 3×2,5</td><td class="n">—</td><td>18 trás zásuviek</td></tr>
+        <tr><td>CYKY-J 3×2,5</td><td class="n">—</td><td>14 trás zásuviek, okruhy Z2 – Z15</td></tr>
         <tr><td>CYKY-J 5×1,5</td><td class="n">—</td><td>5 trás svetiel</td></tr>
         <tr><td>CYKY-J 3×1,5</td><td class="n">—</td><td>14 trás svetiel</td></tr>
         <tr><td>Pružná šnúra 3×4 mm², min. 70 °C</td><td class="n">1</td><td>pripojenie varnej dosky, s priechodkami</td></tr>
@@ -1087,7 +1087,7 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
 </section>
 
 <footer>
-  <div>Návrh elektroinštalácie bytu — 7 svetelných okruhov, 2 ventilátory, 15 zásuvkových okruhov, 8 dátových portov, 6 modulov Shelly.</div>
+  <div>Návrh elektroinštalácie bytu — 7 svetelných okruhov, 2 ventilátory, 15 zásuvkových okruhov, 4 dátové trasy, 6 modulov Shelly.</div>
   <div>Dokument slúži ako podklad pre elektrikára, nenahrádza projektovú dokumentáciu ani revíznu správu.</div>
   <div>Polohy značiek v nákresoch sa dajú upraviť pridaním <code>?edit=1</code> na koniec adresy stránky. Zmeny sa dajú uložiť do súboru a neskôr znovu načítať.</div>
 </footer>
