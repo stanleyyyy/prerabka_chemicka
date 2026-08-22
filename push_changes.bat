@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set FILES=rekonstrukcia_bytu.html elektroinstalacia.html
+set FILES=rekonstrukcia_bytu.html elektroinstalacia.html kuchyna_vyvody.html
 set BRANCH=main
 
 cd /d "%~dp0"
