@@ -302,7 +302,8 @@ const INIT=[
   {name:"ZDRAVOTECHNIKA",items:[
     {n:"Prípojné body vody a kanalizácie + materiál",t:"Modul Company – finálna CP",mj:"ks",qty:10,up:95,sup:"Modul Company",url:"",st:"Určené",note:""},
     {n:"Prerábka radiátora kuchyňa",t:"",mj:"kpl",qty:1,up:250,sup:"",url:"",st:"Zaplatené",note:""},
-    {n:"Prerábka radiátora kúpeľňa",t:"",mj:"kpl",qty:1,up:300,sup:"",url:"",st:"Odhad",note:""}
+    {n:"Prerábka radiátora kúpeľňa",t:"",mj:"kpl",qty:1,up:300,sup:"",url:"",st:"Odhad",note:""},
+    {n:"Sifón kondenzačný podomietkový HL138N DN32 100×100",t:"odvod kondenzu z klimatizácie",mj:"ks",qty:1,up:35,sup:"empiria.sk",url:"https://eshop.empiria.sk/produkty/Prislusenstvo-ku-kotlom-plynovym/D11023-HL138N-HL138N-SIFON-PO-NA-KONDENZAT-/",st:"Odhad",note:"cena over (empiria po prihlásení); SK eshopy 31–44 €"}
   ]},
   {name:"KÚPEĽŇA – SIKO ponuka č.1174607",items:[
     {n:"Obklad RDCN 33×100 cm pomice mat",t:"18,48 m² – ⚠ odhad plochy",mj:"m²",qty:18.48,up:29.87,sup:"SIKO.sk",url:"https://www.siko.sk/p/RDCN",st:"Zaplatené",note:"cenník 35,99 €/m²"},
@@ -379,7 +380,7 @@ document.addEventListener('keydown',e=>{
 
 /* ── INIT / SAVE ────────────────────────────────────────── */
 function init(){
-  try{const s=localStorage.getItem('rkBytu15');if(s)D=JSON.parse(s);}catch(e){}
+  try{const s=localStorage.getItem('rkBytu16');if(s)D=JSON.parse(s);}catch(e){}
   try{const rs=localStorage.getItem('rkRooms');if(rs)roomOn={...roomOn,...JSON.parse(rs)};}catch(e){}
   try{const as=localStorage.getItem('rkAlts');if(as)altOn={...altOn,...JSON.parse(as)};}catch(e){}
   if(!D)D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
@@ -394,11 +395,11 @@ function applyRooms(){
   D.forEach(c=>c.items.forEach(it=>{if(map[it.n])it.rooms=map[it.n];else delete it.rooms;}));
 }
 function uid(){return Math.random().toString(36).slice(2);}
-function _sv(){try{localStorage.setItem('rkBytu15',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
+function _sv(){try{localStorage.setItem('rkBytu16',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
 function save(){pushHist();_sv();}
 function resetAll(){
   if(!confirm('Zmazať uložené dáta v prehliadači a načítať čerstvú verziu?\n\n(Stav položiek ako Zaplatené/Objednané sa stratí. Ak si chceš zmeny zachovať, najprv daj ⬇ JSON.)'))return;
-  try{localStorage.removeItem('rkBytu15');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
+  try{localStorage.removeItem('rkBytu16');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
   D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
   roomOn={detska:true,spalna:true};altOn={};
   ek=null;iec=null;newItem=null;coll={};hist=[];histIdx=-1;
