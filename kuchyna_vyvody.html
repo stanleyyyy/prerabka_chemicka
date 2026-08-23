@@ -191,6 +191,48 @@ td.c{font-family:"IBM Plex Mono",monospace;font-weight:600;white-space:nowrap}
 .legend div{display:flex;align-items:center;gap:10px;font-size:13px}
 .legend svg{flex:none}
 footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--rule);padding-top:14px}
+
+/* ══════════════ TLAČOVÝ REŽIM ══════════════ */
+.printbtn{position:fixed;right:16px;bottom:16px;z-index:50;
+  font-family:"IBM Plex Sans Condensed","Segoe UI",sans-serif;text-transform:uppercase;
+  letter-spacing:.11em;font-size:11.5px;font-weight:600;
+  background:var(--ink,#191B1F);color:var(--paper,#fff);border:0;border-radius:3px;
+  padding:11px 17px;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.printbtn:hover{opacity:.85}
+.printbtn:focus-visible{outline:2px solid var(--wat,#186A8B);outline-offset:2px}
+
+@media print{
+  @page{size:A4 landscape;margin:8mm}
+  :root,:root:not([data-theme="light"]),:root[data-theme="dark"]{
+    --paper:#fff;--surf:#fff;--sunk:#f1f0ec;--ink:#111;--muted:#555;--rule:#b9b9b9;
+    --el:#9E3325;--wat:#14607E;--drn:#4F5B41;--cabf:#fff;--voidf:#ececea;--plinth:#e5e3dc;
+    --splash:#EFE3C6;--applf:#f5f4f1;--dimc:#767676;--dimt:#2b2b2b;--win:#eef2f4;
+    --heat:#7A4E24;--zone:#14607E;
+  }
+  html,body{background:#fff!important}
+  body{padding:0;font-size:9.5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap{max-width:none;gap:6mm}
+  .printbtn,.no-print{display:none!important}
+  /* výkresy — zrušiť orezanie a minimálne šírky, roztiahnuť na celú stranu */
+  .sheet-body{overflow:visible!important;padding:2mm!important;display:block!important;
+    text-align:center}
+  .sheet-body>div{width:auto!important;min-width:0!important;max-width:100%!important;
+    display:inline-block!important}
+  .sheet-body svg{width:auto!important;height:auto!important;min-width:0!important;
+    max-width:100%!important;max-height:145mm!important;margin:0 auto}
+  /* tabuľky — zrušiť vodorovné rolovanie */
+  .tblwrap{overflow:visible!important}
+  table{min-width:0!important;font-size:8pt;width:100%!important}
+  th,td{padding:3px 6px}
+  /* zalamovanie strán */
+  .sheet,.titleblock,.facts,.warn,.legend{break-inside:avoid}
+  .sheet-foot{break-inside:avoid;break-before:avoid}
+  thead{display:table-header-group}
+  tr,li{break-inside:avoid}
+  h1,h2,h3{break-after:avoid}
+  .sheet{box-shadow:none}
+  a{color:inherit;text-decoration:none}
+}
 </style>
 </head>
 <body>
@@ -328,6 +370,7 @@ footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--rule);padd
 
 <footer>Podklady: IKEA Maminina kuchyna IKEA dub — TopPlan 1, FacePlan 1, FacePlan 2, kótované pohľady (16.–22. 8. 2026) a Orientačný inštalačný plán pre montáž kuchyne, © Inter IKEA Systems B.V. 2018. Výkres je návrh polôh vývodov — pred realizáciou nechať odsúhlasiť elektrikárom a inštalatérom a premerať na stavbe.</footer>
 
+<button class="printbtn no-print" type="button" onclick="window.print()" title="Vytlačiť — nastavené na A4 na šírku">Tlačiť</button>
 </div>
 </body>
 </html>
