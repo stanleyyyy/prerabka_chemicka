@@ -267,28 +267,27 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
   a{color:inherit;text-decoration:none}
 }
 
-/* ── veľká tlač: výkres rozdelený na dve polovice ── */
+/* ── tlačové zobrazenie kresieb ── */
 .halves{display:none}
 .half-hd{display:none}
 @media print{
-  body.bigprint .sheet-body>svg,
-  body.bigprint .sheet-body>div:not(.halves),
-  body.bigprint .plan-wrap>svg{display:none!important}
-  body.bigprint .halves{display:block}
-  body.bigprint .half-page{break-inside:avoid;break-before:page;break-after:page}
-  body.bigprint .half-page:last-child{break-after:auto}
-  /* obe strany majú identické záhlavie, takže kresby na papieri lícujú */
-  body.bigprint .half-hd{display:block;height:9mm;line-height:9mm;overflow:hidden;
+  body.pmode .sheet-body>svg,
+  body.pmode .sheet-body>div:not(.halves),
+  body.pmode .plan-wrap>svg{display:none!important}
+  body.pmode .halves{display:block}
+  body.pmode .half-page{break-inside:avoid;break-before:page;break-after:page}
+  /* rovnaké záhlavie na každej strane, aby polovice na papieri lícovali */
+  body.pmode .half-hd{display:block;height:9mm;line-height:9mm;overflow:hidden;
     white-space:nowrap;font-family:"IBM Plex Sans Condensed","Segoe UI",sans-serif;
     font-size:9.5pt;font-weight:600;letter-spacing:.04em;
     border-bottom:.4mm solid var(--ink,#111);margin-bottom:2mm}
-  body.bigprint .half-page svg{width:100%!important;height:258mm!important;display:block}
-  body.bigprint .sheet{break-inside:auto;border:0!important;background:none!important}
-  body.bigprint .sheet-head,body.bigprint .sheet-foot{display:none!important}
-  body.bigprint .sheet-body{padding:0!important}
-  body.bigprint .wrap{gap:0}
+  body.pmode .half-page svg{width:100%!important;height:258mm!important;display:block}
+  body.pmode.pwide .half-page svg{height:172mm!important}
+  body.pmode .sheet{break-inside:auto;border:0!important;background:none!important}
+  body.pmode .sheet-head,body.pmode .sheet-foot{display:none!important}
+  body.pmode .sheet-body{padding:0!important}
+  body.pmode .wrap{gap:0}
 }
-
 .printbtn2{right:auto;left:16px;background:var(--wat,#186A8B)}
 </style>
 </head>
@@ -1308,7 +1307,6 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
 </script>
 <script>
 (function(){
-  var OVER = 0;                          // bez presahu — polovice nadväzujú presne
   function title(svg){
     var s = svg.closest('.sheet'), h;
     if (s && (h = s.querySelector('.sheet-head h2'))) return h.textContent.trim();
@@ -1316,63 +1314,62 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
     if (sec && (h = sec.querySelector('h2, h3'))) return h.textContent.trim();
     return '';
   }
-  function title(svg){
-    var s = svg.closest('.sheet'), h;
-    if (s && (h = s.querySelector('.sheet-head h2'))) return h.textContent.trim();
-    var sec = svg.closest('section');
-    if (sec && (h = sec.querySelector('h2, h3'))) return h.textContent.trim();
-    return '';
-  }
-  function split(svg, host){
-    if (svg.dataset.split) return;
-    var vb = (svg.getAttribute('viewBox')||'').split(/[\s,]+/).map(Number);
-    if (vb.length !== 4) return;
-    var x = vb[0], y = vb[1], w = vb[2], h = vb[3], ov = w * OVER;
-    var box = document.createElement('div');
-    box.className = 'halves';
-    var t = title(svg);
-    var parts = [['ľavá polovica', x, w/2],
-                 ['pravá polovica', x + w/2, w/2]];
-    parts.forEach(function(p){
-      var page = document.createElement('div');
-      page.className = 'half-page';
-      var c = svg.cloneNode(true);
-      c.removeAttribute('id');
-      c.removeAttribute('style');
-      c.setAttribute('viewBox', p[1] + ' ' + y + ' ' + p[2] + ' ' + h);
-      var hd = document.createElement('div');
-      hd.className = 'half-hd';
-      hd.textContent = t ? (t + ' · ' + p[0]) : p[0];
-      page.appendChild(hd);
-      page.appendChild(c);
-      box.appendChild(page);
-    });
-    host.appendChild(box);
-    svg.dataset.split = '1';
-  }
-  window.bigPrint = function(){
+  // vždy prestavíme od nuly, aby sa strany nezdvojovali
+  function build(n){
+    document.querySelectorAll('.halves').forEach(function(e){ e.remove(); });
     document.querySelectorAll('.sheet-body>svg, .sheet-body>div>svg, .plan-wrap>svg')
       .forEach(function(svg){
-        split(svg, svg.closest('.sheet-body') || svg.closest('.plan-wrap'));
+        var vb = (svg.getAttribute('viewBox')||'').split(/[\s,]+/).map(Number);
+        if (vb.length !== 4) return;
+        var x = vb[0], y = vb[1], w = vb[2], h = vb[3];
+        var host = svg.closest('.sheet-body') || svg.closest('.plan-wrap');
+        if (!host) return;
+        var t = title(svg);
+        // delenie presne v polovici — bez presahu, aby sa nič neopakovalo
+        var parts = (n === 2)
+          ? [['ľavá polovica', x, w/2], ['pravá polovica', x + w/2, w/2]]
+          : [['', x, w]];
+        var box = document.createElement('div');
+        box.className = 'halves';
+        parts.forEach(function(p){
+          var page = document.createElement('div');
+          page.className = 'half-page';
+          var hd = document.createElement('div');
+          hd.className = 'half-hd';
+          hd.textContent = t + (p[0] ? ' · ' + p[0] : '');
+          var c = svg.cloneNode(true);
+          c.removeAttribute('id');
+          c.removeAttribute('style');
+          c.setAttribute('viewBox', p[1] + ' ' + y + ' ' + p[2] + ' ' + h);
+          page.appendChild(hd);
+          page.appendChild(c);
+          box.appendChild(page);
+        });
+        host.appendChild(box);
       });
-    var st = document.getElementById('pgportrait');
-    if (!st){
-      st = document.createElement('style');
-      st.id = 'pgportrait';
-      st.textContent = '@page{size:A4 portrait;margin:8mm}';
-      document.head.appendChild(st);
-    }
-    document.body.classList.add('bigprint');
+  }
+  function pageSize(orient){
+    var st = document.getElementById('pgsize');
+    if (!st){ st = document.createElement('style'); st.id = 'pgsize'; document.head.appendChild(st); }
+    st.textContent = '@page{size:A4 ' + orient + ';margin:8mm}';
+  }
+  function run(n, orient){
+    build(n);
+    pageSize(orient);
+    document.body.classList.add('pmode');
+    document.body.classList.toggle('pwide', n === 1);
     window.print();
-  };
+  }
+  window.printPlan = function(){ run(1, 'landscape'); };
+  window.bigPrint  = function(){ run(2, 'portrait'); };
   window.addEventListener('afterprint', function(){
-    document.body.classList.remove('bigprint');
-    var st = document.getElementById('pgportrait');
-    if (st) st.remove();
+    document.body.classList.remove('pmode','pwide');
+    var st = document.getElementById('pgsize'); if (st) st.remove();
+    document.querySelectorAll('.halves').forEach(function(e){ e.remove(); });
   });
 })();
 </script>
-<button class="printbtn printbtn2 no-print" type="button" onclick="bigPrint()" title="Každý výkres na dve strany A4 na výšku — zhruba dvojnásobná mierka">Tlačiť 2× väčšie</button>
-<button class="printbtn no-print" type="button" onclick="window.print()" title="Vytlačiť — nastavené na A4">Tlačiť</button>
+<button class="printbtn printbtn2 no-print" type="button" onclick="bigPrint()" title="Každý výkres rozdelený na dve strany A4 na výšku — zhruba dvojnásobná mierka">Tlačiť 2× väčšie</button>
+<button class="printbtn no-print" type="button" onclick="printPlan()" title="Vytlačiť — A4 na šírku, každý výkres na jednu stranu">Tlačiť</button>
 </body>
 </html>
