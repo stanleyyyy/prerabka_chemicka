@@ -266,6 +266,25 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
   .callout,figure,.tw{break-inside:avoid}
   a{color:inherit;text-decoration:none}
 }
+
+/* ── veľká tlač: výkres rozdelený na dve polovice ── */
+.halves{display:none}
+.half-lbl{font-family:"IBM Plex Sans Condensed","Segoe UI",sans-serif;font-size:9pt;
+  text-transform:uppercase;letter-spacing:.12em;color:var(--muted,#666);
+  padding:2mm 0 0;text-align:center}
+@media print{
+  body.bigprint .sheet-body>svg,
+  body.bigprint .sheet-body>div:not(.halves),
+  body.bigprint .plan-wrap>svg{display:none!important}
+  body.bigprint .halves{display:block}
+  body.bigprint .half-page{break-inside:avoid;break-after:page}
+  body.bigprint .half-page:last-child{break-after:auto}
+  body.bigprint .half-page svg{width:100%!important;height:262mm!important;display:block}
+  body.bigprint .sheet{break-inside:auto}
+  body.bigprint .sheet-body{padding:0!important}
+}
+
+.printbtn2{right:auto;left:16px;background:var(--wat,#186A8B)}
 </style>
 </head>
 <body>
@@ -1282,6 +1301,58 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
   });
 })();
 </script>
+<script>
+(function(){
+  var OVER = 0.04;                       // presah polovíc, aby sa dalo zlepiť
+  function split(svg, host){
+    if (svg.dataset.split) return;
+    var vb = (svg.getAttribute('viewBox')||'').split(/[\s,]+/).map(Number);
+    if (vb.length !== 4) return;
+    var x = vb[0], y = vb[1], w = vb[2], h = vb[3], ov = w * OVER;
+    var box = document.createElement('div');
+    box.className = 'halves';
+    var parts = [['ľavá polovica výkresu — zlepiť v presahu', x, w/2 + ov],
+                 ['pravá polovica výkresu — zlepiť v presahu', x + w/2 - ov, w/2 + ov]];
+    parts.forEach(function(p){
+      var page = document.createElement('div');
+      page.className = 'half-page';
+      var c = svg.cloneNode(true);
+      c.removeAttribute('id');
+      c.removeAttribute('style');
+      c.setAttribute('viewBox', p[1] + ' ' + y + ' ' + p[2] + ' ' + h);
+      page.appendChild(c);
+      var lbl = document.createElement('div');
+      lbl.className = 'half-lbl';
+      lbl.textContent = p[0];
+      if (p[0]) page.appendChild(lbl);
+      box.appendChild(page);
+    });
+    host.appendChild(box);
+    svg.dataset.split = '1';
+  }
+  window.bigPrint = function(){
+    document.querySelectorAll('.sheet-body>svg, .sheet-body>div>svg, .plan-wrap>svg')
+      .forEach(function(svg){
+        split(svg, svg.closest('.sheet-body') || svg.closest('.plan-wrap'));
+      });
+    var st = document.getElementById('pgportrait');
+    if (!st){
+      st = document.createElement('style');
+      st.id = 'pgportrait';
+      st.textContent = '@page{size:A4 portrait;margin:8mm}';
+      document.head.appendChild(st);
+    }
+    document.body.classList.add('bigprint');
+    window.print();
+  };
+  window.addEventListener('afterprint', function(){
+    document.body.classList.remove('bigprint');
+    var st = document.getElementById('pgportrait');
+    if (st) st.remove();
+  });
+})();
+</script>
+<button class="printbtn printbtn2 no-print" type="button" onclick="bigPrint()" title="Každý výkres na dve strany A4 na výšku — zhruba dvojnásobná mierka">Tlačiť 2× väčšie</button>
 <button class="printbtn no-print" type="button" onclick="window.print()" title="Vytlačiť — nastavené na A4">Tlačiť</button>
 </body>
 </html>
