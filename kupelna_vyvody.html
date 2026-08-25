@@ -236,19 +236,24 @@ footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--rule);padd
 
 /* ── veľká tlač: výkres rozdelený na dve polovice ── */
 .halves{display:none}
-.half-lbl{font-family:"IBM Plex Sans Condensed","Segoe UI",sans-serif;font-size:9pt;
-  text-transform:uppercase;letter-spacing:.12em;color:var(--muted,#666);
-  padding:2mm 0 0;text-align:center}
+.half-hd{display:none}
 @media print{
   body.bigprint .sheet-body>svg,
   body.bigprint .sheet-body>div:not(.halves),
   body.bigprint .plan-wrap>svg{display:none!important}
   body.bigprint .halves{display:block}
-  body.bigprint .half-page{break-inside:avoid;break-after:page}
+  body.bigprint .half-page{break-inside:avoid;break-before:page;break-after:page}
   body.bigprint .half-page:last-child{break-after:auto}
-  body.bigprint .half-page svg{width:100%!important;height:262mm!important;display:block}
-  body.bigprint .sheet{break-inside:auto}
+  /* obe strany majú identické záhlavie, takže kresby na papieri lícujú */
+  body.bigprint .half-hd{display:block;height:9mm;line-height:9mm;overflow:hidden;
+    white-space:nowrap;font-family:"IBM Plex Sans Condensed","Segoe UI",sans-serif;
+    font-size:9.5pt;font-weight:600;letter-spacing:.04em;
+    border-bottom:.4mm solid var(--ink,#111);margin-bottom:2mm}
+  body.bigprint .half-page svg{width:100%!important;height:258mm!important;display:block}
+  body.bigprint .sheet{break-inside:auto;border:0!important;background:none!important}
+  body.bigprint .sheet-head,body.bigprint .sheet-foot{display:none!important}
   body.bigprint .sheet-body{padding:0!important}
+  body.bigprint .wrap{gap:0}
 }
 
 .printbtn2{right:auto;left:16px;background:var(--wat,#186A8B)}
@@ -332,19 +337,24 @@ footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--rule);padd
 
 /* ── veľká tlač: výkres rozdelený na dve polovice ── */
 .halves{display:none}
-.half-lbl{font-family:"IBM Plex Sans Condensed","Segoe UI",sans-serif;font-size:9pt;
-  text-transform:uppercase;letter-spacing:.12em;color:var(--muted,#666);
-  padding:2mm 0 0;text-align:center}
+.half-hd{display:none}
 @media print{
   body.bigprint .sheet-body>svg,
   body.bigprint .sheet-body>div:not(.halves),
   body.bigprint .plan-wrap>svg{display:none!important}
   body.bigprint .halves{display:block}
-  body.bigprint .half-page{break-inside:avoid;break-after:page}
+  body.bigprint .half-page{break-inside:avoid;break-before:page;break-after:page}
   body.bigprint .half-page:last-child{break-after:auto}
-  body.bigprint .half-page svg{width:100%!important;height:262mm!important;display:block}
-  body.bigprint .sheet{break-inside:auto}
+  /* obe strany majú identické záhlavie, takže kresby na papieri lícujú */
+  body.bigprint .half-hd{display:block;height:9mm;line-height:9mm;overflow:hidden;
+    white-space:nowrap;font-family:"IBM Plex Sans Condensed","Segoe UI",sans-serif;
+    font-size:9.5pt;font-weight:600;letter-spacing:.04em;
+    border-bottom:.4mm solid var(--ink,#111);margin-bottom:2mm}
+  body.bigprint .half-page svg{width:100%!important;height:258mm!important;display:block}
+  body.bigprint .sheet{break-inside:auto;border:0!important;background:none!important}
+  body.bigprint .sheet-head,body.bigprint .sheet-foot{display:none!important}
   body.bigprint .sheet-body{padding:0!important}
+  body.bigprint .wrap{gap:0}
 }
 
 .printbtn2{right:auto;left:16px;background:var(--wat,#186A8B)}
@@ -486,7 +496,21 @@ footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--rule);padd
 
 <script>
 (function(){
-  var OVER = 0.04;                       // presah polovíc, aby sa dalo zlepiť
+  var OVER = 0;                          // bez presahu — polovice nadväzujú presne
+  function title(svg){
+    var s = svg.closest('.sheet'), h;
+    if (s && (h = s.querySelector('.sheet-head h2'))) return h.textContent.trim();
+    var sec = svg.closest('section');
+    if (sec && (h = sec.querySelector('h2, h3'))) return h.textContent.trim();
+    return '';
+  }
+  function title(svg){
+    var s = svg.closest('.sheet'), h;
+    if (s && (h = s.querySelector('.sheet-head h2'))) return h.textContent.trim();
+    var sec = svg.closest('section');
+    if (sec && (h = sec.querySelector('h2, h3'))) return h.textContent.trim();
+    return '';
+  }
   function split(svg, host){
     if (svg.dataset.split) return;
     var vb = (svg.getAttribute('viewBox')||'').split(/[\s,]+/).map(Number);
@@ -494,8 +518,9 @@ footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--rule);padd
     var x = vb[0], y = vb[1], w = vb[2], h = vb[3], ov = w * OVER;
     var box = document.createElement('div');
     box.className = 'halves';
-    var parts = [['ľavá polovica výkresu — zlepiť v presahu', x, w/2 + ov],
-                 ['pravá polovica výkresu — zlepiť v presahu', x + w/2 - ov, w/2 + ov]];
+    var t = title(svg);
+    var parts = [['ľavá polovica', x, w/2],
+                 ['pravá polovica', x + w/2, w/2]];
     parts.forEach(function(p){
       var page = document.createElement('div');
       page.className = 'half-page';
@@ -503,11 +528,11 @@ footer{color:var(--muted);font-size:12.5px;border-top:1px solid var(--rule);padd
       c.removeAttribute('id');
       c.removeAttribute('style');
       c.setAttribute('viewBox', p[1] + ' ' + y + ' ' + p[2] + ' ' + h);
+      var hd = document.createElement('div');
+      hd.className = 'half-hd';
+      hd.textContent = t ? (t + ' · ' + p[0]) : p[0];
+      page.appendChild(hd);
       page.appendChild(c);
-      var lbl = document.createElement('div');
-      lbl.className = 'half-lbl';
-      lbl.textContent = p[0];
-      if (p[0]) page.appendChild(lbl);
       box.appendChild(page);
     });
     host.appendChild(box);
