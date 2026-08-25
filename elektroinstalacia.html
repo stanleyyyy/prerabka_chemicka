@@ -259,7 +259,7 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
   /* výkresy na celú šírku strany, ale nie cez viac strán */
   svg{max-width:100%!important;height:auto!important}
   .plan-wrap{break-inside:avoid;text-align:center}
-  .plan-wrap svg{width:auto!important;max-height:150mm!important;margin:0 auto}
+  body:not(.pmode) .plan-wrap svg{width:100%!important;height:150mm!important;display:block}
   thead{display:table-header-group}
   tr,li{break-inside:avoid}
   h1,h2,h3,h4,caption{break-after:avoid}
@@ -281,8 +281,8 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
     white-space:nowrap;font-family:"IBM Plex Sans Condensed","Segoe UI",sans-serif;
     font-size:9.5pt;font-weight:600;letter-spacing:.04em;
     border-bottom:.4mm solid var(--ink,#111);margin-bottom:2mm}
-  body.pmode .half-page svg{width:100%!important;height:258mm!important;display:block}
-  body.pmode.pwide .half-page svg{height:172mm!important}
+  /* rozmery kresby počíta skript podľa pomeru výrezu — CSS ich neprepisuje */
+  body.pmode .half-page svg{display:block;margin:0 auto;overflow:hidden}
   body.pmode .sheet{break-inside:auto;border:0!important;background:none!important}
   body.pmode .sheet-head,body.pmode .sheet-foot{display:none!important}
   body.pmode .sheet-body{padding:0!important}
@@ -1307,6 +1307,19 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
 </script>
 <script>
 (function(){
+  var WIDE = true;                       // true = A4 na šírku, false = na výšku
+  // kresbe dáme presné rozmery podľa pomeru výrezu, nech vyplní stranu čo najviac
+  function fit(c, ratio){
+    var pw = WIDE ? 281 : 194;           // využiteľná šírka A4 mínus okraje
+    var ph = (WIDE ? 194 : 281) - 12;    // výška mínus okraje a záhlavie
+    var w, h;
+    if (ratio >= pw / ph){ w = pw; h = pw / ratio; }
+    else { h = ph; w = ph * ratio; }
+    c.setAttribute('preserveAspectRatio','xMidYMid meet');
+    c.style.width = w.toFixed(2) + 'mm';
+    c.style.height = h.toFixed(2) + 'mm';
+    c.style.overflow = 'hidden';
+  }
   function title(svg){
     var s = svg.closest('.sheet'), h;
     if (s && (h = s.querySelector('.sheet-head h2'))) return h.textContent.trim();
@@ -1314,7 +1327,7 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
     if (sec && (h = sec.querySelector('h2, h3'))) return h.textContent.trim();
     return '';
   }
-  // vždy prestavíme od nuly, aby sa strany nezdvojovali
+  // vždy staviame od nuly, aby sa strany nezdvojovali
   function build(n){
     document.querySelectorAll('.halves').forEach(function(e){ e.remove(); });
     document.querySelectorAll('.sheet-body>svg, .sheet-body>div>svg, .plan-wrap>svg')
@@ -1341,6 +1354,7 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
           c.removeAttribute('id');
           c.removeAttribute('style');
           c.setAttribute('viewBox', p[1] + ' ' + y + ' ' + p[2] + ' ' + h);
+          fit(c, p[2] / h);
           page.appendChild(hd);
           page.appendChild(c);
           box.appendChild(page);
@@ -1354,16 +1368,16 @@ body.editing [data-mv].ed-active{outline:1.5px solid var(--accent);outline-offse
     st.textContent = '@page{size:A4 ' + orient + ';margin:8mm}';
   }
   function run(n, orient){
+    WIDE = (orient === 'landscape');
     build(n);
     pageSize(orient);
     document.body.classList.add('pmode');
-    document.body.classList.toggle('pwide', n === 1);
     window.print();
   }
   window.printPlan = function(){ run(1, 'landscape'); };
   window.bigPrint  = function(){ run(2, 'portrait'); };
   window.addEventListener('afterprint', function(){
-    document.body.classList.remove('pmode','pwide');
+    document.body.classList.remove('pmode');
     var st = document.getElementById('pgsize'); if (st) st.remove();
     document.querySelectorAll('.halves').forEach(function(e){ e.remove(); });
   });
