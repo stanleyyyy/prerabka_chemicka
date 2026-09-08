@@ -300,7 +300,7 @@ a.ul:hover{text-decoration:underline}
 <script>
 const SO=["Zaplatené","Objednané","Určené","Odhad"];
 const SI={Zaplatené:"🟢",Objednané:"🔵",Určené:"🟡",Odhad:"🟠"};
-const CC=["#4472C4","#843C0C","#7F6000","#595959","#17375E","#3E5E1E","#1E4620","#99260F","#215868","#3E2160","#7B5E00","#404040","#2E2E2E","#1F6F5C"];
+const CC=["#4472C4","#843C0C","#7F6000","#595959","#17375E","#3E5E1E","#1E4620","#99260F","#215868","#3E2160","#7B5E00","#404040","#2E2E2E","#1F6F5C","#334155"];
 
 /* Izby, ktoré sa dajú "vypnúť" (neprerábať). Odpočet sa počíta z 'rooms' na jednotlivých položkách. */
 const ROOMS={
@@ -414,6 +414,11 @@ const INIT=[
     {n:"Príprava vnútor. podkladu WEBER (penetrácia)",t:"Modul Company – finálna CP",mj:"m²",qty:315,up:2,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP: 2,00 €/m²",rooms:{detska:49.5,spalna:57}},
     {n:"Maľby akrylátové 2× ručne, do 3,8 m – Denis",t:"Maliar Denis – komplet vrátane farby, celý byt",mj:"kpl",qty:1,up:1200,sup:"Maliar Denis",url:"",st:"Určené",note:"mimo Modulu (penetráciu robí Modul)"}
   ]},
+  {name:"PRÁCE NAVYŠE – prerab.sk",items:[
+    {n:"Vyčistenie odpadovej rúry + spoločné priestory",t:"prerab.sk – čistenie a manipulácia",mj:"kpl",qty:1,up:150,sup:"prerab.sk",url:"",st:"Určené",note:"práce navyše"},
+    {n:"Kompletne nové rozvody vody, odpadov + kúrenárske práce (radiátor)",t:"prerab.sk – kompletná prerábka kvôli zlému stavu rozvodov (práce + materiál)",mj:"kpl",qty:1,up:400,sup:"prerab.sk",url:"",st:"Určené",note:"práce navyše – všetko nové, nie len napojenie"},
+    {n:"Rohové lišty (navyše)",t:"prerab.sk – kúpené navyše",mj:"kpl",qty:1,up:50,sup:"prerab.sk",url:"",st:"Určené",note:"práce navyše"}
+  ]},
   {name:"OSTATNÉ",items:[{n:"Sťahovanie a uskladnenie gaučov",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Určené",note:""},{n:"Drobný materiál",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Odhad",note:""},{n:"Upratovanie po prerábke",t:"",mj:"kpl",qty:1,up:100,sup:"",url:"",st:"Odhad",note:""}]}
 ];
 
@@ -435,7 +440,7 @@ document.addEventListener('keydown',e=>{
 
 /* ── INIT / SAVE ────────────────────────────────────────── */
 function init(){
-  try{const s=localStorage.getItem('rkBytu19');if(s)D=JSON.parse(s);}catch(e){}
+  try{const s=localStorage.getItem('rkBytu20');if(s)D=JSON.parse(s);}catch(e){}
   try{const rs=localStorage.getItem('rkRooms');if(rs)roomOn={...roomOn,...JSON.parse(rs)};}catch(e){}
   try{const as=localStorage.getItem('rkAlts');if(as)altOn={...altOn,...JSON.parse(as)};}catch(e){}
   if(!D)D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
@@ -450,11 +455,11 @@ function applyRooms(){
   D.forEach(c=>c.items.forEach(it=>{if(map[it.n])it.rooms=map[it.n];else delete it.rooms;}));
 }
 function uid(){return Math.random().toString(36).slice(2);}
-function _sv(){try{localStorage.setItem('rkBytu19',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
+function _sv(){try{localStorage.setItem('rkBytu20',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
 function save(){pushHist();_sv();}
 function resetAll(){
   if(!confirm('Zmazať uložené dáta v prehliadači a načítať čerstvú verziu?\n\n(Stav položiek ako Zaplatené/Objednané sa stratí. Ak si chceš zmeny zachovať, najprv daj ⬇ JSON.)'))return;
-  try{localStorage.removeItem('rkBytu19');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
+  try{localStorage.removeItem('rkBytu20');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
   D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
   roomOn={detska:true,spalna:true};altOn={};
   ek=null;iec=null;newItem=null;coll={};hist=[];histIdx=-1;
