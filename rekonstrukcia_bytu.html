@@ -303,11 +303,8 @@ const SI={Zaplatené:"🟢",Objednané:"🔵",Určené:"🟡",Odhad:"🟠"};
 const CC=["#4472C4","#843C0C","#7F6000","#595959","#17375E","#3E5E1E","#1E4620","#99260F","#215868","#3E2160","#7B5E00","#404040","#2E2E2E","#1F6F5C","#334155"];
 
 /* Izby, ktoré sa dajú "vypnúť" (neprerábať). Odpočet sa počíta z 'rooms' na jednotlivých položkách. */
-const ROOMS={
-  detska:{label:"Detská izba",area:14.5},
-  spalna:{label:"Spálňa (rodičia)",area:18}
-};
-let roomOn={detska:true,spalna:true};
+const ROOMS={};
+let roomOn={};
 
 /* ── ALTERNATÍVNE PONUKY ────────────────────────────────────
    Každá alternatíva nahrádza sadu položiek (podľa názvu) jednou cenou od iného dodávateľa.
@@ -332,30 +329,29 @@ function roomSaving(k){let mat=0,work=0;D.forEach(c=>c.items.forEach(it=>{if(it.
 const INIT=[
   {name:"PRÍPRAVA",items:[{n:"Projekt / statické posúdenie",t:"statik – obhliadka + písomné posúdenie",mj:"kpl",qty:1,up:400,sup:"",url:"",st:"Zaplatené",note:"reálna cena júl 2026"},{n:"Stavebné povolenie / ohlásenie",t:"",mj:"kpl",qty:1,up:0,sup:"",url:"",st:"Odhad",note:"over na stavebnom úrade"}]},
   {name:"BÚRACIE A DEMONTÁŽNE PRÁCE",items:[
-    {n:"Búranie dlažieb",t:"Modul Company – finálna CP",mj:"m²",qty:68,up:6.60,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Búranie priečok tehla >4 m² (115–200 mm)",t:"Modul Company – finálna CP",mj:"m²",qty:26,up:20,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Odstránenie malieb oškrabaním",t:"Modul Company – finálna CP",mj:"m²",qty:240,up:2.40,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:35,spalna:39}},
-    {n:"Demontáž drevených/laminát. podláh + lišty",t:"Modul Company – finálna CP",mj:"m²",qty:35,up:4.80,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},
-    {n:"Odstránenie linolea lepeného",t:"Modul Company – finálna CP",mj:"m²",qty:72,up:8.40,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Demontáž a odvoz starého nábytku",t:"Modul Company – finálna CP",mj:"ks",qty:1.5,up:167,sup:"Modul Company",url:"",st:"Určené",note:"znížené z 300 €/ks"},
-    {n:"Demontáž záchoda",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:30,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Demontáž vane do sute",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:50,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Demontáž umývadla",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:30,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Vybúranie kovových zárubní + krídla",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:55,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Vybúranie drevených zárubní + krídla",t:"Modul Company – finálna CP",mj:"ks",qty:4,up:24,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Prenájom kontajneru 8 m³",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:700,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Skládka odpadu + doprava",t:"Modul Company – finálna CP",mj:"ks",qty:50,up:6,sup:"Modul Company",url:"",st:"Určené",note:""}
+    {n:"Búranie dlažieb",t:"Modul Company – finálna CP",mj:"m²",qty:68,up:6.60,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Búranie priečok tehla >4 m² (115–200 mm)",t:"Modul Company – finálna CP",mj:"m²",qty:26,up:20,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Odstránenie malieb oškrabaním",t:"Modul Company – finálna CP",mj:"m²",qty:240,up:2.40,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Demontáž drevených/laminát. podláh + lišty",t:"Modul Company – finálna CP",mj:"m²",qty:35,up:4.80,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Odstránenie linolea lepeného",t:"Modul Company – finálna CP",mj:"m²",qty:72,up:8.40,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Demontáž a odvoz starého nábytku",t:"Modul Company – finálna CP",mj:"ks",qty:1.5,up:167,sup:"Modul Company",url:"",st:"Zaplatené",note:"znížené z 300 €/ks"},
+    {n:"Demontáž záchoda",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:30,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Demontáž vane do sute",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:50,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Demontáž umývadla",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:30,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Vybúranie kovových zárubní + krídla",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:55,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Vybúranie drevených zárubní + krídla",t:"Modul Company – finálna CP",mj:"ks",qty:4,up:24,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Prenájom kontajneru 8 m³",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:700,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Skládka odpadu + doprava",t:"Modul Company – finálna CP",mj:"ks",qty:50,up:6,sup:"Modul Company",url:"",st:"Zaplatené",note:""}
   ]},
   {name:"ELEKTROINŠTALÁCIA",items:[{n:"Kompletná nová elektroinštalácia",t:"Roman Marko – rozvody, ističe, zásuvky, vypínače, montáž",mj:"kpl",qty:1,up:2500,sup:"Roman Marko",url:"",st:"Odhad",note:"robí Roman Marko (nie Modul), odhad 2 500 €"}]},
   {name:"MURÁRSKE + SADROKARTÓN",items:[
-    {n:"Podhľad SDK biely 12,5 mm závesný Q2",t:"Modul Company – finálna CP, celý byt",mj:"m²",qty:76,up:39.60,sup:"Modul Company",url:"",st:"Určené",note:"",rooms:{detska:14.5,spalna:18}},
-    {n:"Priečka YTONG 80 mm",t:"Modul Company – finálna CP",mj:"m²",qty:2.5,up:36,sup:"Modul Company",url:"",st:"Určené",note:""},
-    {n:"Priečka YTONG 150–200 mm",t:"Modul Company – finálna CP",mj:"m²",qty:7,up:54,sup:"Modul Company",url:"",st:"Určené",note:"nová položka vo finálnej CP"}
+    {n:"Podhľad SDK biely 12,5 mm závesný Q2",t:"Modul Company – finálna CP, celý byt",mj:"m²",qty:76,up:39.60,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Priečka YTONG 80 mm",t:"Modul Company – finálna CP",mj:"m²",qty:2.5,up:36,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
+    {n:"Priečka YTONG 150–200 mm",t:"Modul Company – finálna CP",mj:"m²",qty:7,up:54,sup:"Modul Company",url:"",st:"Zaplatené",note:"nová položka vo finálnej CP"}
   ]},
   {name:"ZDRAVOTECHNIKA",items:[
-    {n:"Prípojné body vody a kanalizácie + materiál",t:"Modul Company – finálna CP",mj:"ks",qty:10,up:95,sup:"Modul Company",url:"",st:"Určené",note:""},
+    {n:"Prípojné body vody a kanalizácie + materiál",t:"Modul Company – finálna CP",mj:"ks",qty:10,up:95,sup:"Modul Company",url:"",st:"Zaplatené",note:""},
     {n:"Prerábka radiátora kuchyňa",t:"",mj:"kpl",qty:1,up:250,sup:"",url:"",st:"Zaplatené",note:""},
-    {n:"Prerábka radiátora kúpeľňa",t:"",mj:"kpl",qty:1,up:300,sup:"",url:"",st:"Odhad",note:""},
     {n:"Sifón kondenzačný podomietkový HL138N DN32 100×100",t:"odvod kondenzu z klimatizácie",mj:"ks",qty:1,up:35,sup:"empiria.sk",url:"https://eshop.empiria.sk/produkty/Prislusenstvo-ku-kotlom-plynovym/D11023-HL138N-HL138N-SIFON-PO-NA-KONDENZAT-/",st:"Odhad",note:"cena over (empiria po prihlásení); SK eshopy 31–44 €"},
     {n:"Vodoinštalačný materiál (Hornbach)",t:"",mj:"kpl",qty:1,up:28.22,sup:"Hornbach",url:"",st:"Určené",note:""},
     {n:"Sifón práčkový podomietkový ALCA APS6 (2 spotrebiče, nerez DN40/DN50)",t:"odvod pre práčku + sušičku",mj:"ks",qty:1,up:23,sup:"SIKO.sk",url:"https://www.siko.sk/sifon-prackovy-podomietkovy-alca-pre-2-spotrebice-nerez-dn40-a-dn50aps6/p/APS6",st:"Odhad",note:"cena over na SIKO (eshopy 20–34 €)"}
@@ -396,9 +392,9 @@ const INIT=[
     {n:"Hmoždinka rozperná s rovným hákom Ø12×60 mm (KHP12)",t:"hák Ø6,5×65 mm – vrátane dopravy",mj:"ks",qty:4,up:1.22,sup:"",url:"",st:"Zaplatené",note:"0,22 €/ks + doprava Balíkovo box 4 € rozrátaná na 4 ks"},
     {n:"Rozširovací profil SAT Fusion (NDROZPFUDP)",t:"k sprchovému kútu – 2 ks",mj:"ks",qty:2,up:48.40,sup:"SIKO.sk",url:"https://www.siko.sk/rozsirovaci-profil-sat-fusion-ndrozpfudp/p/NDROZPFUDP",st:"Zaplatené",note:""}
   ]},
-  {name:"PODLAHY (laminát)",items:[{n:"ZENN CLCF 55 PORTO laminát 74,39 m²",t:"SIKO faktúra č.1174607 – materiál, celý byt",mj:"m²",qty:74.39,up:28.93,sup:"SIKO.sk",url:"https://www.siko.sk/p/60002235",st:"Zaplatené",note:"na SIKO faktúre 1174607 (6 400 €)",rooms:{detska:14.5,spalna:18}},{n:"Soklová lišta MDF 18×58 ORCA biela (20 ks)",t:"SIKO faktúra č.1174607 – materiál líšt",mj:"ks",qty:20,up:8.34,sup:"SIKO.sk",url:"",st:"Zaplatené",note:"chýbala v rozpočte – doplnené z faktúry"},{n:"Samonivelačka (cementová stierka 20 mm)",t:"iná firma – nie Modul",mj:"kpl",qty:1,up:2000,sup:"Iná firma",url:"",st:"Určené",note:"robí iná firma (nie v CP Modul)"},{n:"Montáž vinyl/kompozit klik podlahy",t:"iná firma – nie Modul",mj:"m²",qty:70,up:5,sup:"Iná firma",url:"",st:"Určené",note:"iná firma, 5 €/m²",rooms:{detska:14.5,spalna:18}},{n:"MDF lišty pod 45° + akryl",t:"iná firma – nie Modul",mj:"bm",qty:70,up:5,sup:"Iná firma",url:"",st:"Určené",note:"iná firma, 5 €/bm",rooms:{detska:15.6,spalna:17.4}}]},
-  {name:"DVERE",items:[{n:"Vnútorné dvere AURA6 70L + AURA7 80L + 80P (3 ks + zárubne)",t:"biele matné + zárubne O2/O5/O6, SIKO proforma č.3013387688",mj:"kpl",qty:1,up:862.16,sup:"SIKO.sk",url:"",st:"Zaplatené",note:"dvere 544 € + zárubne 318,16 € (s DPH), faktúra 18.8.2026"},{n:"Kovanie – kľučky ANITA-RT (1× WC + 2× bez zámku)",t:"biela mat, SIKO proforma č.3013387688",mj:"kpl",qty:1,up:87.20,sup:"SIKO.sk",url:"",st:"Zaplatené",note:"WC 35,48 € + 2× bez zámku 51,72 € (s DPH)"},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Zaplatené",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company – finálna CP",mj:"ks",qty:3,up:78,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP: 3 ks (bolo 4)"},{n:"Montáž vstupných dverí",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:200,sup:"Modul Company",url:"",st:"Určené",note:"osadenie bezpečnostných dverí"}]},
-  {name:"KUCHYŇA",items:[{n:"Kuchynská linka + spotrebiče – celok",t:"skrinky, doska, rúra, varná doska, digestor, chladnička, montáž",mj:"kpl",qty:1,up:6600,sup:"",url:"",st:"Určené",note:""},{n:"Drez SATSINK GE3 horný jazmín",t:"SIKO faktúra č.1174607",mj:"ks",qty:1,up:107.07,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATSINKGE3J",st:"Zaplatené",note:"na SIKO faktúre 1174607"},{n:"Kuchynská batéria",t:"",mj:"ks",qty:1,up:80,sup:"",url:"",st:"Odhad",note:""},{n:"Montáž kuchyne",t:"montáž linky + spotrebičov",mj:"kpl",qty:1,up:1000,sup:"",url:"",st:"Odhad",note:"do 1 000 €"},{n:"Izolačná páska Vents 5 cm × 4,6 m (art. 123-4)",t:"páska pre PVC systémy – ventilácia digestora (MK_WENT)",mj:"ks",qty:1,up:2.31,sup:"Allegro (MK_WENT)",url:"https://allegro.sk/ponuka/izolacna-paska-vents-5-cm-x-4-6-m-art-123-4-paska-pre-pvc-systemy-17964275869",st:"Zaplatené",note:"uhradené 6.9.2026"},{n:"Plochý kanál 220×90 mm, dĺžka 100 cm (čl. 910)",t:"ventilácia digestora (MK_WENT)",mj:"ks",qty:2,up:12.27,sup:"Allegro (MK_WENT)",url:"https://allegro.sk/ponuka/clanok-910-plochy-kanal-220-x-90-mm-dlzka-100-cm-13843827266",st:"Zaplatené",note:"uhradené 6.9.2026"},{n:"Spojka plochých kanálov so spätným ventilom 220×90 mm (čl. 927)",t:"ventilácia digestora (MK_WENT)",mj:"ks",qty:1,up:5.56,sup:"Allegro (MK_WENT)",url:"https://allegro.sk/ponuka/clanok-927-spojka-plochych-kanalov-s-spatnym-ventilom-220x90-mm-15295945359",st:"Zaplatené",note:"uhradené 6.9.2026"},{n:"Horizontálne koleno 90°, 220×90 mm (čl. 950)",t:"ventilácia digestora (MK_WENT)",mj:"ks",qty:1,up:10.80,sup:"Allegro (MK_WENT)",url:"https://allegro.sk/ponuka/clanok-950-horizontalne-koleno-90-stupnov-220-x-90-mm-13843317698",st:"Zaplatené",note:"uhradené 6.9.2026"},{n:"Excentrické koleno 220×90 mm → fi 150 mm (čl. 961)",t:"ventilácia digestora (MK_WENT)",mj:"ks",qty:1,up:13.43,sup:"Allegro (MK_WENT)",url:"https://allegro.sk/ponuka/clanok-961-excentricke-koleno-spajajuce-kanal-220-x-90-mm-s-kanalom-fi-150-mm-18520532389",st:"Zaplatené",note:"uhradené 6.9.2026"},{n:"Doprava (Allegro kuriér – MK_WENT)",t:"objednávka 6.9.2026",mj:"kpl",qty:1,up:7.98,sup:"Allegro (MK_WENT)",url:"",st:"Zaplatené",note:"doprava k ventilácii digestora"}]},
+  {name:"PODLAHY (laminát)",items:[{n:"ZENN CLCF 55 PORTO laminát 74,39 m²",t:"SIKO faktúra č.1174607 – materiál, celý byt",mj:"m²",qty:74.39,up:28.93,sup:"SIKO.sk",url:"https://www.siko.sk/p/60002235",st:"Zaplatené",note:"na SIKO faktúre 1174607 (6 400 €)"},{n:"Soklová lišta MDF 18×58 ORCA biela (20 ks)",t:"SIKO faktúra č.1174607 – materiál líšt",mj:"ks",qty:20,up:8.34,sup:"SIKO.sk",url:"",st:"Zaplatené",note:"chýbala v rozpočte – doplnené z faktúry"},{n:"Samonivelačka (cementová stierka 20 mm)",t:"iná firma – nie Modul",mj:"kpl",qty:1,up:1000,sup:"Iná firma",url:"",st:"Zaplatené",note:"robí iná firma (nie v CP Modul)"},{n:"Montáž vinyl/kompozit klik podlahy",t:"iná firma – nie Modul",mj:"m²",qty:70,up:5,sup:"Iná firma",url:"",st:"Určené",note:"iná firma, 5 €/m²"},{n:"MDF lišty pod 45° + akryl",t:"iná firma – nie Modul",mj:"bm",qty:70,up:5,sup:"Iná firma",url:"",st:"Určené",note:"iná firma, 5 €/bm"}]},
+  {name:"DVERE",items:[{n:"Vnútorné dvere AURA6 70L + AURA7 80L + 80P (3 ks + zárubne)",t:"biele matné + zárubne O2/O5/O6, SIKO proforma č.3013387688",mj:"kpl",qty:1,up:862.16,sup:"SIKO.sk",url:"",st:"Zaplatené",note:"dvere 544 € + zárubne 318,16 € (s DPH), faktúra 18.8.2026"},{n:"Kovanie – kľučky ANITA-RT (1× WC + 2× bez zámku)",t:"biela mat, SIKO proforma č.3013387688",mj:"kpl",qty:1,up:87.20,sup:"SIKO.sk",url:"",st:"Zaplatené",note:"WC 35,48 € + 2× bez zámku 51,72 € (s DPH)"},{n:"Vchodové dvere bezpečnostné RC2",t:"",mj:"ks",qty:1,up:750,sup:"Securido",url:"https://www.securido.sk/bezpecnostne-dvere/",st:"Zaplatené",note:""},{n:"Montáž drevených zárubní + krídla",t:"Modul Company – finálna CP",mj:"ks",qty:3,up:78,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP: 3 ks (bolo 4)"},{n:"Montáž vstupných dverí",t:"Modul Company – finálna CP",mj:"ks",qty:1,up:200,sup:"Modul Company",url:"",st:"Zaplatené",note:"osadenie bezpečnostných dverí"}]},
+  {name:"KUCHYŇA",items:[{n:"Kuchynská linka + spotrebiče – celok",t:"skrinky, doska, rúra, varná doska, digestor, chladnička, montáž",mj:"kpl",qty:1,up:6600,sup:"",url:"",st:"Určené",note:""},{n:"Drez SATSINK GE3 horný jazmín",t:"SIKO faktúra č.1174607",mj:"ks",qty:1,up:107.07,sup:"SIKO.sk",url:"https://www.siko.sk/p/SATSINKGE3J",st:"Zaplatené",note:"na SIKO faktúre 1174607"},{n:"Kuchynská batéria",t:"",mj:"ks",qty:1,up:80,sup:"",url:"",st:"Zaplatené",note:""},{n:"Montáž kuchyne",t:"montáž linky + spotrebičov",mj:"kpl",qty:1,up:1000,sup:"",url:"",st:"Odhad",note:"do 1 000 €"},{n:"Izolačná páska Vents 5 cm × 4,6 m (art. 123-4)",t:"páska pre PVC systémy – ventilácia digestora (MK_WENT)",mj:"ks",qty:1,up:2.31,sup:"Allegro (MK_WENT)",url:"https://allegro.sk/ponuka/izolacna-paska-vents-5-cm-x-4-6-m-art-123-4-paska-pre-pvc-systemy-17964275869",st:"Zaplatené",note:"uhradené 6.9.2026"},{n:"Plochý kanál 220×90 mm, dĺžka 100 cm (čl. 910)",t:"ventilácia digestora (MK_WENT)",mj:"ks",qty:2,up:12.27,sup:"Allegro (MK_WENT)",url:"https://allegro.sk/ponuka/clanok-910-plochy-kanal-220-x-90-mm-dlzka-100-cm-13843827266",st:"Zaplatené",note:"uhradené 6.9.2026"},{n:"Spojka plochých kanálov so spätným ventilom 220×90 mm (čl. 927)",t:"ventilácia digestora (MK_WENT)",mj:"ks",qty:1,up:5.56,sup:"Allegro (MK_WENT)",url:"https://allegro.sk/ponuka/clanok-927-spojka-plochych-kanalov-s-spatnym-ventilom-220x90-mm-15295945359",st:"Zaplatené",note:"uhradené 6.9.2026"},{n:"Horizontálne koleno 90°, 220×90 mm (čl. 950)",t:"ventilácia digestora (MK_WENT)",mj:"ks",qty:1,up:10.80,sup:"Allegro (MK_WENT)",url:"https://allegro.sk/ponuka/clanok-950-horizontalne-koleno-90-stupnov-220-x-90-mm-13843317698",st:"Zaplatené",note:"uhradené 6.9.2026"},{n:"Excentrické koleno 220×90 mm → fi 150 mm (čl. 961)",t:"ventilácia digestora (MK_WENT)",mj:"ks",qty:1,up:13.43,sup:"Allegro (MK_WENT)",url:"https://allegro.sk/ponuka/clanok-961-excentricke-koleno-spajajuce-kanal-220-x-90-mm-s-kanalom-fi-150-mm-18520532389",st:"Zaplatené",note:"uhradené 6.9.2026"},{n:"Doprava (Allegro kuriér – MK_WENT)",t:"objednávka 6.9.2026",mj:"kpl",qty:1,up:7.98,sup:"Allegro (MK_WENT)",url:"",st:"Zaplatené",note:"doprava k ventilácii digestora"}]},
   {name:"PRÁČKA + SUŠIČKA",items:[{n:"Set Gorenje WG494A11 + DG48C NatureDry",t:"Práčka 9 kg + Sušička 8 kg",mj:"kpl",qty:1,up:881,sup:"Alza.sk",url:"https://www.alza.sk/gorenje-wg494a11-gorenje-dg48c-naturedry-d13374233.htm",st:"Určené",note:""},{n:"Skriňa na práčku GLAW biela",t:"99×44×40 cm",mj:"ks",qty:1,up:279,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/skrina-na-pracku-a-susicku-glaw-biela-415016104",st:"Určené",note:""}]},
   {name:"NÁBYTOK – JEDÁLEŇ / SPÁLŇA",items:[
     {n:"Jedálenský stôl GOSTUN dub artisan/čierna",t:"Okrúhly, rozkladací 100→135 cm",mj:"ks",qty:1,up:219,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/jedalensky-stol-gostun-dub-artisan-cierna-414660500",st:"Zaplatené",note:"⚠ AKCIA do 14.7.2026"},
@@ -413,16 +409,16 @@ const INIT=[
     {n:"Vypínače + relé Shelly",t:"vypínače a relé Shelly",mj:"kpl",qty:1,up:100,sup:"",url:"",st:"Zaplatené",note:"objednané a zaplatené"}
   ]},
   {name:"MAĽBY A POVRCHOVÉ ÚPRAVY",items:[
-    {n:"Stierkovanie stien (2 vrstvy)",t:"Modul Company – finálna CP",mj:"m²",qty:240,up:15,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP: 15 €/m² (bolo 12)",rooms:{detska:35,spalna:39}},
-    {n:"Príprava vnútor. podkladu WEBER (penetrácia)",t:"Modul Company – finálna CP",mj:"m²",qty:315,up:2,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP: 2,00 €/m²",rooms:{detska:49.5,spalna:57}},
-    {n:"Maľby akrylátové 2× ručne, do 3,8 m – Denis",t:"Maliar Denis – komplet vrátane farby, celý byt",mj:"kpl",qty:1,up:1200,sup:"Maliar Denis",url:"",st:"Určené",note:"mimo Modulu (penetráciu robí Modul)"}
+    {n:"Stierkovanie stien (2 vrstvy)",t:"Modul Company – finálna CP",mj:"m²",qty:240,up:15,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP: 15 €/m² (bolo 12)"},
+    {n:"Príprava vnútor. podkladu WEBER (penetrácia)",t:"Modul Company – finálna CP",mj:"m²",qty:315,up:2,sup:"Modul Company",url:"",st:"Určené",note:"finálna CP: 2,00 €/m²"},
+    {n:"Maľby akrylátové 2× strojovo, do 3,8 m – Denis",t:"Maliar Denis – strojové maľovanie, komplet vrátane farby, celý byt",mj:"kpl",qty:1,up:1400,sup:"Maliar Denis",url:"",st:"Určené",note:"strojovo (nie ručne); penetráciu robí Modul"}
   ]},
   {name:"PRÁCE NAVYŠE – prerab.sk",items:[
-    {n:"Vyčistenie odpadovej rúry + spoločné priestory",t:"prerab.sk – čistenie a manipulácia",mj:"kpl",qty:1,up:150,sup:"prerab.sk",url:"",st:"Určené",note:"práce navyše"},
-    {n:"Kompletne nové rozvody vody, odpadov + kúrenárske práce (radiátor)",t:"prerab.sk – kompletná prerábka kvôli zlému stavu rozvodov (práce + materiál)",mj:"kpl",qty:1,up:400,sup:"prerab.sk",url:"",st:"Určené",note:"práce navyše – všetko nové, nie len napojenie"},
-    {n:"Rohové lišty (navyše)",t:"prerab.sk – kúpené navyše",mj:"kpl",qty:1,up:50,sup:"prerab.sk",url:"",st:"Určené",note:"práce navyše"}
+    {n:"Vyčistenie odpadovej rúry + spoločné priestory",t:"prerab.sk – čistenie a manipulácia",mj:"kpl",qty:1,up:150,sup:"prerab.sk",url:"",st:"Zaplatené",note:"práce navyše"},
+    {n:"Kompletne nové rozvody vody, odpadov + kúrenárske práce (radiátor)",t:"prerab.sk – kompletná prerábka kvôli zlému stavu rozvodov (práce + materiál)",mj:"kpl",qty:1,up:400,sup:"prerab.sk",url:"",st:"Zaplatené",note:"práce navyše – všetko nové, nie len napojenie"},
+    {n:"Rohové lišty (navyše)",t:"prerab.sk – kúpené navyše",mj:"kpl",qty:1,up:50,sup:"prerab.sk",url:"",st:"Zaplatené",note:"práce navyše"}
   ]},
-  {name:"OSTATNÉ",items:[{n:"Sťahovanie a uskladnenie gaučov",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Určené",note:""},{n:"Drobný materiál",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Odhad",note:""},{n:"Upratovanie po prerábke",t:"",mj:"kpl",qty:1,up:100,sup:"",url:"",st:"Odhad",note:""}]}
+  {name:"OSTATNÉ",items:[{n:"Sťahovanie a uskladnenie gaučov",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Určené",note:""},{n:"Drobný materiál",t:"",mj:"kpl",qty:1,up:200,sup:"",url:"",st:"Odhad",note:""}]}
 ];
 
 let D,coll={},ek=null,iec=null,drag=null,svT=null,msgT=null,csOpen=true,newItem=null;
@@ -443,7 +439,7 @@ document.addEventListener('keydown',e=>{
 
 /* ── INIT / SAVE ────────────────────────────────────────── */
 function init(){
-  try{const s=localStorage.getItem('rkBytu23');if(s)D=JSON.parse(s);}catch(e){}
+  try{const s=localStorage.getItem('rkBytu24');if(s)D=JSON.parse(s);}catch(e){}
   try{const rs=localStorage.getItem('rkRooms');if(rs)roomOn={...roomOn,...JSON.parse(rs)};}catch(e){}
   try{const as=localStorage.getItem('rkAlts');if(as)altOn={...altOn,...JSON.parse(as)};}catch(e){}
   if(!D)D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
@@ -458,11 +454,11 @@ function applyRooms(){
   D.forEach(c=>c.items.forEach(it=>{if(map[it.n])it.rooms=map[it.n];else delete it.rooms;}));
 }
 function uid(){return Math.random().toString(36).slice(2);}
-function _sv(){try{localStorage.setItem('rkBytu23',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
+function _sv(){try{localStorage.setItem('rkBytu24',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
 function save(){pushHist();_sv();}
 function resetAll(){
   if(!confirm('Zmazať uložené dáta v prehliadači a načítať čerstvú verziu?\n\n(Stav položiek ako Zaplatené/Objednané sa stratí. Ak si chceš zmeny zachovať, najprv daj ⬇ JSON.)'))return;
-  try{localStorage.removeItem('rkBytu23');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
+  try{localStorage.removeItem('rkBytu24');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
   D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
   roomOn={detska:true,spalna:true};altOn={};
   ek=null;iec=null;newItem=null;coll={};hist=[];histIdx=-1;
@@ -539,6 +535,7 @@ function renderStats(){
 /* ── PREPÍNAČE IZIEB ────────────────────────────────────── */
 function renderRooms(){
   const bar=document.getElementById('rooms-bar');if(!bar)return;
+  if(!Object.keys(ROOMS).length){bar.style.display='none';return;}
   bar.innerHTML='<span class="rooms-lbl">Prerábka izieb:</span>'+Object.keys(ROOMS).map(k=>{
     const r=ROOMS[k],on=roomOn[k],sav=roomSaving(k);
     return `<label class="rtog${on?'':' off'}"><input type="checkbox" ${on?'checked':''} onchange="toggleRoom('${k}',this.checked)"><span class="rtog-t">${r.label} (${r.area} m²)</span><span class="rtog-a">${on?'':'−'+f2(sav)}</span></label>`;
