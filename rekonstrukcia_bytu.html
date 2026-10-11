@@ -409,7 +409,7 @@ const INIT=[
   {name:"NÁBYTOK – JEDÁLEŇ / SPÁLŇA",items:[
     {n:"Jedálenský stôl GOSTUN dub artisan/čierna",t:"Okrúhly, rozkladací 100→135 cm",mj:"ks",qty:1,up:219,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/jedalensky-stol-gostun-dub-artisan-cierna-414660500",st:"Zaplatené",note:"⚠ AKCIA do 14.7.2026"},
     {n:"Stolička HANELE cappuccino",t:"Otočná ±90°",mj:"ks",qty:4,up:71.90,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/jedalenska-stolicka-hanele-cappuccino-414932001",st:"Zaplatené",note:"4 ks = 287,60 €"},
-    {n:"Posteľ KOYLIUN béžová 160×200 cm",t:"Čalúnená, 2 zásuvky, lamelový rošt, orech",mj:"ks",qty:1,up:459,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/postel-koyliun-bezova-414507800",st:"Určené",note:"akciová club cena, pôv. 859 €"}
+    {n:"Posteľ KOYLIUN béžová 160×200 cm",t:"Čalúnená, 2 zásuvky, lamelový rošt, orech – s vynesením a montážou",mj:"ks",qty:1,up:567,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/postel-koyliun-bezova-414507800",st:"Zaplatené",note:"567 € vrátane vynesenia a montáže"},{n:"Skriňa do spálne – záloha",t:"skriňa na mieru, spálňa (celkom 2 000 €)",mj:"kpl",qty:1,up:1150,sup:"",url:"",st:"Zaplatené",note:"záloha zo 2 000 €"},{n:"Skriňa do spálne – doplatok",t:"skriňa na mieru, spálňa (celkom 2 000 €)",mj:"kpl",qty:1,up:850,sup:"",url:"",st:"Objednané",note:"doplatok do 2 000 €"},{n:"Skriňa do chodby – záloha",t:"skriňa na mieru, chodba (celkom 600 €)",mj:"kpl",qty:1,up:300,sup:"",url:"",st:"Zaplatené",note:"záloha zo 600 €"},{n:"Skriňa do chodby – doplatok",t:"skriňa na mieru, chodba (celkom 600 €)",mj:"kpl",qty:1,up:300,sup:"",url:"",st:"Objednané",note:"doplatok do 600 €"}
   ]},
   {name:"SVIETIDLÁ",items:[
     {n:"Stropné LED SPICA biela 18W IP44",t:"⌀27 cm",mj:"ks",qty:2,up:8.99,sup:"Sconto.sk",url:"https://www.sconto.sk/produkt/stropne-led-svietidlo-spica-biela-28559600",st:"Určené",note:""},
@@ -449,7 +449,7 @@ document.addEventListener('keydown',e=>{
 
 /* ── INIT / SAVE ────────────────────────────────────────── */
 function init(){
-  try{const s=localStorage.getItem('rkBytu29');if(s)D=JSON.parse(s);}catch(e){}
+  try{const s=localStorage.getItem('rkBytu30');if(s)D=JSON.parse(s);}catch(e){}
   try{const rs=localStorage.getItem('rkRooms');if(rs)roomOn={...roomOn,...JSON.parse(rs)};}catch(e){}
   try{const as=localStorage.getItem('rkAlts');if(as)altOn={...altOn,...JSON.parse(as)};}catch(e){}
   if(!D)D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
@@ -464,11 +464,11 @@ function applyRooms(){
   D.forEach(c=>c.items.forEach(it=>{if(map[it.n])it.rooms=map[it.n];else delete it.rooms;}));
 }
 function uid(){return Math.random().toString(36).slice(2);}
-function _sv(){try{localStorage.setItem('rkBytu29',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
+function _sv(){try{localStorage.setItem('rkBytu30',JSON.stringify(D));}catch(e){}const el=document.getElementById('si');if(el){el.classList.add('on');clearTimeout(svT);svT=setTimeout(()=>el.classList.remove('on'),1800);}}
 function save(){pushHist();_sv();}
 function resetAll(){
   if(!confirm('Zmazať uložené dáta v prehliadači a načítať čerstvú verziu?\n\n(Stav položiek ako Zaplatené/Objednané sa stratí. Ak si chceš zmeny zachovať, najprv daj ⬇ JSON.)'))return;
-  try{localStorage.removeItem('rkBytu29');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
+  try{localStorage.removeItem('rkBytu30');localStorage.removeItem('rkRooms');localStorage.removeItem('rkAlts');}catch(e){}
   D=INIT.map((c,i)=>({...c,color:CC[i],items:c.items.map(it=>({...it,id:uid()}))}));
   roomOn={detska:true,spalna:true};altOn={};
   ek=null;iec=null;newItem=null;coll={};hist=[];histIdx=-1;
